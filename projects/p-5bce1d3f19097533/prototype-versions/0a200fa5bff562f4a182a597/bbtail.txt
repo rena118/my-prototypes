@@ -1,0 +1,8 @@
+﻿(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://roll
+upjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39
+m
+[32m鉁?built in 9.19s[39m
+code=0
