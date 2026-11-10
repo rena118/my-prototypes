@@ -164,7 +164,21 @@
 .ppn .ppn-edit{position:absolute;right:7px;top:10px;width:28px;height:28px;padding:6px;border:1px solid transparent;border-radius:7px;background:var(--nav-surface);color:var(--nav-muted);opacity:0}.ppn .ppn-edit svg{width:14px;height:14px}.ppn .ppn-item-wrap:focus-within .ppn-edit,.ppn .ppn-edit[aria-expanded="true"]{opacity:1}.ppn .ppn-page:has(+.ppn-edit){padding-right:38px}.ppn .ppn-edit[aria-expanded="true"]{border-color:var(--nav-active);color:var(--nav-active)}
 .ppn button:focus-visible,.ppn select:focus-visible{outline:2px solid var(--nav-focus);outline-offset:-2px}.ppn [hidden]{display:none!important}.ppn .ppn-empty{padding:20px 14px;font-size:12px;color:var(--nav-muted)}
 @media(hover:none){.ppn .ppn-edit{opacity:1}}@media(prefers-reduced-motion:reduce){.ppn .ppn-group-toggle svg{transition:none}}
-.ppn-canvas.ppn-mobile{align-items:center;justify-content:center;background:#e5e7eb;padding:26px 16px;overflow:auto}.ppn-canvas.ppn-mobile iframe{box-sizing:content-box;width:390px;max-width:calc(100% - 20px);height:calc(100% - 8px);max-height:844px;min-height:240px;flex:none;background:#fff}.ppn-canvas.ppn-mobile.ppn-shell iframe{border:8px solid #191b20!important;border-radius:36px;box-shadow:0 12px 32px #0003}.ppn-canvas:not(.ppn-mobile) iframe{border-radius:0;box-shadow:none}
+.ppn-canvas.ppn-mobile{align-items:center;justify-content:center;background:#e5e7eb;padding:26px 16px;overflow:auto}.ppn-canvas.ppn-mobile iframe{box-sizing:content-box;width:390px;max-width:calc(100% - 20px);height:calc(100% - 8px);max-height:844px;min-height:240px;flex:none;background:#fff}.ppn-canvas:not(.ppn-mobile) iframe{border-radius:0;box-shadow:none}
+/* 真机外壳：与工作台 device-frame 完全同尺寸（402×868 外框、10px 边框、56px 圆角、54px 状态栏、Home 条） */
+.ppn-phone,.ppn-phone-screen{display:contents}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone{position:relative;display:block;flex:none;box-sizing:border-box;width:402px;height:868px;padding:10px;border-radius:56px;background:linear-gradient(145deg,#3a3a40,#2a2a30);box-shadow:inset 0 0 0 1.5px #ffffff14,0 30px 70px -10px #00000080,0 15px 30px -8px #0000004d}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone::after{content:'';position:absolute;inset:0;border-radius:56px;pointer-events:none;z-index:10;box-shadow:0 0 0 1px #1a1a20,0 0 0 2.5px #3a3a42,0 0 0 3.5px #1a1a20}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone-screen{position:relative;display:block;box-sizing:border-box;width:100%;height:100%;border-radius:46px;overflow:hidden;background:#000}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone-screen iframe{position:absolute;top:54px;left:0;right:0;bottom:0;box-sizing:border-box;width:100%!important;height:calc(100% - 54px)!important;max-width:none!important;max-height:none!important;min-height:0;flex:none;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff}
+.ppn-phone-status,.ppn-phone-island,.ppn-phone-home{display:none}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone-status{position:absolute;top:0;left:0;right:0;z-index:20;height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#fff;color:#000;font:600 15px/1 -apple-system,'SF Pro Text','Helvetica Neue',sans-serif;letter-spacing:.5px;pointer-events:none}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone-status svg{fill:#000;display:block}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone-time{min-width:54px}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone-icons{display:flex;align-items:center;gap:5px;min-width:72px;justify-content:flex-end}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone-island{display:flex;position:absolute;top:11px;left:50%;transform:translateX(-50%);width:126px;height:36px;border-radius:20px;background:#000;z-index:30;align-items:center;justify-content:flex-end;padding-right:14px;pointer-events:none}
+.ppn-phone-island::before{content:'';width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#1e3a5f 0%,#0d1b2a 50%,#050510 100%);box-shadow:inset 0 .5px 1px #ffffff26}
+.ppn-canvas.ppn-mobile.ppn-shell .ppn-phone-home{display:block;position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:134px;height:5px;border-radius:3px;background:rgba(0,0,0,.2);z-index:20;pointer-events:none}
 .ppn-canvas.ppn-pad{display:flex;align-items:center;justify-content:center;min-height:0;padding:28px;overflow:hidden;background:#e5e7eb}.ppn-canvas.ppn-pad iframe{box-sizing:content-box;width:1180px!important;height:820px!important;max-width:none;max-height:none;min-height:0;flex:none;border:0;border-radius:12px;background:#fff}.ppn-canvas.ppn-pad.ppn-shell iframe{border:20px solid #1c1d22!important;border-radius:34px;box-shadow:0 0 0 1px #42434a,0 0 0 3px #111216,0 20px 60px -12px #0005}
 [data-ext-theme="dark"] .ppn-canvas.ppn-pad,[data-theme="dark"] .ppn-canvas.ppn-pad{background:#171717}
 .ppn .ppn-group-count{margin-left:auto;min-width:22px;height:20px;padding:0 6px;display:grid;place-items:center;border-radius:5px;background:var(--nav-hover);color:var(--nav-muted);font-size:10px;font-weight:600;font-variant-numeric:tabular-nums}
@@ -913,10 +927,33 @@ body.page-nav-resizing{user-select:none;cursor:col-resize}body.page-nav-resizing
         return {destroy(){observer.disconnect();window.removeEventListener('resize',fit);device.style.zoom='';}};
     }
     const previewDevices=new WeakMap();
+    const PHONE_STATUS_ICONS='<span class="ppn-phone-icons">'
+        +'<svg width="17" height="12" viewBox="0 0 17 12" aria-hidden="true"><rect x="0" y="9" width="3" height="3" rx=".5"/><rect x="4.5" y="6" width="3" height="6" rx=".5"/><rect x="9" y="3" width="3" height="9" rx=".5"/><rect x="13.5" y="0" width="3" height="12" rx=".5"/></svg>'
+        +'<svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M8 9.6a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2zM3.6 7.2a6.2 6.2 0 0 1 8.8 0" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round"/><path d="M1 4.2a10 10 0 0 1 14 0" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round"/></svg>'
+        +'<svg width="27" height="12" viewBox="0 0 27 12" aria-hidden="true"><rect x="0" y=".5" width="23" height="11" rx="2.5" fill="none" stroke="#000"/><rect x="24" y="3.5" width="2.5" height="4" rx="1" fill="#000" opacity=".4"/><rect x="1.5" y="2" width="20" height="8" rx="1.5" fill="#000"/></svg>'
+        +'</span>';
+    /* 手机预览复用工作台真机外壳的 DOM 结构，只在 ppn-shell 下显示，其余类型 display:contents 透传 */
+    function ensurePhoneShell(frame) {
+        const canvas=frame.parentElement;
+        let phone=canvas.querySelector(':scope > .ppn-phone');
+        if(phone)return phone;
+        phone=document.createElement('div');phone.className='ppn-phone';
+        const screen=document.createElement('div');screen.className='ppn-phone-screen';
+        const status=document.createElement('div');status.className='ppn-phone-status';
+        status.innerHTML='<span class="ppn-phone-time">12:00</span>'+PHONE_STATUS_ICONS;
+        const island=document.createElement('div');island.className='ppn-phone-island';
+        const home=document.createElement('div');home.className='ppn-phone-home';
+        canvas.insertBefore(phone,frame);
+        screen.append(status,island,frame,home);
+        phone.append(screen);
+        return phone;
+    }
     function applyPreview(frame, type, shell=true) {
         previewDevices.get(frame)?.destroy();previewDevices.delete(frame);
         const canvas=frame.parentElement;
+        const phone=ensurePhoneShell(frame);
         canvas.classList.add('ppn-canvas');canvas.classList.toggle('ppn-mobile',type==='mobile');canvas.classList.toggle('ppn-pad',type==='pad');canvas.classList.toggle('ppn-shell',['mobile','pad'].includes(type) && shell);
+        if(type==='mobile' && shell)previewDevices.set(frame,fitDevice(phone,canvas,402,868));
         if(type==='pad')previewDevices.set(frame,fitDevice(frame,canvas,shell?1220:1180,shell?860:820));
     }
     window.ProtoProjectNavigation = {mount, defaultPage, applyPreview, fitDevice, createSelect, positionPopup, reorderProject, reorderError, pageTree, subtreePages, updatePageNavigation, createPageTracking};
@@ -1023,7 +1060,7 @@ body.page-nav-resizing{user-select:none;cursor:col-resize}body.page-nav-resizing
             </aside>
         </main>
         <noscript>请开启 JavaScript 查看评审内容（页面树、PRD 与标注气泡均依赖脚本渲染）。</noscript>
-        <script type="application/json" id="review-data">{"name": "家长手机端", "projectId": "p-6de4660c42895947", "revision": 1, "publishedAt": "2026-11-10 12:18:24", "pages": [{"id": "home", "title": "学生社团 - 家长端", "file": "pages/index.html", "states": [{"id": "default", "title": "默认页面", "kind": "default"}], "clientId": "parent-mobile", "role": "page", "previewType": "mobile"}], "clients": [{"id": "parent-mobile", "title": "家长手机端", "previewType": "mobile"}], "defaultPage": "home", "documents": [], "annotations": [], "release": {"schemaVersion": 1, "projectId": "p-6de4660c42895947", "releaseId": "rel-a2fd25298d234878", "sequence": 1, "contentVersion": "f0c3b90814ee9cf10532c99e428812bf143f892466778626495f02f95ff86f53", "publishedAt": "2026-11-10 12:18:24", "mode": "review", "baseReleaseId": "", "summary": {"pages": 1, "changes": 1}, "changesUrl": "prototype-changes/rel-a2fd25298d234878.json", "snapshotUrl": "prototype-changes/rel-a2fd25298d234878.snapshot.json", "prototypeBase": "prototype-versions/f0c3b90814ee9cf10532c99e/", "baselineStatus": "initial"}, "changeLog": {"schemaVersion": 1, "releaseId": "rel-a2fd25298d234878", "sequence": 1, "publishedAt": "2026-11-10 12:18:24", "contentVersion": "f0c3b90814ee9cf10532c99e428812bf143f892466778626495f02f95ff86f53", "baselineStatus": "initial", "items": [{"kind": "page-added", "description": "新增页面：学生社团 - 家长端", "pageTitle": "学生社团 - 家长端", "stateTitle": "默认页面", "target": {"pageId": "home", "stateId": "default"}, "before": "", "after": "", "affectedPages": ["home"], "affectedPageTitles": ["学生社团 - 家长端"], "id": "change-254dc549ecae5cace7d9"}]}, "prototypeBase": "prototype-versions/f0c3b90814ee9cf10532c99e/", "prototypeVersions": {"pages/index.html": "8fa6bd1183ee2000b422"}}</script>
+        <script type="application/json" id="review-data">{"name": "家长手机端", "projectId": "p-6de4660c42895947", "revision": 1, "publishedAt": "2026-11-10 13:51:32", "pages": [{"id": "home", "title": "学生社团 - 家长端", "file": "pages/index.html", "states": [{"id": "default", "title": "默认页面", "kind": "default"}], "clientId": "parent-mobile", "role": "page", "previewType": "mobile"}], "clients": [{"id": "parent-mobile", "title": "家长手机端", "previewType": "mobile"}], "defaultPage": "home", "documents": [], "annotations": [], "release": {"schemaVersion": 1, "projectId": "p-6de4660c42895947", "releaseId": "rel-2c85658321704b34", "sequence": 2, "contentVersion": "f0c3b90814ee9cf10532c99e428812bf143f892466778626495f02f95ff86f53", "publishedAt": "2026-11-10 13:51:32", "mode": "review", "baseReleaseId": "rel-a2fd25298d234878", "summary": {"pages": 0, "changes": 0}, "changesUrl": "prototype-changes/rel-2c85658321704b34.json", "snapshotUrl": "prototype-changes/rel-2c85658321704b34.snapshot.json", "prototypeBase": "prototype-versions/f0c3b90814ee9cf10532c99e/", "baselineStatus": "previous"}, "changeLog": {"schemaVersion": 1, "releaseId": "rel-2c85658321704b34", "sequence": 2, "publishedAt": "2026-11-10 13:51:32", "contentVersion": "f0c3b90814ee9cf10532c99e428812bf143f892466778626495f02f95ff86f53", "baselineStatus": "previous", "items": []}, "prototypeBase": "prototype-versions/f0c3b90814ee9cf10532c99e/", "prototypeVersions": {"pages/index.html": "8fa6bd1183ee2000b422"}}</script>
         <script>
             'use strict';
             const $ = (id) => document.getElementById(id);
