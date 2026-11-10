@@ -928,3 +928,28 @@ a.tab-item { text-decoration: none; }
 @media (max-height: 880px) {
   body { padding: 0; }
 }
+
+/* ---------- 嵌入评审壳（iframe）时：外层已提供设备外框，隐藏自带手机壳 ---------- */
+html.embedded,
+html.embedded body { background: #fff; }
+
+html.embedded .phone {
+  flex: 1 1 auto;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  padding: 0;
+  background: #fff;
+  box-shadow: none;
+  transform: none !important;
+}
+
+html.embedded .phone::before,
+html.embedded .phone::after { display: none; }
+html.embedded .phone-screen { border-radius: 0; }
+
+/* 预览壳/评审壳自带状态栏与底部 Home 条：去掉重复状态栏，并让底部操作区避开 Home 条 */
+html.embedded .status-bar { display: none; }
+html.embedded .tab-bar { flex: 0 0 72px; height: 72px; padding-bottom: 16px; }
+html.embedded .form-footer { padding-bottom: 26px; }
+html.embedded .app-content.has-footer { padding-bottom: 88px; }

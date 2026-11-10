@@ -85,7 +85,16 @@
   var PHONE_W = 375;
   var PHONE_H = 812;
 
+  var embedded = false;
+  try {
+    embedded = window.self !== window.top;
+  } catch (error) {
+    embedded = true;
+  }
+  if (embedded) document.documentElement.classList.add('embedded');
+
   function fitPhone() {
+    if (embedded) return;
     var phone = document.querySelector('.phone');
     if (!phone) return;
     var scale = Math.min(1, (window.innerWidth - 16) / PHONE_W, (window.innerHeight - 16) / PHONE_H);
