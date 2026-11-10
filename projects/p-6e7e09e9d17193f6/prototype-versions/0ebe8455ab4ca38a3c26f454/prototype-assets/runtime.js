@@ -1,5 +1,5 @@
 const stylesheet = document.createElement("link");
 stylesheet.rel = "stylesheet";
-stylesheet.href = new URL("./main-Do_cZeMq.css", import.meta.url).href;
+stylesheet.href = new URL("./main-DjXBHXiq.css", import.meta.url).href;
 document.head.appendChild(stylesheet);
-import("./main-DDWKWCDb.js");
+import("./main-Cf8vzfWx.js");
