@@ -1,0 +1,43 @@
+﻿
+> student-club-student-desktop-prototype@0.1.0 build
+> vite build
+
+[36mvite v6.4.2 [32mbuilding for production...[36m[39m
+transforming...
+[32m鉁?[39m 4591 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mpages/[22m[32mindex.html                      [39m[1m[2m  0.43 kB[22m[1m[22m[2m 鈹?gzip:   0.32 kB[22m
+[2mpages/[22m[32mentries/mine.html               [39m[1m[2m  0.46 kB[22m[1m[22m[2m 鈹?gzip:   0.32 kB[22m
+[2mpages/[22m[32mentries/plaza.html              [39m[1m[2m  0.46 kB[22m[1m[22m[2m 鈹?gzip:   0.32 kB[22m
+[2mpages/[22m[32mentries/drafts.html             [39m[1m[2m  0.46 kB[22m[1m[22m[2m 鈹?gzip:   0.32 kB[22m
+[2mpages/[22m[32mentries/manage.html             [39m[1m[2m  0.46 kB[22m[1m[22m[2m 鈹?gzip:   0.32 kB[22m
+[2mpages/[22m[32mentries/report.html             [39m[1m[2m  0.46 kB[22m[1m[22m[2m 鈹?gzip:   0.32 kB[22m
+[2mpages/[22m[32mentries/moment-wall.html        [39m[1m[2m  0.46 kB[22m[1m[22m[2m 鈹?gzip:   0.33 kB[22m
+[2mpages/[22m[32mentries/applications.html       [39m[1m[2m  0.46 kB[22m[1m[22m[2m 鈹?gzip:   0.33 kB[22m
+[2mpages/[22m[32mentries/declaration-form.html   [39m[1m[2m  0.47 kB[22m[1m[22m[2m 鈹?gzip:   0.33 kB[22m
+[2mpages/[22m[32mentries/manage-members.html     [39m[1m[2m  0.49 kB[22m[1m[22m[2m 鈹?gzip:   0.33 kB[22m
+[2mpages/[22m[32mentries/manage-credits.html     [39m[1m[2m  0.49 kB[22m[1m[22m[2m 鈹?gzip:   0.33 kB[22m
+[2mpages/[22m[32mentries/manage-showcase.html    [39m[1m[2m  0.49 kB[22m[1m[22m[2m 鈹?gzip:   0.34 kB[22m
+[2mpages/[22m[32mentries/manage-activities.html  [39m[1m[2m  0.49 kB[22m[1m[22m[2m 鈹?gzip:   0.34 kB[22m
+[2mpages/[22m[32mentries/club-detail.html        [39m[1m[2m  0.51 kB[22m[1m[22m[2m 鈹?gzip:   0.34 kB[22m
+[2mpages/[22m[32mentries/manage-publish.html     [39m[1m[2m  0.53 kB[22m[1m[22m[2m 鈹?gzip:   0.36 kB[22m
+[2mpages/[22m[32mentries/manage-renew.html       [39m[1m[2m  0.54 kB[22m[1m[22m[2m 鈹?gzip:   0.37 kB[22m
+[2mpages/[22m[32mentries/club-gallery.html       [39m[1m[2m  0.55 kB[22m[1m[22m[2m 鈹?gzip:   0.35 kB[22m
+[2mpages/[22m[35massets/main-BVN7vydA.css        [39m[1m[2m338.80 kB[22m[1m[22m[2m 鈹?gzip:  58.70 kB[22m
+[2mpages/[22m[36massets/main-RW0TSAdU.js         [39m[1m[33m717.30 kB[39m[22m[2m 鈹?gzip: 196.97 kB[22m
+node.exe : [33m
+所在位置 行:1 字符: 1
++ & "C:\Users\wangn\.workbuddy\binaries\node\versions\22.22.2-3/node.ex ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([33m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://roll
+upjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39
+m
+[32m鉁?built in 8.15s[39m
+code=0
