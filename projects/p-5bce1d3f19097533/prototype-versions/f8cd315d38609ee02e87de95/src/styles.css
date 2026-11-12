@@ -6761,30 +6761,7 @@ button.secondary.danger-text:hover {
   background: #f8fafc;
 }
 
-.member-name-cell {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.member-mini-avatar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #eff6ff;
-  color: #2563eb;
-  font-size: 12px;
-  font-weight: 700;
-  flex: none;
-}
-
-.member-mini-avatar.leader {
-  background: #fef3c7;
-  color: #b45309;
-}
+/* .member-name-cell / .member-mini-avatar 已随「成员姓名去掉头像」一并删除 */
 
 .member-class-badge {
   color: #475569;
@@ -15188,12 +15165,26 @@ button.secondary.danger-text:hover {
   align-items: center;
   gap: 7px;
   width: 300px;
-  height: 36px;
+  height: 34px;
   padding: 0 10px;
-  border: 1px solid #e4e8ef;
+  border: 1px solid #e3e8f0;
   border-radius: 8px;
   background: #fff;
   color: #98a2b3;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, color 0.16s ease;
+}
+
+.cdk-search:hover {
+  border-color: #cfd8e6;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+}
+
+.cdk-search:focus-within {
+  border-color: #2b66ff;
+  background: #fff;
+  color: #2b66ff;
+  box-shadow: 0 0 0 3px rgba(43, 102, 255, 0.1);
 }
 
 .cdk-search input {
@@ -15204,7 +15195,7 @@ button.secondary.danger-text:hover {
   outline: none;
   background: transparent;
   color: #1f2937;
-  font-size: 12.5px;
+  font-size: 13px;
 }
 
 .cdk-search input::placeholder {
@@ -15212,28 +15203,60 @@ button.secondary.danger-text:hover {
 }
 
 .cdk-search-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
   border: none;
-  background: none;
-  color: #98a2b3;
-  font-size: 15px;
+  border-radius: 50%;
+  background: #eef1f6;
+  color: #8b95a6;
+  font-size: 12px;
   line-height: 1;
   cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
 }
 
-.cdk-select {
-  height: 36px;
-  padding: 0 10px;
-  border: 1px solid #e4e8ef;
-  border-radius: 8px;
-  background: #fff;
+.cdk-search-clear:hover {
+  background: #dfe4ec;
   color: #4a5568;
-  font-size: 12.5px;
+}
+
+/* 筛选下拉：去掉系统箭头，换成与描边同色系的内联箭头 */
+.cdk-select {
+  height: 34px;
+  padding: 0 30px 0 12px;
+  border: 1px solid #e3e8f0;
+  border-radius: 8px;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2398a2b3' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  color: #1f2937;
+  font-size: 13px;
+  -webkit-appearance: none;
+  appearance: none;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
   cursor: pointer;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.cdk-select:hover {
+  border-color: #cfd8e6;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
+}
+
+.cdk-select:focus {
+  outline: none;
+  border-color: #2b66ff;
+  box-shadow: 0 0 0 3px rgba(43, 102, 255, 0.1);
 }
 
 /* 台账 */
 .cdk-card {
-  overflow: hidden;
+  /* 退回意见气泡需溢出表格显示，故不再裁切溢出内容 */
+  overflow: visible;
   border: 1px solid #ebedf2;
   border-radius: 10px;
   background: #fff;
@@ -15250,13 +15273,14 @@ button.secondary.danger-text:hover {
   box-sizing: border-box;
 }
 
+/* 列头沿用成员名册表头格式，保持两处表格观感一致 */
 .cdk-table th {
-  padding: 12px;
-  border-bottom: 1px solid #eef1f6;
-  background: #fff;
-  color: #8b95a6;
+  padding: 10px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 16px;
   text-align: left;
   vertical-align: top;
@@ -15276,6 +15300,16 @@ button.secondary.danger-text:hover {
   text-align: center !important;
 }
 
+/* 数值列单位另起一行，列名仍与其它列头保持同一水平线 */
+.cdk-th-unit {
+  display: block;
+  margin-top: 2px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 14px;
+}
+
 .cdk-col-credit {
   width: 18%;
 }
@@ -15286,7 +15320,7 @@ button.secondary.danger-text:hover {
 }
 
 .cdk-row td {
-  padding: 13px 12px;
+  padding: 11px 16px;
   border-bottom: 1px solid #f1f3f7;
   vertical-align: middle;
 }
@@ -15454,11 +15488,57 @@ button.secondary.danger-text:hover {
 }
 
 .cdk-info {
+  position: relative;
   display: inline-flex;
   align-items: center;
   margin-left: 1px;
   color: #b3bbc7;
   cursor: help;
+}
+
+/* 退回意见气泡：深色卡片，悬停 / 聚焦时展开 */
+.cdk-info-tip {
+  position: absolute;
+  right: -6px;
+  bottom: calc(100% + 10px);
+  z-index: 20;
+  width: max-content;
+  max-width: 300px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #232d3f;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.7;
+  letter-spacing: 0.2px;
+  text-align: left;
+  white-space: normal;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.22);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s;
+  pointer-events: none;
+}
+
+.cdk-info-tip::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 100%;
+  width: 0;
+  height: 0;
+  border: 5px solid transparent;
+  border-top-color: #232d3f;
+}
+
+.cdk-info:hover .cdk-info-tip,
+.cdk-info:focus-visible .cdk-info-tip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 /* 操作 */

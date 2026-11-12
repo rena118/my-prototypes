@@ -15,9 +15,9 @@ const gallery = {
     { id: "w5", publishTime: "09-15 16:12", title: "足球社队徽设计稿（第三版）", creator: "苏晓", desc: "以盾牌与星星为元素的新版队徽，经全员投票定为社团新形象。", cover: "assets/gallery-sports.jpg", date: "2026-09-15" },
   ],
   honors: [
-    { id: "h1", publishTime: "10-24 09:40", title: "校园足球联赛 · 冠军", time: "2026-10", desc: "在校级联赛中获得冠军。", cover: "assets/cert-fb-h1.png", date: "2026-10-24" },
-    { id: "h2", publishTime: "06-20 15:18", title: "优秀学生社团", time: "2026-06", desc: "获评本学年优秀学生社团。", cover: "assets/cert-fb-h3.png", date: "2026-06-20" },
-    { id: "h3", publishTime: "05-18 10:26", title: "最佳组织奖", time: "2026-05", desc: "校园体育文化节最佳组织奖。", cover: "assets/cert-fb-h4.png", date: "2026-05-18" },
+    { id: "h1", publishTime: "10-24 09:40", title: "校园足球联赛 · 冠军", time: "2026-10-24", desc: "在校级联赛中获得冠军。", cover: "assets/cert-fb-h1.png", date: "2026-10-24" },
+    { id: "h2", publishTime: "06-20 15:18", title: "优秀学生社团", time: "2026-06-20", desc: "获评本学年优秀学生社团。", cover: "assets/cert-fb-h3.png", date: "2026-06-20" },
+    { id: "h3", publishTime: "05-18 10:26", title: "最佳组织奖", time: "2026-05-18", desc: "校园体育文化节最佳组织奖。", cover: "assets/cert-fb-h4.png", date: "2026-05-18" },
   ],
 };
 
@@ -70,7 +70,7 @@ export function PatchMyClubsPage({ onShowClub, onOpenMoment, onApplyCredit, init
     <div className="fd-joined-list">{memberClubs.map((club) => { const open = expanded === club.id; const creditState = creditStates[club.id]; const next = club.activities.find((item) => item.status === "待开展"); return <article className={`fd-joined ${open ? "is-open" : ""}`} key={club.id}>
       <header className="fd-joined-head">
         <img src={club.cover} alt="" />
-        <div className="fd-joined-summary"><div><h3>{club.name}</h3><em>{club.category}</em></div><p>社长：{club.leader}<i />加入于 {club.joinedAt}<i />出勤 {club.attendance}<i />累计 {club.hours}</p></div>
+        <div className="fd-joined-summary"><div><h3>{club.name}</h3><em>{club.category}</em></div><p>出勤 {club.attendance}<i />累计 {club.hours}</p></div>
         <div className="fd-next"><span>下一场活动</span><strong>{next?.title || "暂未发布"}</strong>{next && <p><b>{next.day} {next.week}</b><Clock size={12} />{next.time}<MapPin size={12} />{next.venue}</p>}</div>
         <div className="fd-credit-wrap">
           {creditState === "approved" ? (
@@ -135,7 +135,9 @@ function parseEventLabel(event) {
   const head = parts[0] || "";
   const title = parts.length >= 3 ? parts[2] : parts[1] || event;
   const venue = parts.length >= 3 ? parts[1] : "";
-  let match = head.match(/(\d{1,2})\s*月\s*(\d{1,2})\s*日(?:\s*(\d{1,2}:\d{2}))?/);
+  // 时间支持「10:00」与「10:00-12:30」两种写法，统一按原样展示
+  const timePattern = "(\\d{1,2}:\\d{2}(?:\\s*[-–—~]\\s*\\d{1,2}:\\d{2})?)";
+  let match = head.match(new RegExp(`(\\d{1,2})\\s*月\\s*(\\d{1,2})\\s*日(?:\\s*${timePattern})?`));
   if (match) {
     return { monthDay: `${match[1]}.${match[2]}`, time: match[3] || "", venue, title };
   }
@@ -167,7 +169,7 @@ export function PatchClubDetailPage({ club, memberView, joined = false, initialV
   return <div className="fd-detail">
     {CardComponent
       ? <CardComponent club={club} joined={isJoined ? "joined" : ""} hideViewButton onApply={() => onApplyClub?.(club)} onCancel={onCancelJoin} />
-      : <section className="fd-club-hero"><img src={cover} alt={club.name} /><div className="fd-club-copy"><div><h2>{club.name}</h2><em>{club.category}</em></div><p><b>社团简介：</b>{club.short || "面向兴趣相同的同学，持续开展学生自主组织的社团活动。"}</p><p><b>招新说明：</b>有兴趣或愿意长期参加活动的同学均可申请。</p><div className="fd-club-facts"><span>社长 {club.captain || club.leader || "赵子安"}</span><span>☎ 138 0000 9218</span><span>成员 {club.members || 18} / {club.capacity || 30} 人</span><strong>剩余名额 {(club.capacity || 30) - (club.members || 18)} 人</strong></div></div><aside><span>距报名截止：3天 8小时24分</span><button type="button">{memberView ? "已加入社团" : "申请报名"}</button></aside></section>}
+      : <section className="fd-club-hero"><img src={cover} alt={club.name} /><div className="fd-club-copy"><div><h2>{club.name}</h2><em>{club.category}</em></div><p><b>社团简介：</b>{club.short || "面向兴趣相同的同学，持续开展学生自主组织的社团活动。"}</p><p><b>招新说明：</b>有兴趣或愿意长期参加活动的同学均可申请。</p><div className="fd-club-facts"><span>社长 {club.captain || club.leader || "赵子安"}</span><span>☎ 138 0000 9218</span><span>成员 {club.members || 18} / {club.capacity || 30} 人</span><strong>剩余名额 {(club.capacity || 30) - (club.members || 18)}</strong></div></div><aside><span>距报名截止：3天 8小时24分</span><button type="button">{memberView ? "已加入社团" : "申请报名"}</button></aside></section>}
     <nav className="fd-detail-tabs">{tabs.map(([key, label]) => <button type="button" key={key} className={tab === key ? "active" : ""} onClick={() => setTab(key)}>{key === "gallery" && <Star size={13} />}{key === "moments" && <Camera size={13} />}{label}</button>)}</nav>
     {tab === "detail" && <div className="fd-detail-info">
       <section className="fd-detail-main">
@@ -195,7 +197,8 @@ export function PatchClubDetailPage({ club, memberView, joined = false, initialV
           <>
             <ol className="event-timeline detail-timeline">
               {visibleActivities.map((item, index) => {
-                const metaText = [item.time, item.venue].filter(Boolean).join(" · ");
+                // 时间统一成「10:00-12:30」的时间段写法
+                const metaText = [String(item.time || "").replace(/\s*[-–—~]\s*/g, "-"), item.venue].filter(Boolean).join(" · ");
                 return (
                   <li key={item.id} className={index === 0 ? "next" : ""}>
                     <span className="event-node" aria-hidden="true"><strong>{item.day}</strong></span>
@@ -359,7 +362,7 @@ export function PatchManageShowcase({ club, isArchived = false, onNotify }) {
   const [upload, setUpload] = useState(false);
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [time, setTime] = useState("2026-10");
+  const [time, setTime] = useState("2026-11-03");
   const [creators, setCreators] = useState(["全体成员"]);
   const [picker, setPicker] = useState(false);
   const [file, setFile] = useState(null);
@@ -456,7 +459,7 @@ export function PatchManageShowcase({ club, isArchived = false, onNotify }) {
             </div>
           </div>
         )}
-        {!isWork && <label className="upload-field"><span>获奖时间</span><input type="month" value={time} onChange={(event) => setTime(event.target.value)} /></label>}
+        {!isWork && <label className="upload-field"><span>获奖时间</span><input type="date" value={time} onChange={(event) => setTime(event.target.value)} /></label>}
         <label className="upload-field"><span>{isWork ? "作品介绍" : "荣誉说明"}</span>
           <textarea rows={3} maxLength={120} value={desc} onChange={(event) => setDesc(event.target.value)} placeholder={isWork ? "介绍一下这件作品的创意来源、过程与亮点…" : "记录获奖故事、颁奖现场或想要感谢的人…"} />
           <em className="upload-count">{desc.length} / 120</em>

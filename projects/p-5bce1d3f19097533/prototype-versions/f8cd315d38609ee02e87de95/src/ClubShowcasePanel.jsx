@@ -23,11 +23,11 @@ const CLUB_GALLERY = {
       { id: "fb-w5", publishTime: "09-15 16:12", type: "image", cover: "assets/gallery-sports.jpg", title: "足球社队徽设计稿（第三版）", creator: "苏晓", author: "赵子安", time: "2026-09-15", desc: "以盾牌与星星为元素的新版队徽，经全员投票定为社团新形象。" },
     ],
     honors: [
-      { id: "fb-h1", cover: "assets/cert-fb-h1.png", author: "赵子安", title: "2026 校园足球联赛 · 冠军", time: "2026-06", publishTime: "06-15 16:40" },
-      { id: "fb-h2", cover: "assets/gallery-sports.jpg", author: "赵子安", title: "市中学生七人制足球赛 · 八强", time: "2026-05", publishTime: "05-24 10:12" },
-      { id: "fb-h3", cover: "assets/cert-fb-h3.png", author: "赵子安", title: "2025-2026 学年「优秀学生社团」", time: "2025-12", publishTime: "12-26 15:05" },
-      { id: "fb-h4", cover: "assets/cert-fb-h4.png", author: "赵子安", title: "校园足球联赛「最佳射手」", time: "2026-06", publishTime: "06-15 16:52" },
-      { id: "fb-h5", cover: "assets/cert-fb-h5.png", author: "赵子安", title: "校园足球联赛「体育道德风尚奖」", time: "2026-06", publishTime: "06-15 17:03" },
+      { id: "fb-h1", cover: "assets/cert-fb-h1.png", author: "赵子安", title: "2026 校园足球联赛 · 冠军", time: "2026-06-15", publishTime: "06-15 16:40", desc: "决赛点球大战 4:3 险胜高二联队，全队 18 人轮换出场，拿下队史首个校级联赛冠军。" },
+      { id: "fb-h2", cover: "assets/gallery-sports.jpg", author: "赵子安", title: "市中学生七人制足球赛 · 八强", time: "2026-05-24", publishTime: "05-24 10:12", desc: "首次参加市级七人制赛事，小组赛两胜一平出线，八强战 1:2 惜败止步。" },
+      { id: "fb-h3", cover: "assets/cert-fb-h3.png", author: "赵子安", title: "2025-2026 学年「优秀学生社团」", time: "2025-12-26", publishTime: "12-26 15:05", desc: "学年综合评定获评优秀学生社团，活动出勤率与成果展示两项均列全校前茅。" },
+      { id: "fb-h4", cover: "assets/cert-fb-h4.png", author: "赵子安", title: "校园足球联赛「最佳射手」", time: "2026-06-15", publishTime: "06-15 16:52", desc: "赵子安单赛季打进 21 球蝉联射手榜第一，其中两粒直接任意球破门。" },
+      { id: "fb-h5", cover: "assets/cert-fb-h5.png", author: "赵子安", title: "校园足球联赛「体育道德风尚奖」", time: "2026-06-15", publishTime: "06-15 17:03", desc: "全赛季零红牌，主动为对手球队承担裁判与记分工作，获组委会专项表彰。" },
     ],
   },
   robot: {
@@ -61,10 +61,10 @@ const CLUB_GALLERY = {
       { id: "dr-w4", publishTime: "09-10 15:55", type: "image", cover: "assets/gallery-art.jpg", title: "《光影定格》舞台摄影作品集", creator: "王一一", time: "2026-09-10", desc: "收录近两学期 32 张舞台瞬间摄影，配现场手记。" },
     ],
     honors: [
-      { id: "dr-h1", cover: "assets/cert-dr-h1.png", author: "李若彤", title: "市中学生戏剧节「最佳剧目奖」", time: "2026-05", publishTime: "05-21 09:36" },
-      { id: "dr-h2", cover: "assets/gallery-art.jpg", author: "李若彤", title: "校园文化节「最佳舞台呈现」", time: "2026-06", publishTime: "06-12 20:18" },
-      { id: "dr-h3", cover: "assets/cert-dr-h3.png", author: "李若彤", title: "2025-2026 学年「优秀学生社团」", time: "2025-12", publishTime: "12-24 14:47" },
-      { id: "dr-h4", cover: "assets/cert-dr-h4.png", author: "李若彤", title: "校园文化节「最佳女演员」", time: "2026-06", publishTime: "06-12 20:24" },
+      { id: "dr-h1", cover: "assets/cert-dr-h1.png", author: "李若彤", title: "市中学生戏剧节「最佳剧目奖」", time: "2026-05-21", publishTime: "05-21 09:36", desc: "《雷雨》第四幕选段获评委全票通过，评价「调度干净、情绪层层递进」。" },
+      { id: "dr-h2", cover: "assets/gallery-art.jpg", author: "李若彤", title: "校园文化节「最佳舞台呈现」", time: "2026-06-12", publishTime: "06-12 20:18", desc: "舞美组自制的三层旋转舞台与 12 组冷光氛围，成为本届文化节最受关注的布景。" },
+      { id: "dr-h3", cover: "assets/cert-dr-h3.png", author: "李若彤", title: "2025-2026 学年「优秀学生社团」", time: "2025-12-24", publishTime: "12-24 14:47", desc: "学年内完成 4 部原创剧目、累计演出 6 场，现场观众超过 1200 人次。" },
+      { id: "dr-h4", cover: "assets/cert-dr-h4.png", author: "李若彤", title: "校园文化节「最佳女演员」", time: "2026-06-12", publishTime: "06-12 20:24", desc: "李若彤饰演繁漪，被评委称为「把压抑演成了呼吸」，以全场最高分获奖。" },
     ],
   },
   reading: { moments: [], works: [], honors: [] },
@@ -83,8 +83,8 @@ const GALLERY_GENERIC = {
       { id: "gn-w2", publishTime: "09-28 15:40", type: "image", cover: "assets/gallery-sports.jpg", title: "社员个人训练手账", creator: "社员", author: "{captain}", time: "2026-09-28", desc: "社员自主整理的训练打卡与心得记录。" },
     ],
     honors: [
-      { id: "gn-h1", cover: "assets/gallery-sports.jpg", author: "{captain}", title: "校园活动「优秀组织奖」", time: "2026-06", publishTime: "06-18 11:20" },
-      { id: "gn-h2", cover: "assets/gallery-sports.jpg", author: "{captain}", title: "「优秀学生社团」提名", time: "2025-12", publishTime: "06-19 15:42" },
+      { id: "gn-h1", cover: "assets/gallery-sports.jpg", author: "{captain}", title: "校园活动「优秀组织奖」", time: "2026-06-18", publishTime: "06-18 11:20", desc: "全校 24 个班级报名参赛，赛程编排与现场安全保障零事故，获评优秀组织奖。" },
+      { id: "gn-h2", cover: "assets/gallery-sports.jpg", author: "{captain}", title: "「优秀学生社团」提名", time: "2025-12-19", publishTime: "12-19 15:42", desc: "学年综合评定进入提名名单，活动出勤率与成果展示获评审组认可。" },
     ],
   },
   "科技": {
@@ -98,8 +98,8 @@ const GALLERY_GENERIC = {
       { id: "gn-w2", publishTime: "09-28 15:40", type: "image", cover: "assets/gallery-tech.jpg", title: "社员创意设计稿", creator: "社员", author: "{captain}", time: "2026-09-28", desc: "社员自主完成的创意设计作品。" },
     ],
     honors: [
-      { id: "gn-h1", cover: "assets/gallery-tech.jpg", author: "{captain}", title: "科技节「优秀作品奖」", time: "2026-06", publishTime: "06-20 09:05" },
-      { id: "gn-h2", cover: "assets/gallery-tech.jpg", author: "{captain}", title: "「优秀学生社团」提名", time: "2025-12", publishTime: "06-21 14:30" },
+      { id: "gn-h1", cover: "assets/gallery-tech.jpg", author: "{captain}", title: "科技节「优秀作品奖」", time: "2026-06-20", publishTime: "06-20 09:05", desc: "展出 12 件社内作品，现场讲解接待 300 余人次，获评审组一致推荐。" },
+      { id: "gn-h2", cover: "assets/gallery-tech.jpg", author: "{captain}", title: "「优秀学生社团」提名", time: "2025-12-21", publishTime: "12-21 14:30", desc: "学年内完成 3 个项目迭代，成果在校园开放日集中展示并获好评。" },
     ],
   },
   "艺术": {
@@ -113,8 +113,8 @@ const GALLERY_GENERIC = {
       { id: "gn-w2", publishTime: "09-28 15:40", type: "image", cover: "assets/gallery-art.jpg", title: "社员个人作品", creator: "社员", author: "{captain}", time: "2026-09-28", desc: "社员自主完成的个人创作。" },
     ],
     honors: [
-      { id: "gn-h1", cover: "assets/gallery-art.jpg", author: "{captain}", title: "文化艺术节「优秀展示奖」", time: "2026-06", publishTime: "12-22 10:35" },
-      { id: "gn-h2", cover: "assets/gallery-art.jpg", author: "{captain}", title: "「优秀学生社团」提名", time: "2025-12", publishTime: "12-23 16:10" },
+      { id: "gn-h1", cover: "assets/gallery-art.jpg", author: "{captain}", title: "文化艺术节「优秀展示奖」", time: "2026-06-22", publishTime: "06-22 10:35", desc: "专场展演 40 分钟，原创节目占七成，谢幕时全场起立鼓掌致意。" },
+      { id: "gn-h2", cover: "assets/gallery-art.jpg", author: "{captain}", title: "「优秀学生社团」提名", time: "2025-12-23", publishTime: "12-23 16:10", desc: "学年内完成 5 次公开演出，社员活动参与率保持在 90% 以上。" },
     ],
   },
   "人文": {
@@ -128,8 +128,8 @@ const GALLERY_GENERIC = {
       { id: "gn-w2", publishTime: "09-28 15:40", type: "image", cover: "assets/gallery-humanities.jpg", title: "社员个人创作", creator: "社员", author: "{captain}", time: "2026-09-28", desc: "社员围绕社团主题完成的个人创作。" },
     ],
     honors: [
-      { id: "gn-h1", cover: "assets/gallery-humanities.jpg", author: "{captain}", title: "「优秀阅读推广活动」", time: "2026-06", publishTime: "12-24 11:48" },
-      { id: "gn-h2", cover: "assets/gallery-humanities.jpg", author: "{captain}", title: "「优秀学生社团」提名", time: "2025-12", publishTime: "12-25 15:22" },
+      { id: "gn-h1", cover: "assets/gallery-humanities.jpg", author: "{captain}", title: "「优秀阅读推广活动」", time: "2026-06-24", publishTime: "06-24 11:48", desc: "一学期组织 9 场共读，覆盖 6 个班级，共读笔记汇编成册 128 页。" },
+      { id: "gn-h2", cover: "assets/gallery-humanities.jpg", author: "{captain}", title: "「优秀学生社团」提名", time: "2025-12-25", publishTime: "12-25 15:22", desc: "学年共读时长达 42 小时，社员人均读完 7 本书并完成分享。" },
     ],
   },
 };
@@ -163,6 +163,14 @@ function galleryPhotosOf(item) {
   return item.cover ? [item.cover] : [];
 }
 
+/* 获奖时间统一显示完整日期（YYYY-MM-DD），避免只出现月日 */
+function honorDateText(value) {
+  const raw = String(value || "").trim();
+  const full = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (full) return `${full[1]}-${String(+full[2]).padStart(2, "0")}-${String(+full[3]).padStart(2, "0")}`;
+  return momentTimeText(raw);
+}
+
 function galleryTimeValue(item) {
   if (item && item.ts) return item.ts;
   const text = String((item && item.time) || "");
@@ -194,7 +202,7 @@ function GalleryCard({ tab, item, onOpen }) {
   const [turnIndex, setTurnIndex] = useState(0);
   const turnable = tab === "moments" && photoCount > 1;
   const sublineHTML = tab === "works" && item.creator ? <span className="gcard-winner"><em>创作者</em>{item.creator}</span> : null;
-  const metaTimeHTML = tab === "honors" && item.time ? <span className="gcard-winner is-time"><em>获奖时间</em>{item.time}</span> : null;
+  const metaTimeHTML = tab === "honors" && item.time ? <span className="gcard-winner is-time"><em>获奖时间</em>{honorDateText(item.time)}</span> : null;
   const footTime = momentTimeText(item.publishTime || item.time || "");
   const turn = (delta) => (event) => { event.stopPropagation(); setTurnIndex((value) => Math.min(Math.max(value + delta, 0), photoCount - 1)); };
   const coverSrc = turnable ? photos[turnIndex] : item.cover;

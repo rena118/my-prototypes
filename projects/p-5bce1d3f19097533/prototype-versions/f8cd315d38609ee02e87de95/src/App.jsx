@@ -189,7 +189,7 @@ const clubs = [
     applyEnd: "2026 年 9 月 20 日",
     applyEnded: false,
     countdown: "3天 8小时 24分 36秒",
-    events: ["10 月 23 日 16:20 · 西操场 · 校园友谊赛", "10 月 30 日 16:20 · 西操场 · 日常训练"],
+    events: ["10 月 23 日 16:20-17:50 · 西操场 · 校园友谊赛", "10 月 30 日 16:20-17:50 · 西操场 · 日常训练"],
   },
   {
     id: "robot",
@@ -210,7 +210,7 @@ const clubs = [
     applyEnd: "2026 年 9 月 20 日",
     applyEnded: false,
     countdown: "2天 11小时 03分 12秒",
-    events: ["10 月 24 日 16:10 · 创客空间 · 结构搭建"],
+    events: ["10 月 24 日 16:10-17:40 · 创客空间 · 结构搭建"],
   },
   {
     id: "drama",
@@ -231,7 +231,7 @@ const clubs = [
     applyEnd: "2026 年 9 月 20 日",
     applyEnded: false,
     countdown: "3天 8小时 24分 36秒",
-    events: ["10 月 25 日 15:30 · 报告厅 · 排练"],
+    events: ["10 月 25 日 15:30-17:30 · 报告厅 · 排练"],
   },
   {
     id: "reading",
@@ -251,7 +251,7 @@ const clubs = [
     ended: false,
     applyEnd: "2026 年 9 月 20 日",
     applyEnded: true,
-    events: ["10 月 27 日 12:30 · 图书馆 302 · 共读分享"],
+    events: ["10 月 27 日 12:30-13:20 · 图书馆 302 · 共读分享"],
   },
   {
     id: "astronomy",
@@ -272,7 +272,7 @@ const clubs = [
     applyEnd: "2026 年 9 月 20 日",
     applyEnded: false,
     countdown: "3天 8小时 24分 36秒",
-    events: ["10 月 28 日 19:30 · 顶楼天文台 · 观星实践"],
+    events: ["10 月 28 日 19:30-21:00 · 顶楼天文台 · 观星实践"],
   },
   {
     id: "debate",
@@ -293,7 +293,7 @@ const clubs = [
     applyEnd: "2026 年 9 月 20 日",
     applyEnded: false,
     countdown: "2天 14小时 10分 00秒",
-    events: ["10 月 26 日 16:30 · 阶梯教室 101 · 友谊辩论赛"],
+    events: ["10 月 26 日 16:30-18:00 · 阶梯教室 101 · 友谊辩论赛"],
   },
   {
     id: "documentary",
@@ -314,7 +314,7 @@ const clubs = [
     applyEnd: "2026 年 9 月 20 日",
     applyEnded: false,
     countdown: "3天 8小时 24分 36秒",
-    events: ["10 月 25 日 15:30 · 影媒工作间 204 · 初剪沟通会"],
+    events: ["10 月 25 日 15:30-17:00 · 影媒工作间 204 · 初剪沟通会"],
   },
   {
     id: "basketball",
@@ -335,7 +335,7 @@ const clubs = [
     applyEnd: "2026 年 9 月 20 日",
     applyEnded: false,
     countdown: "1天 05小时 18分 20秒",
-    events: ["10 月 24 日 16:30 · 室内篮球馆 · 全场半幅实战演练"],
+    events: ["10 月 24 日 16:30-18:00 · 室内篮球馆 · 全场半幅实战演练"],
   },
 ];
 
@@ -1548,7 +1548,7 @@ function ClubRow({ club, joined, hideViewButton = false, onShow, onApply, onCanc
           )}
           <span className="meta-item"><span className="meta-label">成员</span>{club.members} / {club.capacity} 人</span>
           {seats > 0 ? (
-            <span className="meta-item meta-seats">剩余名额 <strong>{seats}</strong> 人</span>
+            <span className="meta-item meta-seats">剩余名额 <strong>{seats}</strong></span>
           ) : (
             <span className="meta-item meta-seats seats-empty">名额已满</span>
           )}
@@ -2095,7 +2095,7 @@ function ApplicationsPage({ records, onNavigate, onWithdraw, onDelete, onResubmi
           <BookOpen size={18} weight="duotone" aria-hidden="true" />
           <div>
             <strong>本学期社团申报开放中</strong>
-            <span>{declarationConfig.declarationTime} · 每人最多创建 {declarationConfig.maximumPerStudent} 个社团</span>
+            <span>{declarationConfig.declarationTime} · 最多申报 {declarationConfig.maximumPerStudent} 个社团</span>
           </div>
         </div>
         <div className="declaration-guide-callout-actions">
@@ -2235,7 +2235,7 @@ function ApplicationsPage({ records, onNavigate, onWithdraw, onDelete, onResubmi
                 {record.status === "pending" && (
                   <button
                     type="button"
-                    className="secondary danger-text"
+                    className="secondary danger-outline"
                     onClick={() => onWithdraw(record)}
                   >
                     撤回
@@ -2401,17 +2401,17 @@ function DeclarationDetailDialog({ record, onClose, onResubmit, onWithdraw, onDe
             </div>
           )}
 
-          <div className="detail-text-section">
-            <h3>活动计划</h3>
-            <p>{record.plan || "暂无活动计划"}</p>
-          </div>
-
           {record.poster && (
             <div className="detail-text-section">
               <h3>招新海报</h3>
               <div className="detail-poster-tag">📎 {record.poster}</div>
             </div>
           )}
+
+          <div className="detail-text-section">
+            <h3>活动计划</h3>
+            <p>{record.plan || "暂无活动计划"}</p>
+          </div>
         </div>
 
         <div className="dialog-actions">
@@ -2419,7 +2419,7 @@ function DeclarationDetailDialog({ record, onClose, onResubmit, onWithdraw, onDe
           {record.status === "pending" && onWithdraw && (
             <button
               type="button"
-              className="secondary danger-text"
+              className="secondary danger-outline"
               onClick={() => {
                 onClose();
                 onWithdraw(record);
@@ -2626,7 +2626,7 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
           <BookOpen size={18} weight="duotone" aria-hidden="true" />
           <div>
             <strong>本学期社团申报开放中</strong>
-            <span>{declarationConfig.declarationTime}</span>
+            <span>{declarationConfig.declarationTime} · 最多申报 {declarationConfig.maximumPerStudent} 个社团</span>
           </div>
         </div>
         <div className="declaration-guide-callout-actions">
@@ -2781,13 +2781,6 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
           </div>
         </main>
         <aside className="request-form-aside">
-          <section>
-            <h2>本学期申报规则</h2>
-            <dl>
-              <div><dt>申报时间</dt><dd>9 月 1 日—9 月 20 日</dd></div>
-              <div><dt>创建数量</dt><dd>最多申报 1 个社团</dd></div>
-            </dl>
-          </section>
           <section>
             <h2>申报流程</h2>
             <ol>
@@ -4160,8 +4153,7 @@ function ManagePage({
       (m) =>
         m.name.includes(kw) ||
         m.class.includes(kw) ||
-        m.role.includes(kw) ||
-        (m.phone && m.phone.includes(kw))
+        m.role.includes(kw)
     );
   }, [members, memberKeyword]);
 
@@ -4209,7 +4201,7 @@ function ManagePage({
                 <MagnifyingGlass size={15} />
                 <input
                   type="text"
-                  placeholder="搜索成员姓名、班级或联系电话..."
+                  placeholder="请输入姓名/班级"
                   value={memberKeyword}
                   onChange={(e) => setMemberKeyword(e.target.value)}
                 />
@@ -4253,10 +4245,10 @@ function ManagePage({
                 <thead>
                   <tr>
                     <th>成员姓名</th>
-                    <th>社内身份</th>
+                    <th>身份</th>
                     <th>所在班级</th>
                     <th>加入日期</th>
-                    <th>本学期出勤</th>
+                    <th>活动出勤</th>
                     <th>联系电话</th>
                   </tr>
                 </thead>
@@ -4269,12 +4261,7 @@ function ManagePage({
                       return (
                         <tr key={m.id}>
                           <td>
-                            <div className="member-name-cell">
-                              <span className={`member-mini-avatar ${m.role === "社长" ? "leader" : ""}`}>
-                                {m.name.slice(0, 1)}
-                              </span>
-                              <strong className="member-name-text">{m.name}</strong>
-                            </div>
+                            <strong className="member-name-text">{m.name}</strong>
                           </td>
                           <td>
                             {m.role === "社长" ? (
@@ -4290,7 +4277,7 @@ function ManagePage({
                           <td>
                             {m.count > 0 ? (
                               <div className="member-attendance-cell">
-                                <span className="attendance-text">已出勤 {m.count} 场</span>
+                                <span className="attendance-text">{m.count} 场</span>
                                 {isFullAttendance && <span className="attendance-full-tag">全勤</span>}
                               </div>
                             ) : (
@@ -4703,7 +4690,7 @@ function ManagePage({
               label: "教师退回修改",
               hours,
               teacherHours: "—",
-              info: myPresidentCredit.returnReason || "教师已退回本次申请，请补充后重新提交",
+              info: `【教师退回意见】${myPresidentCredit.returnReason || "教师已退回本次申请，请补充后重新提交。"}`,
               action: (
                 <button type="button" className="cdk-apply" disabled={isArchived} onClick={() => openPresidentModal(false)}>
                   <NotePencil size={12} /> 立即申请
@@ -4712,8 +4699,8 @@ function ManagePage({
             };
           }
           return {
-            tone: "todo",
-            label: "待社长申报",
+            tone: "idle",
+            label: "未申请",
             hours: "—",
             teacherHours: "—",
             info: null,
@@ -4744,7 +4731,7 @@ function ManagePage({
             return {
               tone: "mine",
               label: "待我重审",
-              info: cr.teacherReturnReason || "教师退回了本次审核结果，请重新核定",
+              info: `【教师退回意见】${cr.teacherReturnReason || "教师退回了本次审核结果，请重新核定。"}`,
               action: (
                 <button type="button" className="cdk-link is-primary" disabled={isArchived} onClick={() => handleOpenReview(cr)}>重新审核</button>
               ),
@@ -4774,7 +4761,7 @@ function ManagePage({
             return {
               tone: "returned",
               label: "社长退回修改",
-              info: (cr.leaderComment || "").replace(/^社长退回意见：/, "") || "已退回成员修改",
+              info: `【社长退回意见】${(cr.leaderComment || "").replace(/^社长退回意见：/, "") || "已退回成员修改，请通知成员重新提交。"}`,
               action: viewLink,
             };
           }
@@ -4782,7 +4769,7 @@ function ManagePage({
             return {
               tone: "returned",
               label: "教师退回修改",
-              info: cr.teacherReturnReason || "教师已退回成员修改",
+              info: `【教师退回意见】${cr.teacherReturnReason || "教师已退回成员修改。"}`,
               action: viewLink,
             };
           }
@@ -4805,13 +4792,15 @@ function ManagePage({
           if (next) handleOpenReview(next);
         };
 
+        // 退回意见气泡：深色卡片，hover / focus 时展开
         const renderCreditState = (view) => (
           <span className={`cdk-state tone-${view.tone}`}>
             <i className="cdk-dot" />
             <span className="cdk-state-label">{view.label}</span>
             {view.info && (
-              <span className="cdk-info" title={view.info}>
+              <span className="cdk-info" tabIndex={0}>
                 <Info size={12} />
+                <span className="cdk-info-tip" role="tooltip">{view.info}</span>
               </span>
             )}
           </span>
@@ -4868,9 +4857,9 @@ function ManagePage({
                   <tr>
                     <th className="cdk-col-member">成员</th>
                     <th className="cdk-col-perf">活动参与与表现</th>
-                    <th className="cdk-col-num">申报学时</th>
-                    <th className="cdk-col-num">社长核定</th>
-                    <th className="cdk-col-num">教师核定</th>
+                    <th className="cdk-col-num">申报学时<span className="cdk-th-unit">小时</span></th>
+                    <th className="cdk-col-num">社长核定<span className="cdk-th-unit">小时</span></th>
+                    <th className="cdk-col-num">教师核定<span className="cdk-th-unit">小时</span></th>
                     <th className="cdk-col-credit">认定学分</th>
                     <th className="cdk-col-action">操作</th>
                   </tr>
@@ -10623,7 +10612,9 @@ function parseEventLabel(event) {
   const head = parts[0] || "";
   const title = parts.length >= 3 ? parts[2] : parts[1] || event;
   const venue = parts.length >= 3 ? parts[1] : "";
-  let match = head.match(/(\d{1,2})\s*月\s*(\d{1,2})\s*日(?:\s*(\d{1,2}:\d{2}))?/);
+  // 时间支持「10:00」与「10:00-12:30」两种写法，统一按原样展示
+  const timePattern = "(\\d{1,2}:\\d{2}(?:\\s*[-–—~]\\s*\\d{1,2}:\\d{2})?)";
+  let match = head.match(new RegExp(`(\\d{1,2})\\s*月\\s*(\\d{1,2})\\s*日(?:\\s*${timePattern})?`));
   if (match) {
     return { monthDay: `${match[1]}.${match[2]}`, time: match[3] || "", venue, title };
   }
