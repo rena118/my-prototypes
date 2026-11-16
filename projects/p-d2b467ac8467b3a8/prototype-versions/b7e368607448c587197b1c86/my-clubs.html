@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>学生手机端 · 申报社团</title>
+<title>学生手机端 · 社团</title>
 <link rel="stylesheet" href="assets/style.css" />
 <script data-prototype-owned data-proto-hotspot-bootstrap data-proto-review="hotspots">
 /* 点击空白时短暂提示本次需求范围内的真实交互；未声明范围时不扫描整页。 */
@@ -320,238 +320,1631 @@
     <div class="status-bar" data-status-bar></div>
 
     <header class="nav-bar">
-      <a class="nav-back" href="declarations.html" aria-label="返回">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg>
-      </a>
-      <span class="nav-title" id="navTitle">申报社团</span>
+      <span class="nav-title">社团</span>
     </header>
 
-    <div class="app-content has-footer">
-
-      <section class="guide-callout">
-        <span class="guide-icon">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2 2 0 0 1 6 3.5h5v16H6a2 2 0 0 0-2 2v-16Z"/><path d="M20 5.5a2 2 0 0 0-2-2h-5v16h5a2 2 0 0 1 2 2v-16Z"/></svg>
-        </span>
-        <div class="guide-copy">
-          <strong>本学期社团申报开放中</strong>
-          <span>9 月 1 日—9 月 20 日</span>
-        </div>
-      </section>
-
-      <div class="alert-box hidden" id="rejectAlert">
-        <div class="alert-head">
-          <strong>教师审核退回意见</strong>
-          <span>审核教师：李明</span>
-          <span>（2026-09-08 15:40）</span>
-        </div>
-        <p>本学期活动计划未填写完整，图书馆 302 周三已有课程占用，请调整场地说明或补充活动计划后重新申报。</p>
-        <div class="alert-tip">请根据教师意见补充完善相关信息后重新提交审核。</div>
+    <div class="top-switch">
+      <div class="seg-control">
+        <button type="button" onclick="location.href='plaza.html'">社团广场</button>
+        <button type="button" class="active">我报名的</button>
       </div>
-
-      <section class="form-section">
-        <h2>基本信息</h2>
-
-        <label class="field">
-          <span class="field-label"><b>*</b>社团名称</span>
-          <input type="text" id="clubName" placeholder="如：校园摄影社" />
-        </label>
-
-        <label class="field">
-          <span class="field-label"><b>*</b>社团类别</span>
-          <select id="clubCategory">
-            <option value="">请选择社团类别</option>
-            <option>体育</option>
-            <option>艺术</option>
-            <option>科技</option>
-            <option>人文</option>
-          </select>
-        </label>
-
-        <label class="field">
-          <span class="field-label"><b>*</b>社长</span>
-          <input type="text" class="readonly" value="赵子易" readonly />
-          <small>当前账号学生，申报通过后成为社长</small>
-        </label>
-
-        <label class="field">
-          <span class="field-label"><b>*</b>计划人数上限</span>
-          <input type="number" min="1" placeholder="如：30" />
-        </label>
-
-        <div class="field">
-          <span class="field-label"><b>*</b>社团封面</span>
-          <div class="cover-grid" id="coverGrid">
-            <div class="cover-opt" data-cover="reading" style="background-image:url('assets/poster-reading.jpg')"><span class="cover-label">悦读人文</span></div>
-            <div class="cover-opt" data-cover="robot" style="background-image:url('assets/poster-robot.jpg')"><span class="cover-label">科技创客</span></div>
-            <div class="cover-opt" data-cover="drama" style="background-image:url('assets/poster-drama.jpg')"><span class="cover-label">戏剧艺术</span></div>
-            <div class="cover-opt" data-cover="football" style="background-image:url('assets/poster-football.jpg')"><span class="cover-label">体育竞技</span></div>
-            <div class="cover-upload" data-toast="图片上传能力建设中">
-              <span>＋</span>
-              <span>上传图片</span>
-            </div>
-          </div>
-          <small>建议尺寸 16:9 或 4:3（支持 JPG、PNG，大小不超过 5MB）。封面将用于社团广场展示、社团详情和招新宣传卡片。</small>
-        </div>
-
-        <label class="field">
-          <span class="field-label"><b>*</b>社团简介</span>
-          <textarea id="clubSummary" placeholder="如：面向喜欢足球的同学，开展日常训练、友谊赛和校园足球活动"></textarea>
-        </label>
-      </section>
-
-      <section class="form-section">
-        <h2>招新与联系</h2>
-
-        <label class="field">
-          <span class="field-label"><b>*</b>联系电话</span>
-          <input type="tel" value="138 0000 9218" />
-          <small>将向本校学生公开，用于社团咨询。</small>
-        </label>
-
-        <label class="field">
-          <span class="field-label">招新说明</span>
-          <textarea placeholder="如：希望每周能稳定参加活动；对摄影感兴趣即可"></textarea>
-        </label>
-      </section>
-
-      <section class="form-section">
-        <h2>活动场地</h2>
-        <p class="field-label" style="margin-bottom:9px;line-height:1.6">请告诉学校你们倾向使用的场地；这不是最终安排，具体活动仍可分别填写实际场地。</p>
-
-        <div class="field">
-          <span class="field-label">拟用场地</span>
-          <div>
-            <button type="button" class="btn btn-secondary" data-toast="场地选择器建设中">请选择</button>
-          </div>
-        </div>
-
-        <label class="field">
-          <span class="field-label">场地说明</span>
-          <textarea placeholder="如：每周一次、约 20 人，需要可投影的室内空间"></textarea>
-        </label>
-      </section>
-
-      <section class="form-section">
-        <h2>申报材料</h2>
-
-        <div class="field">
-          <span class="field-label"><b>*</b>招新海报</span>
-          <div class="upload-field" data-toast="图片上传能力建设中">
-            <span class="upload-mark">＋</span>
-            <span>
-              <span class="upload-text">上传图片</span>
-              <small>支持 JPG、PNG 格式</small>
-            </span>
-          </div>
-        </div>
-
-        <label class="field">
-          <span class="field-label"><b>*</b>活动计划</span>
-          <textarea id="clubPlan" placeholder="如：每两周开展一次实地考察与讨论分享，学期末整理调研手记展"></textarea>
-        </label>
-      </section>
-
-      <section class="form-section rules-card">
-        <h2>本学期申报规则</h2>
-        <dl>
-          <div><dt>申报时间</dt><dd>9 月 1 日—9 月 20 日</dd></div>
-          <div><dt>创建数量</dt><dd>最多申报 1 个社团</dd></div>
-        </dl>
-
-        <h2 style="margin-top:12px">申报流程</h2>
-        <ol>
-          <li><strong>提交申报</strong>：填写信息并提交，教师审核前可撤回修改。</li>
-          <li><strong>教师审核</strong>：学校教师在申报周期内完成审核。</li>
-          <li><strong>成立开展</strong>：审核通过后社团正式成立，你将作为社长开始招新与开展活动。</li>
-        </ol>
-        <p class="note">如被退回，可在“社团申报”中查看原因并修改重新提交。</p>
-      </section>
-
     </div>
 
-    <div class="form-footer">
-      <button type="button" class="btn btn-secondary" id="saveBtn">保存草稿</button>
-      <button type="button" class="btn btn-primary" id="submitBtn">提交申报</button>
+    <div class="app-content" id="content"></div>
+
+    <section class="page-layer" id="activityPage" hidden>
+      <header class="nav-bar">
+        <button type="button" class="nav-back" data-ap="back" aria-label="返回">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg>
+        </button>
+        <span class="nav-title">活动详情</span>
+      </header>
+      <div class="app-content" id="activityPageContent"></div>
+      <div class="action-bar" id="activityPageBar" hidden></div>
+    </section>
+
+    <section class="page-layer" id="allActPage" hidden>
+      <header class="nav-bar">
+        <button type="button" class="nav-back" data-act="allact:back" aria-label="返回">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg>
+        </button>
+        <span class="nav-title">全部活动</span>
+      </header>
+      <div class="app-content" id="allActContent"></div>
+    </section>
+
+    <nav class="tab-bar" data-tabbar="clubs"></nav>
+
+    <div class="mp-sheet-mask" id="sheetMask">
+      <div class="mp-sheet" id="sheetBox"></div>
     </div>
 
-    <div class="modal-mask" id="successMask">
-      <div class="modal">
-        <h3>提交成功</h3>
-        <p>“<span id="successName">新社团</span>”已提交社团申报，等待教师审核。审核结果可在“社团申报”中查看。</p>
-        <div class="modal-actions">
-          <button type="button" class="btn btn-secondary" id="continueEdit">继续编辑</button>
-          <button type="button" class="btn btn-primary" onclick="location.href='declarations.html'">返回列表</button>
-        </div>
-      </div>
+    <div class="modal-mask" id="confirmMask">
+      <div class="modal" id="confirmBox"></div>
     </div>
 
   </div>
 </div>
 
 <script src="assets/app.js"></script>
+<script src="assets/moments.js"></script>
+<script src="assets/activity-page.js"></script>
 <script>
 (function () {
-  var isResubmit = new URLSearchParams(location.search).get('mode') === 'resubmit';
-  if (isResubmit) {
-    document.getElementById('navTitle').textContent = '修改社团申报';
-    document.getElementById('rejectAlert').classList.remove('hidden');
-    document.getElementById('saveBtn').textContent = '暂存修改';
-    document.getElementById('submitBtn').textContent = '重新提交申报';
-    document.getElementById('clubName').value = '古诗词吟诵社';
-    document.getElementById('clubCategory').value = '人文';
-    document.getElementById('clubSummary').value = '品味古典诗词之美，组织朗诵与创作交流，体验古风雅韵。';
-    document.querySelector('[data-cover="reading"]').classList.add('selected');
-  } else {
-    document.querySelector('[data-cover="reading"]').classList.add('selected');
+  var CURRENT_TERM = '2026-2027 学年上学期';
+
+  var PHOTOS = {
+    doc: 'assets/poster-drama.jpg',
+    read: 'assets/poster-reading.jpg',
+    football: 'assets/poster-football.jpg',
+    robot: 'assets/poster-robot.jpg'
+  };
+
+  var MINE = {
+    pending: {
+      name: '机器人探索社', category: '科技', cover: PHOTOS.robot,
+      submittedAt: '2026-09-12 16:20',
+      reason: '希望参与结构搭建与编程挑战，持续完成学期作品。'
+    },
+    rejected: [
+      {
+        id: 'basketball', name: '校园篮球社', category: '体育',
+        term: CURRENT_TERM, state: 'rejected', recordAt: '2026-09-21 10:12',
+        desc: '社长审核未通过：本学期名额已满，建议下学期优先报名。'
+      },
+      {
+        id: 'drama', name: '光影戏剧社', category: '艺术',
+        term: CURRENT_TERM, state: 'expired', recordAt: '2026-09-15 18:00',
+        desc: '提交于 2026-09-08，社长超时未审核，申请已自动失效。'
+      },
+      {
+        id: 'photography', name: '校园摄影社', category: '艺术',
+        term: '2025-2026 学年下学期', state: 'rejected', recordAt: '2026-03-06 16:30',
+        desc: '社长审核未通过：本学期社团名额已满，建议下学期重新申请。'
+      }
+    ],
+    joined: [
+      {
+        id: 'documentary', name: '校园纪录片社', category: '艺术', cover: PHOTOS.doc,
+        leader: '林小薇', joinedAt: '2026-09-04', attendance: '3 / 3 场', hours: '6.0 小时',
+        hasGallery: true, works: 2, honors: 2, credit: 'approved', creditHours: 6,
+        stats: { joined: 3, hours: '6.0', shares: 15, featured: 4 },
+        activities: [
+          { id: 'doc-next', day: '10.25', week: '周五', title: '校园人物微纪录片初剪沟通会', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '进行中', attendance: '', shares: 2, desc: '各创作小组带好初剪素材，集中讨论叙事节奏、镜头衔接与后续补拍安排。' },
+          { id: 'doc-next-2', day: '10.30', week: '周三', title: '校园微纪录片补拍分工会', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '待开展', attendance: '', shares: 3, desc: '确认补拍场景、采访对象与器材使用安排，完成外拍前的分工准备。' },
+          { id: 'doc-done', day: '10.18', week: '周五', title: '影视摄影构图与手持云台实操训练', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '已结束', attendance: '已出勤', shares: 4, desc: '完成三轴稳定器校准、平移与低角度跟拍实训，并采集首期拍摄素材。' },
+          { id: 'doc-done-2', day: '10.11', week: '周五', title: '纪录片选题与采访提纲工作坊', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '已结束', attendance: '已出勤', shares: 6, desc: '完成选题聚焦与采访提纲初稿，并确定各组的第一位采访对象。' },
+          { id: 'doc-done-3', day: '10.04', week: '周五', title: '校园故事采集与分镜设计', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '已结束', attendance: '请假', shares: 3, desc: '围绕校园人物与场景梳理可拍素材，完成第一版分镜草图。' }
+        ]
+      },
+      {
+        id: 'reading', name: '山海阅读会', category: '人文', cover: PHOTOS.read,
+        leader: '周予安', joinedAt: '2026-09-06', attendance: '2 / 2 场', hours: '3.0 小时',
+        hasGallery: false, works: 0, honors: 0, credit: 'none', creditHours: 0,
+        stats: { joined: 2, hours: '3.0', shares: 12, featured: 3 },
+        activities: [
+          { id: 'reading-next', day: '10.27', week: '周日', title: '《山海经》异兽想象共读分享', time: '12:30 - 13:30', venue: '图书馆 302', status: '待开展', attendance: '', shares: 5, desc: '围绕本周共读章节交流异兽形象、神话叙事与个人阅读发现。' },
+          { id: 'reading-done', day: '10.13', week: '周日', title: '秋日书单交换与主题共读', time: '12:30 - 13:30', venue: '图书馆 302', status: '已结束', attendance: '已出勤', shares: 7, desc: '完成秋日主题书单交换，并共同确定下一阶段阅读章节。' }
+        ]
+      }
+    ]
+  };
+
+  var MANAGE = {
+    football: {
+      id: 'football', name: '足球联盟', category: '体育', cover: PHOTOS.football, capacity: 30,
+      captain: '赵子易', venue: '西操场 1 号场地',
+      applicants: [
+        { name: '王一帆', gender: '男', cls: '初二（3）班', time: '2026-09-14 16:30', phone: '139 0000 1234', reason: '平时非常热爱足球运动，小学阶段是校队前锋，希望加入社团和大家一起系统训练，并有机会代表学校参加校际友谊赛！' },
+        { name: '林知夏', gender: '女', cls: '初二（1）班', time: '2026-09-15 10:15', phone: '138 0000 5678', reason: '对足球战术分析和摄影摄像很感兴趣，希望能负责社团的日常训练记录、赛事摄影和社刊宣传，为球队做好后勤保障。' }
+      ],
+      history: [
+        { name: '陈思语', cls: '初二（2）班', status: '已通过', submittedAt: '2026-09-08 10:24', handledAt: '2026-09-08 16:40' },
+        { name: '周天羽', cls: '初二（5）班', status: '已通过', submittedAt: '2026-09-09 14:12', handledAt: '2026-09-09 17:05' },
+        { name: '李晨曦', cls: '初二（1）班', status: '未通过', submittedAt: '2026-09-07 09:16', handledAt: '2026-09-07 18:22', note: '社团常规训练固定在每周三下午，时间安排存在冲突' }
+      ],
+      members: [
+        { name: '赵子易', role: '社长', cls: '初二（3）班', join: '2026-09-01', count: 6, phone: '138 0000 9218' },
+        { name: '顾一然', role: '成员', cls: '初二（2）班', join: '2026-09-03', count: 6, phone: '139 0000 2345' },
+        { name: '沈清越', role: '成员', cls: '初二（1）班', join: '2026-09-05', count: 5, phone: '137 0000 3456' },
+        { name: '张子墨', role: '成员', cls: '初二（4）班', join: '2026-09-06', count: 5, phone: '136 0000 4567' },
+        { name: '许嘉禾', role: '成员', cls: '初二（3）班', join: '2026-09-08', count: 4, phone: '135 0000 5678' },
+        { name: '陈思语', role: '成员', cls: '初二（2）班', join: '2026-09-08', count: 4, phone: '134 0000 6789' },
+        { name: '周天羽', role: '成员', cls: '初二（5）班', join: '2026-09-09', count: 4, phone: '133 0000 7890' }
+      ],
+      activities: [
+        { id: 'm1', day: '10.30', week: '周三', title: '校园足球友谊交流赛', state: '待开展', time: '16:20 - 17:50', venue: '西操场 1 号场地', attendance: '应到 7 人', record: '未填活动记录', attachment: '友谊赛战术演练与出场分组表.pdf', shares: 2, desc: '与初三年级足球爱好者开展学期友谊赛，请社员提前 10 分钟到场热身并穿着运动服球鞋。' },
+        { id: 'm2', day: '10.23', week: '周三', title: '周三战术跑位与阵型协同训练', state: '进行中', time: '16:20 - 17:40', venue: '西操场 1 号场地', attendance: '待点名（应到 7 人）', record: '未填活动记录', attachment: '', shares: 2, desc: '重点进行 3v2 边路快速渗透与包抄射门训练，请各小组长清点本组到位人数。' },
+        { id: 'm3', day: '10.23', week: '周三', title: '校际交流准备与体能恢复训练', state: '已结束', time: '17:40 - 18:20', venue: '田径场环形跑道', attendance: '实到 7 人（全勤）', record: '未填活动记录', attachment: '', shares: 1, desc: '针对下月校际联赛进行间歇体能恢复拉伸训练，社员可自由交流训练心得与拉伸技巧。' },
+        { id: 'm4', day: '10.16', week: '周三', title: '上周三高位逼抢与协防专题演练', state: '已结束', time: '16:20 - 17:30', venue: '西操场 2 号场地', attendance: '待补考勤（应到 7 人）', record: '未填活动记录', attachment: '高位逼抢战术要点分工卡.pdf', shares: 0, desc: '高位逼抢战术专题演练，重点训练前场丢球后 5 秒立即反抢与阵型紧凑度。' },
+        { id: 'm5', day: '10.09', week: '周三', title: '周三传切配合与攻防转换实训', state: '已结束', time: '16:20 - 17:30', venue: '西操场 1 号场地', attendance: '正常出勤 6 人 · 请假 1 人', record: '未填活动记录', attachment: '', shares: 0, desc: '传切配合专项体能训练，全体社员按时到场，出勤事实已记入系统考勤。' },
+        { id: 'm6', day: '09.25', week: '周三', title: '新学期基础传接球训练', state: '已结束', time: '16:20 - 17:30', venue: '西操场 1 号场地', attendance: '实到 7 人（全勤）', record: '已填活动记录', attachment: '', shares: 0, desc: '完成新学期首次基础传接球与分组对抗训练。' }
+      ],
+      showcase: {
+        works: [
+          { title: '《校园足球战术手册》', creator: '足球联盟 · 集体创作', date: '2026-10-20', desc: '整理 12 套常用站位与跑位路线，配 36 张手绘图解，已作为新成员训练教材。', image: PHOTOS.football },
+          { title: '《颠球百日打卡》记录册', creator: '赵子安 · 社长', date: '2026-10-12', desc: '连续 100 天颠球打卡影像与数据曲线，最好成绩单次 214 个。', image: PHOTOS.football },
+          { title: '守门员扑救动作拆解图', creator: '陈沐阳', date: '2026-09-30', desc: '以慢动作截图拆解侧扑、单手托球等 8 个标准动作。', image: PHOTOS.football },
+          { title: '「班级联赛」策划案', creator: '李一诺', date: '2026-09-22', desc: '面向全校 24 个班级的迷你联赛方案，含赛程编排与安全预案。', image: PHOTOS.football }
+        ],
+        honors: [
+          { title: '校园足球联赛 · 冠军', time: '2026-10', date: '2026-10-24', desc: '在校级联赛中获得冠军。', image: PHOTOS.football },
+          { title: '优秀学生社团', time: '2026-06', date: '2026-06-20', desc: '获评本学年优秀学生社团。', image: PHOTOS.football },
+          { title: '最佳组织奖', time: '2026-05', date: '2026-05-18', desc: '校园体育文化节最佳组织奖。', image: PHOTOS.football }
+        ]
+      },
+      credits: [
+        { name: '赵子易', cls: '初二（3）班', role: '社长', declared: 15, system: 15, status: '待教师审核', self: true, reason: '本学期负责社团整体运营与每周训练组织，完成 6 场活动考勤与记录整理。' },
+        { name: '顾一然', cls: '初二（2）班', role: '成员', declared: 12, system: 9.5, status: '待初审', reason: '本学期按时参加全部 6 场日常训练，技术摸底和体能测试均达标。协助社长组织友谊赛并带领新队员跑位。' },
+        { name: '张子墨', cls: '初二（4）班', role: '成员', declared: 9, system: 6.0, status: '已退回', reason: '参加了 4 场训练，因期中考试冲突请假 2 场。课余自行加练射门与体能，希望按 9 小时申请。', note: '申请学时 9.0 小时与系统记录时长 6.0 小时不符，且未提供课外加练佐证材料。' },
+        { name: '周天羽', cls: '初二（5）班', role: '成员', declared: 10, system: 8.0, status: '待社长重审', reason: '常规训练出勤 5 场，协助器材室整理足球器材并负责每次训练后的点名记录。', note: '课外贡献学时缺少带队教师签字单，请核实后调整建议学时。' },
+        { name: '沈清越', cls: '初二（1）班', role: '成员', declared: 8, system: 8.0, status: '已认定', reason: '出勤 5 场，参与社团宣传与活动摄影。' }
+      ]
+    },
+    documentary: {
+      id: 'documentary', name: '校园纪录片社', category: '艺术', cover: PHOTOS.doc, capacity: 20,
+      captain: '林小薇', venue: '影视工作间 204',
+      applicants: [
+        { name: '唐小曼', gender: '女', cls: '初二（4）班', time: '2026-09-16 11:20', phone: '136 0000 8899', reason: '擅长单反摄影与航拍，熟悉微电影视频剪辑，希望负责社团的剧照拍摄与期末微纪录片后期制作。' }
+      ],
+      history: [
+        { name: '苏沐阳', cls: '初二（3）班', status: '已通过', submittedAt: '2026-09-05 16:30', handledAt: '2026-09-06 09:10' },
+        { name: '韩佳欣', cls: '初二（2）班', status: '已通过', submittedAt: '2026-09-06 11:08', handledAt: '2026-09-06 17:42' }
+      ],
+      members: [
+        { name: '林小薇', role: '社长', cls: '初二（3）班', join: '2026-09-01', count: 4, phone: '139 1102 3344' },
+        { name: '陈闻远', role: '成员', cls: '初二（1）班', join: '2026-09-02', count: 4, phone: '136 0000 5306' },
+        { name: '苏沐阳', role: '成员', cls: '初二（3）班', join: '2026-09-05', count: 3, phone: '135 0000 1122' },
+        { name: '韩佳欣', role: '成员', cls: '初二（2）班', join: '2026-09-06', count: 3, phone: '137 0000 3344' },
+        { name: '宋可晴', role: '成员', cls: '初二（5）班', join: '2026-09-07', count: 3, phone: '139 0000 5566' }
+      ],
+      activities: [
+        { id: 'doc-act-1', day: '10.25', week: '周五', title: '校园微纪录片选题研讨与分镜脚本会', state: '待开展', time: '15:30 - 17:00', venue: '影视工作间 204', attendance: '应到 5 人（待开展）', record: '未填活动记录', attachment: '', shares: 1, desc: '围绕「十一校园的一天」开展选题立项与分镜头脚本设计，请各创作小组带好笔记本电脑或分镜稿纸。' },
+        { id: 'doc-act-2', day: '10.18', week: '周五', title: '影视摄影构图与手持云台实操训练', state: '已结束', time: '15:30 - 17:00', venue: '影视工作间 204', attendance: '正常出勤 5 人（全勤）', record: '已填活动记录', attachment: '', shares: 2, desc: '学习定焦镜头语言与稳定器运镜技巧，完成了首期拍摄素材采集实训。' }
+      ],
+      showcase: {
+        works: [
+          { title: '微纪录片《早读之前》', creator: '林小薇、沈清越', date: '2026-10-18', desc: '记录清晨校园里最早开始工作的一群人。', image: PHOTOS.doc },
+          { title: '校园人物访谈集', creator: '陈闻远', date: '2026-10-10', desc: '收录 6 位校园人物的访谈实录与拍摄手记。', image: PHOTOS.read }
+        ],
+        honors: [
+          { title: '校园影像展优秀作品', time: '2026-06', date: '2026-06-20', desc: '《早读之前》入选校园影像展优秀作品。', image: PHOTOS.doc },
+          { title: '校园微视频大赛一等奖', time: '2026-05', date: '2026-05-18', desc: '校园微视频大赛一等奖。', image: PHOTOS.doc }
+        ]
+      },
+      credits: [
+        { name: '林小薇', cls: '初二（3）班', role: '社长', declared: 15, system: 15, status: '待教师审核', self: true, reason: '负责社团创作计划与活动组织，完成 2 场活动考勤与记录整理。' },
+        { name: '陈闻远', cls: '初二（1）班', role: '成员', declared: 9, system: 7.5, status: '待初审', reason: '全勤参加 2 场活动，承担分镜绘制与素材整理。' },
+        { name: '苏沐阳', cls: '初二（3）班', role: '成员', declared: 8, system: 8.0, status: '已认定', reason: '全勤参加活动，完成稳定器实操与素材采集。' }
+      ]
+    }
+  };
+
+  var state = {
+    tab: 'joined',
+    mineTerm: CURRENT_TERM,
+    pendingOpen: false,
+    pendingWithdrawn: false,
+    expanded: 'documentary',
+    manageClub: 'football',
+    manageTerm: CURRENT_TERM,
+    manageTab: 'members',
+    memberKeyword: '',
+    showcaseTab: 'works',
+    creditFilter: 'all',
+    creditKeyword: ''
+  };
+
+  var contentEl = document.getElementById('content');
+  var sheetMask = document.getElementById('sheetMask');
+  var sheetBox = document.getElementById('sheetBox');
+  var confirmMask = document.getElementById('confirmMask');
+  var confirmBox = document.getElementById('confirmBox');
+  var confirmCallback = null;
+
+  function toast(message) { window.protoToast(message); }
+
+  function findJoined(id) {
+    return MINE.joined.filter(function (club) { return club.id === id; })[0];
   }
 
-  var coverGrid = document.getElementById('coverGrid');
-  var coverMap = { 科技: 'robot', 艺术: 'drama', 体育: 'football', 人文: 'reading' };
+  function currentManage() { return MANAGE[state.manageClub]; }
 
-  function selectCover(key) {
-    coverGrid.querySelectorAll('.cover-opt').forEach(function (item) {
-      item.classList.toggle('selected', item.getAttribute('data-cover') === key);
+  function isArchived() { return state.manageTerm !== CURRENT_TERM; }
+
+  /* ---------- 底部弹层 ---------- */
+  function openSheet(title, body, foot, tall) {
+    sheetBox.classList.toggle('mp-sheet-tall', Boolean(tall));
+    sheetBox.innerHTML =
+      '<div class="mp-sheet-handle"></div>' +
+      '<div class="mp-sheet-head">' +
+        '<span class="mp-sheet-title">' + title + '</span>' +
+        '<button type="button" class="mp-sheet-close" data-act="sheet:close" aria-label="关闭">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<div class="mp-sheet-body">' + body + '</div>' +
+      (foot ? '<div class="mp-sheet-foot">' + foot + '</div>' : '');
+    sheetMask.classList.add('show');
+  }
+
+  function closeSheet() {
+    sheetMask.classList.remove('show');
+  }
+
+  function openConfirm(title, desc, onConfirm, confirmLabel) {
+    confirmCallback = onConfirm;
+    confirmBox.innerHTML =
+      '<h3 class="confirm-title">' + title + '</h3>' +
+      '<p class="confirm-desc">' + desc + '</p>' +
+      '<div class="confirm-actions">' +
+        '<button type="button" class="btn btn-secondary" data-act="confirm:no">再想想</button>' +
+        '<button type="button" class="btn btn-primary danger" data-act="confirm:yes">' + (confirmLabel || '确认') + '</button>' +
+      '</div>';
+    confirmMask.classList.add('show');
+  }
+
+  function closeConfirm() {
+    confirmMask.classList.remove('show');
+    confirmCallback = null;
+  }
+
+  /* ---------- 选择器弹层 ---------- */
+  var PICKERS = {
+    mineTerm: {
+      title: '选择学期',
+      current: function () { return state.mineTerm; },
+      options: [
+        { value: '2026-2027 学年上学期', label: '2026-2027 学年上学期' },
+        { value: '2025-2026 学年下学期', label: '2025-2026 学年下学期' },
+        { value: '2025-2026 学年上学期', label: '2025-2026 学年上学期' }
+      ],
+      apply: function (value) { state.mineTerm = value; }
+    },
+    manageTerm: {
+      title: '选择学期',
+      current: function () { return state.manageTerm; },
+      options: [
+        { value: '2026-2027 学年上学期', label: '2026-2027 学年上学期（当前学期）' },
+        { value: '2025-2026 学年下学期', label: '2025-2026 学年下学期（已归档）' },
+        { value: '2025-2026 学年上学期', label: '2025-2026 学年上学期（已归档）' }
+      ],
+      apply: function (value) { state.manageTerm = value; }
+    },
+    manageClub: {
+      title: '切换我管理的社团',
+      current: function () { return state.manageClub; },
+      options: [
+        { value: 'football', label: '足球联盟' },
+        { value: 'documentary', label: '校园纪录片社' }
+      ],
+      apply: function (value) {
+        state.manageClub = value;
+        state.memberKeyword = '';
+        state.showcaseTab = 'works';
+        state.creditFilter = 'all';
+        state.creditKeyword = '';
+      }
+    }
+  };
+
+  function openPicker(kind) {
+    var config = PICKERS[kind];
+    if (!config) return;
+    var current = config.current();
+    var body = '<div class="mp-picker-inline">' + config.options.map(function (option) {
+      return '<button type="button" class="mp-picker-option' + (option.value === current ? ' selected' : '') +
+        '" data-act="pick:choose" data-kind="' + kind + '" data-value="' + option.value + '">' + option.label + '</button>';
+    }).join('') + '</div>';
+    openSheet(config.title, body, '', false);
+  }
+
+  /* ---------- 我报名的 ---------- */
+  function creditButton(club) {
+    if (club.credit === 'approved') {
+      return '<button type="button" class="mini-btn primary" data-act="credit:view" data-id="' + club.id + '">查看学分</button>';
+    }
+    if (club.credit === 'pending') {
+      return '<button type="button" class="mini-btn primary" data-act="credit:viewApply" data-id="' + club.id + '">查看学分申请</button>' +
+        '<button type="button" class="mini-btn danger" data-act="credit:withdraw" data-id="' + club.id + '">撤回申请</button>';
+    }
+    return '<button type="button" class="mini-btn primary" data-act="credit:apply" data-id="' + club.id + '">申请学分</button>';
+  }
+
+  function activityStateClass(status) {
+    return status === '待开展' ? 'upcoming' : status === '进行中' ? 'ongoing' : 'ended';
+  }
+
+  function activityCardHtml(activity) {
+    return '<article class="mine-activity">' +
+      '<div class="mine-activity-side">' +
+        '<span class="date-chip"><strong>' + activity.day + '</strong><span>' + activity.week + '</span></span>' +
+        '<div class="activity-tags">' +
+          '<em class="state-em ' + activityStateClass(activity.status) + '">' + activity.status + '</em>' +
+          (activity.attendance ? '<em class="state-em attendance">' + activity.attendance + '</em>' : '') +
+        '</div>' +
+      '</div>' +
+      '<div class="mine-activity-main">' +
+        '<h4>' + activity.title + '</h4>' +
+        '<p>' + activity.time + ' · ' + activity.venue + '</p>' +
+        '<span>' + activity.desc + '</span>' +
+      '</div>' +
+      '<button type="button" class="moment-entry" data-act="moment:open" data-id="' + activity.id + '" aria-label="查看' + activity.title + '的活动瞬间，共 ' + activity.shares + ' 份分享">' +
+        '<span class="moment-entry-orb">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.4h3l1.5-2h7L17 8.4h3v10H4v-10Z"/><circle cx="12" cy="13" r="3.2"/></svg>' +
+          '<em>' + activity.shares + '</em>' +
+          '<span class="moment-entry-spark" aria-hidden="true">✦</span>' +
+        '</span>' +
+        '<span class="moment-entry-label">活动瞬间</span>' +
+      '</button>' +
+    '</article>';
+  }
+
+  function openAllActivities(clubId) {
+    var club = findJoined(clubId);
+    if (!club) return;
+    var page = document.getElementById('allActPage');
+    var content = document.getElementById('allActContent');
+    content.innerHTML =
+      '<div class="all-act-lead"><strong>' + club.name + '</strong><span>共 ' + club.activities.length + ' 场活动</span></div>' +
+      '<div class="joined-card all-act-card">' +
+        club.activities.map(activityCardHtml).join('') +
+      '</div>';
+    content.scrollTop = 0;
+    page.hidden = false;
+    requestAnimationFrame(function () { page.classList.add('show'); });
+  }
+
+  function closeAllActivities() {
+    var page = document.getElementById('allActPage');
+    if (!page || page.hidden) return;
+    page.classList.remove('show');
+    window.setTimeout(function () {
+      if (page.classList.contains('show')) return;
+      page.hidden = true;
+      document.getElementById('allActContent').innerHTML = '';
+    }, 260);
+  }
+
+  function joinedCard(club) {
+    var open = state.expanded === club.id;
+    var nextActivity = club.activities.filter(function (activity) {
+      return activity.status !== '已结束';
+    })[0];
+    var hasMoreActivities = club.activities.length > 2;
+    var endedActivities = club.activities.filter(function (activity) {
+      return activity.status === '已结束';
+    });
+    var recentActivities = endedActivities.slice(0, 2);
+
+    var nextHtml = nextActivity
+      ? '<div class="joined-next">' +
+          '<div class="jn-body" data-act="club:view" data-id="' + club.id + '" role="button" tabindex="0" aria-label="查看' + club.name + '的下一场活动">' +
+            '<div class="joined-next-head">' +
+              '<span class="jn-tag">下一场</span>' +
+              '<em class="state-em ' + (nextActivity.status === '待开展' ? 'upcoming' : 'ongoing') + '">' + nextActivity.status + '</em>' +
+            '</div>' +
+            '<span class="jn-title">' + nextActivity.title + '</span>' +
+            '<span class="jn-sub">' + nextActivity.day + ' ' + nextActivity.week + ' · ' + nextActivity.time + ' · ' + nextActivity.venue + '</span>' +
+          '</div>' +
+          '<button type="button" class="moment-entry jn-moment" data-act="moment:open" data-id="' + nextActivity.id + '" aria-label="查看' + nextActivity.title + '的活动瞬间，共 ' + nextActivity.shares + ' 份分享">' +
+            '<span class="moment-entry-orb">' +
+              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.4h3l1.5-2h7L17 8.4h3v10H4v-10Z"/><circle cx="12" cy="13" r="3.2"/></svg>' +
+              '<em>' + nextActivity.shares + '</em>' +
+              '<span class="moment-entry-spark" aria-hidden="true">✦</span>' +
+            '</span>' +
+            '<span class="moment-entry-label">活动瞬间</span>' +
+          '</button>' +
+        '</div>'
+      : '<div class="joined-next is-empty"><span class="jn-sub">暂无待开展的活动</span></div>';
+
+    var activityHtml = open
+      ? '<div class="mine-activities">' +
+          '<div class="recent-head">近期活动<span>' + (hasMoreActivities ? '近 2 场' : '共 ' + recentActivities.length + ' 场') + '</span></div>' +
+          recentActivities.map(activityCardHtml).join('') +
+          (hasMoreActivities
+            ? '<button type="button" class="recent-all" data-act="club:allActivities" data-id="' + club.id + '">' +
+                '查看全部 ' + club.activities.length + ' 场活动' +
+                '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>' +
+              '</button>'
+            : '') +
+        '</div>'
+      : '';
+
+    return '<article class="joined-card">' +
+      '<div class="joined-head" data-act="club:view" data-id="' + club.id + '" role="button" tabindex="0" aria-label="查看' + club.name + '社团详情">' +
+        '<span class="joined-cover" style="background-image:url(\'' + club.cover + '\')"></span>' +
+        '<div class="joined-summary">' +
+          '<h3>' + club.name + '<span class="tag tag-cat">' + club.category + '</span></h3>' +
+          '<div class="joined-meta">' +
+            '<span>出勤 ' + club.attendance + '</span>' +
+            '<span>累计 ' + club.hours + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<span class="joined-arrow" aria-hidden="true">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>' +
+        '</span>' +
+      '</div>' +
+      nextHtml +
+      '<div class="joined-actions">' +
+        '<div class="ja-main">' + creditButton(club) + '</div>' +
+        '<button type="button" class="ja-expand' + (open ? ' is-open' : '') + '" data-act="club:expand" data-id="' + club.id + '">' +
+          (open ? '收起' : '近期活动') +
+          '<svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+        '</button>' +
+      '</div>' +
+      activityHtml +
+    '</article>';
+  }
+
+  function mineHtml() {
+    var pending = MINE.pending;
+    var noticeHtml = '';
+    if (state.pendingWithdrawn) {
+      noticeHtml = '<div class="notice-bar is-row is-neutral">' +
+        '<span class="notice-dot"></span>' +
+        '<div class="notice-main"><strong>已取消「' + pending.name + '」的报名申请</strong><span>如需再报名，可重新提交申请</span></div>' +
+      '</div>';
+    } else {
+      noticeHtml = '<div class="notice-bar is-row">' +
+        '<span class="notice-dot"></span>' +
+        '<div class="notice-main"><strong>1 个报名申请待社长审核</strong><span>' + pending.name + '</span></div>' +
+        '<button type="button" class="notice-link" data-act="pending:toggle">' + (state.pendingOpen ? '收起' : '查看申请') +
+          '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" class="' + (state.pendingOpen ? 'rotated' : '') + '"><path d="m6 9 6 6 6-6"/></svg>' +
+        '</button>' +
+      '</div>';
+      if (state.pendingOpen) {
+        noticeHtml += '<article class="app-row">' +
+          '<span class="app-cover" style="background-image:url(\'' + pending.cover + '\')"></span>' +
+          '<div class="app-main">' +
+            '<h3>' + pending.name + '<span class="tag tag-cat">' + pending.category + '</span></h3>' +
+            '<p>提交于 ' + pending.submittedAt + '</p>' +
+            '<span class="app-reason">申请说明：' + pending.reason + '</span>' +
+          '</div>' +
+          '<button type="button" class="app-cancel" data-act="pending:cancel">取消报名</button>' +
+        '</article>';
+      }
+    }
+
+    var rejectedCount = MINE.rejected.filter(function (item) {
+      return item.term === state.mineTerm;
+    }).length;
+
+    return '<div class="mine-filter-row">' +
+        '<button type="button" class="mine-term" data-act="pick" data-kind="mineTerm">' + state.mineTerm +
+          '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+        '</button>' +
+        '<button type="button" class="rejected-entry" data-act="rejected:open">未通过记录' +
+          (rejectedCount ? '<em>' + rejectedCount + '</em>' : '') +
+        '</button>' +
+      '</div>' +
+      noticeHtml +
+      '<div class="section-title"><h2>已加入的社团</h2><span>' + MINE.joined.length + ' 个</span></div>' +
+      MINE.joined.map(joinedCard).join('');
+  }
+
+  function rejectedCard(item) {
+    var expired = item.state === 'expired';
+    return '<article class="rejected-card">' +
+      '<div class="rejected-head">' +
+        '<h4>' + item.name + '</h4>' +
+        '<span class="tag tag-cat">' + item.category + '</span>' +
+        '<span class="rejected-state ' + (expired ? 'is-expired' : 'is-rejected') + '">' + (expired ? '已失效' : '未通过') + '</span>' +
+      '</div>' +
+      '<p class="rejected-desc">' + item.desc + '</p>' +
+      '<div class="rejected-foot">' +
+        '<span>记录时间：' + item.recordAt + '</span>' +
+        (expired ? '' : '<button type="button" class="mini-btn primary" data-act="rejected:reapply" data-id="' + item.id + '"' + (item.reapplied ? ' disabled' : '') + '>重新报名</button>') +
+      '</div>' +
+    '</article>';
+  }
+
+  function openRejectedSheet() {
+    var list = MINE.rejected.filter(function (item) {
+      return item.term === state.mineTerm;
+    });
+    var body = list.length
+      ? list.map(rejectedCard).join('')
+      : '<div class="empty-mini"><strong>该学期没有未通过的报名记录</strong></div>';
+    openSheet('未通过记录', body, '<button type="button" class="btn btn-secondary" data-act="sheet:close">关闭</button>', false);
+  }
+
+  /* ---------- 我管理的 ---------- */
+  function membersHtml(club) {
+    var keyword = state.memberKeyword.trim();
+    var list = club.members.filter(function (member) {
+      return !keyword || (member.name + member.cls + member.role + member.phone).indexOf(keyword) !== -1;
+    });
+    if (!list.length) {
+      return '<div class="empty-mini"><strong>没有找到包含“' + keyword + '”的成员</strong><button type="button" data-act="member:clear">清空搜索条件</button></div>';
+    }
+    var fullTarget = state.manageClub === 'documentary' ? 4 : 6;
+    return list.map(function (member) {
+      return '<div class="member-row">' +
+        '<span class="member-avatar">' + member.name.charAt(0) + '</span>' +
+        '<div class="member-main">' +
+          '<h4>' + member.name + '<span class="role-pill ' + (member.role === '社长' ? 'leader' : '') + '">' + member.role + '</span></h4>' +
+          '<p>' + member.cls + ' · 加入于 ' + member.join + '</p>' +
+          '<p>活动出勤 ' + (member.count > 0 ? member.count + ' 场' : '新加入') +
+            (member.count >= fullTarget && member.count > 0 ? '<span class="full-tag">全勤</span>' : '') +
+            ' · ' + member.phone + '</p>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function membersTab(club) {
+    return '<div class="applicant-banner">' +
+        '<div><span class="banner-badge">新入团申请</span>' +
+          '<p>有 <strong>' + club.applicants.length + '</strong> 位同学申请加入社团，待你审核</p>' +
+        '</div>' +
+        '<button type="button" data-act="applicant:review" data-index="0">去审核（' + club.applicants.length + '）›</button>' +
+      '</div>' +
+      '<label class="mp-search member-search">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.4 4.4"/></svg>' +
+        '<input type="text" id="memberSearch" placeholder="请输入姓名/班级" value="' + state.memberKeyword + '" autocomplete="off" />' +
+      '</label>' +
+      '<div class="member-toolbar">' +
+        '<span class="members-count">当前成员 <strong>' + club.members.length + '</strong> / ' + club.capacity + ' 人</span>' +
+        '<div class="member-tools">' +
+          '<button type="button" data-act="history:open">入团申请记录（' + club.history.length + '）</button>' +
+          '<button type="button" data-act="members:export">导出成员名单</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="member-list" id="memberList">' + membersHtml(club) + '</div>';
+  }
+
+  function activityStateClass(value) {
+    if (value === '待开展') return 'upcoming';
+    if (value === '进行中') return 'ongoing';
+    return 'ended';
+  }
+
+  function attendanceDone(activity) {
+    if (activity.attendanceDone != null) return activity.attendanceDone;
+    return activity.state !== '待开展' && activity.attendance.indexOf('待') === -1 && activity.attendance.indexOf('应到') === -1;
+  }
+
+  function recordDone(activity) {
+    if (activity.recordDone != null) return activity.recordDone;
+    return activity.record === '已填活动记录';
+  }
+
+  function activitiesTab(club) {
+    var list = club.activities.slice().sort(function (a, b) {
+      var av = a.day.split('.'), bv = b.day.split('.');
+      return (Number(bv[0]) * 100 + Number(bv[1])) - (Number(av[0]) * 100 + Number(av[1]));
+    });
+    var listHtml = list.map(function (activity) {
+      var realIndex = club.activities.indexOf(activity);
+      return '<article class="m-activity" data-act="activity:detail" data-index="' + realIndex + '" role="button" tabindex="0" aria-label="查看' + activity.title + '详情">' +
+        '<span class="date-chip"><strong>' + activity.day + '</strong><span>' + activity.week + '</span></span>' +
+        '<div class="m-activity-main">' +
+          '<div class="m-activity-top">' +
+            '<h4>' + activity.title + '</h4>' +
+            '<em class="state-em ' + activityStateClass(activity.state) + '">' + activity.state + '</em>' +
+          '</div>' +
+          '<p>' + activity.time + ' · ' + activity.venue + '</p>' +
+        '</div>' +
+        '<span class="m-activity-chevron" aria-hidden="true">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>' +
+        '</span>' +
+      '</article>';
+    }).join('');
+    if (!listHtml) listHtml = '<div class="empty-mini"><strong>暂无活动记录</strong></div>';
+
+    var totalShares = club.activities.reduce(function (sum, activity) {
+      return sum + window.StudentMoments.posts(activity.id).length;
+    }, 0);
+
+    return '<button type="button" class="moments-entry" data-act="activity:allMoments">' +
+        '<span class="me-icon">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="3.4" width="7.2" height="7.2" rx="1.8"/><rect x="13.4" y="3.4" width="7.2" height="7.2" rx="1.8"/><rect x="3.4" y="13.4" width="7.2" height="7.2" rx="1.8"/><rect x="13.4" y="13.4" width="7.2" height="7.2" rx="1.8"/></svg>' +
+        '</span>' +
+        '<span class="me-main"><strong>全部瞬间</strong><small>汇总 ' + club.activities.length + ' 场活动的成员分享</small></span>' +
+        '<span class="me-count">' + totalShares + '</span>' +
+        '<span class="me-chevron">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>' +
+        '</span>' +
+      '</button>' +
+      '<div class="m-activity-list">' + listHtml + '</div>';
+  }
+
+  function showcaseTab(club) {
+    var data = club.showcase;
+    var items = state.showcaseTab === 'works' ? data.works : data.honors;
+    var isWorks = state.showcaseTab === 'works';
+    return '<div class="manage-actions">' +
+        '<button type="button" class="manage-action primary" data-act="showcase:add"' + (isArchived() ? ' disabled' : '') + '>' +
+          (isWorks ? '上传作品' : '登记荣誉') +
+        '</button>' +
+      '</div>' +
+      '<div class="showcase-tabs">' +
+        '<button type="button" class="' + (isWorks ? 'active' : '') + '" data-act="showcase:tab" data-tab="works">作品集锦 <span>' + data.works.length + '</span></button>' +
+        '<button type="button" class="' + (!isWorks ? 'active' : '') + '" data-act="showcase:tab" data-tab="honors">荣誉时刻 <span>' + data.honors.length + '</span></button>' +
+      '</div>' +
+      '<div class="showcase-list">' + items.map(function (item) {
+        return '<article class="showcase-card">' +
+          '<img src="' + item.image + '" alt="' + item.title + '" />' +
+          '<div class="showcase-card-body">' +
+            '<h3>' + item.title + '</h3>' +
+            '<p>' + (isWorks ? '创作者：' + item.creator : '获奖时间：' + item.time) + '</p>' +
+            '<p>' + item.desc + '</p>' +
+            '<small>社长上传 · ' + item.date + '</small>' +
+          '</div>' +
+        '</article>';
+      }).join('') + '</div>';
+  }
+
+  function creditGroup(status) {
+    if (status === '待初审' || status === '待社长重审') return 'pending';
+    if (status === '待教师审核') return 'submitted';
+    if (status === '已认定') return 'approved';
+    return 'unsubmitted';
+  }
+
+  function creditRows(club) {
+    return club.members.map(function (member) {
+      var credit = club.credits.filter(function (item) { return item.name === member.name; })[0];
+      return { member: member, credit: credit };
     });
   }
 
-  coverGrid.addEventListener('click', function (event) {
-    var opt = event.target.closest('.cover-opt');
-    if (!opt) return;
-    selectCover(opt.getAttribute('data-cover'));
+  function creditResultView(credit) {
+    if (!credit) return { tone: 'gray', text: '未申请' };
+    if (credit.status === '已认定') {
+      var credits = credit.credits != null ? credit.credits : Math.round(credit.declared / 2 * 10) / 10;
+      return { tone: 'approved', text: credits + ' 学分' };
+    }
+    if (credit.status === '待初审') return { tone: 'blue', text: '待我初审' };
+    if (credit.status === '待社长重审') return { tone: 'blue', text: '待我重审' };
+    if (credit.status === '待教师审核') return { tone: 'gray', text: '待教师审核' };
+    if (credit.status === '已退回') return { tone: 'orange', text: '社长退回修改' };
+    return { tone: 'gray', text: credit.status };
+  }
+
+  function creditRowsHtml(club) {
+    var rowsAll = creditRows(club);
+    var keyword = state.creditKeyword.trim();
+    var rows = rowsAll.filter(function (row) {
+      if (keyword && (row.member.name + row.member.cls).indexOf(keyword) === -1) return false;
+      if (state.creditFilter === 'all') return true;
+      if (!row.credit) return state.creditFilter === 'unsubmitted';
+      return creditGroup(row.credit.status) === state.creditFilter;
+    });
+
+    var listHtml = rows.map(function (row) {
+      var member = row.member;
+      var credit = row.credit;
+      var status = credit ? credit.status : '未申请';
+      var actionable = status === '待初审' || status === '待社长重审';
+      var result = creditResultView(credit);
+      var action = '';
+      if (credit) {
+        var realIndex = club.credits.indexOf(credit);
+        if (credit.self) {
+          if (status === '待教师审核') {
+            action = '<button type="button" class="mini-btn danger" data-act="credit:selfWithdraw" data-index="' + realIndex + '">撤回</button>' +
+              '<button type="button" class="mini-btn ghost" data-act="credit:detail" data-index="' + realIndex + '">查看</button>';
+          } else if (status === '已认定') {
+            action = '<button type="button" class="mini-btn ghost" data-act="credit:detail" data-index="' + realIndex + '">查看</button>';
+          } else {
+            action = '<button type="button" class="mini-btn primary" data-act="credit:selfApply" data-index="' + realIndex + '">立即申请</button>';
+          }
+        } else {
+          action = '<button type="button" class="mini-btn ' + (actionable ? 'primary' : 'ghost') + '" data-act="' + (actionable ? 'credit:review' : 'credit:detail') +
+            '" data-index="' + realIndex + '">' + (actionable ? '审核' : '查看') + '</button>';
+        }
+      }
+      return '<div class="credit-row">' +
+        '<span class="member-avatar">' + member.name.charAt(0) + '</span>' +
+        '<div class="credit-main">' +
+          '<h4>' + member.name + '</h4>' +
+          '<p>' + (credit ? '申请 ' + credit.declared + ' 学时' : '尚未提交申请') + '</p>' +
+        '</div>' +
+        '<span class="credit-result ' + result.tone + '">' + result.text + '</span>' +
+        action +
+      '</div>';
+    }).join('');
+    return (listHtml || '<div class="empty-mini"><strong>该条件下暂无成员</strong></div>') +
+      '<p class="credit-foot">共 ' + rowsAll.length + ' 位社团成员（含社长）</p>';
+  }
+
+  function creditsTab(club) {
+    var rowsAll = creditRows(club);
+    var pendingInitial = rowsAll.filter(function (row) { return row.credit && row.credit.status === '待初审'; }).length;
+    var pendingRereview = rowsAll.filter(function (row) { return row.credit && row.credit.status === '待社长重审'; }).length;
+    var pendingCount = pendingInitial + pendingRereview;
+    var pendingDetail = [
+      pendingInitial ? pendingInitial + '人待初审' : '',
+      pendingRereview ? pendingRereview + '人待重审' : ''
+    ].filter(Boolean).join(' · ');
+    var alertHtml = pendingCount > 0
+      ? '<div class="applicant-banner">' +
+          '<div><span class="banner-badge">待处理学分申请</span>' +
+            '<p>有 <strong>' + pendingCount + '</strong> 份学分申请待你审核（' + pendingDetail + '）</p>' +
+          '</div>' +
+          '<button type="button" data-act="credit:goProcess">去处理（' + pendingCount + '）›</button>' +
+        '</div>'
+      : '';
+    var filters = [
+      { key: 'all', label: '全部成员', count: rowsAll.length },
+      { key: 'pending', label: '待我处理', count: pendingCount },
+      { key: 'submitted', label: '待教师审核', count: rowsAll.filter(function (row) { return row.credit && creditGroup(row.credit.status) === 'submitted'; }).length },
+      { key: 'approved', label: '已通过', count: rowsAll.filter(function (row) { return row.credit && creditGroup(row.credit.status) === 'approved'; }).length },
+      { key: 'unsubmitted', label: '未申请', count: rowsAll.filter(function (row) { return !row.credit || creditGroup(row.credit.status) === 'unsubmitted'; }).length }
+    ];
+
+    return alertHtml +
+      '<label class="mp-search member-search">' +
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.4 4.4"/></svg>' +
+        '<input type="text" id="creditSearch" placeholder="搜索成员姓名、班级" value="' + state.creditKeyword + '" autocomplete="off" />' +
+      '</label>' +
+      '<div class="filter-pills">' + filters.map(function (item) {
+        return '<button type="button" class="' + (state.creditFilter === item.key ? 'active' : '') + '" data-act="credit:filter" data-filter="' + item.key + '">' + item.label + '（' + item.count + '）</button>';
+      }).join('') +
+    '</div><div class="credit-list" id="creditList">' + creditRowsHtml(club) + '</div>';
+  }
+
+  function managedHtml() {
+    var club = currentManage();
+    var pendingCredits = club.credits.filter(function (item) {
+      return item.status === '待初审' || item.status === '待社长重审';
+    }).length;
+    var tabs = [
+      { key: 'members', label: '成员名册（' + club.members.length + '）' },
+      { key: 'activities', label: '社团活动（' + club.activities.length + '）' },
+      { key: 'showcase', label: '成果荣誉（' + (club.showcase.works.length + club.showcase.honors.length) + '）' },
+      { key: 'credits', label: '社团学分' + (pendingCredits > 0 ? '（' + pendingCredits + '）' : '') }
+    ];
+    var tabContent = '';
+    if (state.manageTab === 'members') tabContent = membersTab(club);
+    if (state.manageTab === 'activities') tabContent = activitiesTab(club);
+    if (state.manageTab === 'showcase') tabContent = showcaseTab(club);
+    if (state.manageTab === 'credits') tabContent = creditsTab(club);
+
+    return '<div class="manage-bar">' +
+        '<button type="button" class="mine-term" data-act="pick" data-kind="manageClub">' + club.name +
+          '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+        '</button>' +
+        '<button type="button" class="mine-term compact" data-act="pick" data-kind="manageTerm">' + (isArchived() ? '已归档学期' : '当前学期') +
+          '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<div class="manage-meta">' +
+        '<span>社长 <b>' + club.captain + '</b></span>' +
+        '<span>常规场地 <b>' + club.venue + '</b></span>' +
+        '<span>累计活动 <b>' + club.activities.length + ' 场</b></span>' +
+      '</div>' +
+      (isArchived() ? '<div class="archive-note">该学期已归档，内容仅可查看。</div>' : '') +
+      (club.endPending ? '<div class="archive-note">你已提交提前结束本社团本学期运行的申请，正在等待负责教师审批。在教师确认前，当前社团活动与名册正常保持。</div>' : '') +
+      '<div class="manage-actions column">' +
+        '<button type="button" class="manage-action primary" data-act="activity:publish"' + (isArchived() ? ' disabled' : '') + '>' +
+          '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>发布新活动' +
+        '</button>' +
+        '<div class="manage-actions-sub">' +
+          '<button type="button" class="manage-action" data-act="renewal:open"' + (isArchived() ? ' disabled' : '') + '>申请延续到下学期</button>' +
+          '<button type="button" class="manage-action" data-act="end:open"' + (isArchived() || club.endPending ? ' disabled' : '') + '>申请提前结束</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="manage-tabs">' + tabs.map(function (tab) {
+        return '<button type="button" class="' + (state.manageTab === tab.key ? 'active' : '') + '" data-act="manage:tab" data-tab="' + tab.key + '">' + tab.label + '</button>';
+      }).join('') + '</div>' +
+      '<div class="manage-tab-content">' + tabContent + '</div>';
+  }
+
+  function render() {
+    contentEl.innerHTML = state.tab === 'joined' ? mineHtml() : managedHtml();
+  }
+
+  /* ---------- 学分弹层 ---------- */
+  function openCreditApply(club) {
+    var body =
+      '<p class="sheet-lead">' + club.name + ' · 本学期参与情况</p>' +
+      '<div class="stat-grid">' +
+        '<div class="stat-cell"><span>活动参加场次</span><strong>' + club.stats.joined + '<em>场</em></strong></div>' +
+        '<div class="stat-cell"><span>累计学时</span><strong>' + club.stats.hours + '<em>小时</em></strong></div>' +
+        '<div class="stat-cell"><span>活动分享次数</span><strong>' + club.stats.shares + '<em>次</em></strong></div>' +
+        '<div class="stat-cell"><span>精选次数</span><strong>' + club.stats.featured + '<em>次</em></strong></div>' +
+      '</div>' +
+      '<div class="field"><label class="field-label"><b>*</b>申报学时</label>' +
+        '<input type="number" id="creditHours" min="0" step="0.5" value="' + club.stats.hours + '" placeholder="如：3.0" />' +
+      '</div>' +
+      '<div class="field"><label class="field-label">收获与体会</label>' +
+        '<textarea id="creditSummary" placeholder="如：本学期参与社团活动的收获、承担的工作与个人成长"></textarea>' +
+      '</div>';
+    var foot = '<button type="button" class="btn btn-primary" data-act="credit:submit" data-id="' + club.id + '">提交申请</button>';
+    openSheet('申请学分', body, foot, true);
+  }
+
+  function openCreditResult(club) {
+    var body =
+      '<div class="result-hero"><strong>' + club.creditHours + '<em>学时</em></strong><span>学分认定结果</span></div>' +
+      '<div class="kv-list">' +
+        '<div><span>所属社团</span><b>' + club.name + '</b></div>' +
+        '<div><span>认定时间</span><b>2026-06-28</b></div>' +
+        '<div><span>审核教师</span><b>李老师</b></div>' +
+        '<div><span>社长初审</span><b>已通过</b></div>' +
+      '</div>' +
+      '<p class="sheet-note">学分认定结果由社长初审、负责教师终审后生成，如有疑问可联系社长或负责教师。</p>';
+    openSheet('查看学分', body, '<button type="button" class="btn btn-secondary" data-act="sheet:close">关闭</button>', false);
+  }
+
+  function openCreditPending(club) {
+    var body =
+      '<div class="status-banner pending"><strong>待社长初审</strong>申请已提交，社长审核后将进入教师终审。</div>' +
+      '<div class="kv-list">' +
+        '<div><span>所属社团</span><b>' + club.name + '</b></div>' +
+        '<div><span>申报学时</span><b>' + (club.pendingHours || club.stats.hours) + ' 学时</b></div>' +
+        '<div><span>系统记录时长</span><b>' + club.stats.hours + ' 小时</b></div>' +
+        '<div><span>提交时间</span><b>2026-10-28 19:20</b></div>' +
+      '</div>' +
+      '<p class="sheet-note">撤回后本次申请作废且无法恢复，认定学分需重新提交申请。</p>';
+    openSheet('查看学分申请', body,
+      '<div class="sheet-foot-actions">' +
+        '<button type="button" class="btn btn-secondary" data-act="sheet:close">关闭</button>' +
+        '<button type="button" class="btn btn-primary danger" data-act="credit:withdraw" data-id="' + club.id + '">撤回申请</button>' +
+      '</div>', false);
+  }
+
+  /* ---------- 我管理的：弹层 ---------- */
+  function openApplicantReview(index) {
+    var club = currentManage();
+    var applicant = club.applicants[index];
+    if (!applicant) return;
+    var body =
+      '<div class="applicant-head"><span class="member-avatar">' + applicant.name.charAt(0) + '</span>' +
+        '<div><h3>' + applicant.name + '<em>' + applicant.gender + '</em></h3>' +
+        '<p>' + applicant.cls + ' · 提交于 ' + applicant.time + '</p>' +
+        '<p>联系电话：' + applicant.phone + '</p></div>' +
+      '</div>' +
+      '<div class="sheet-block"><h4>申请说明</h4><p>' + applicant.reason + '</p></div>';
+    openSheet('审核入团申请', body,
+      '<div class="sheet-foot-actions">' +
+        '<button type="button" class="btn btn-secondary" data-act="applicant:reject" data-index="' + index + '">不通过</button>' +
+        '<button type="button" class="btn btn-primary" data-act="applicant:approve" data-index="' + index + '">通过</button>' +
+      '</div>', false);
+  }
+
+  function openHistory() {
+    var club = currentManage();
+    var body = '<div class="history-list">' + club.history.map(function (item) {
+      return '<article class="history-row">' +
+        '<div class="history-main"><h4>' + item.name + '<span class="role-pill">' + item.cls + '</span></h4>' +
+          '<p>提交于 ' + item.submittedAt + ' · 处理于 ' + item.handledAt + '</p>' +
+          (item.note ? '<span class="history-note">' + item.note + '</span>' : '') +
+        '</div>' +
+        '<span class="credit-status ' + (item.status === '已通过' ? 'approved' : 'returned') + '">' + item.status + '</span>' +
+      '</article>';
+    }).join('') + '</div>';
+    openSheet('入团申请记录', body, '', true);
+  }
+
+  function openPublishActivity() {
+    var body =
+      '<div class="field"><label class="field-label"><b>*</b>活动名称</label><input type="text" id="actTitle" placeholder="如：校园足球友谊交流赛" /></div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label class="field-label">活动日期</label><input type="text" id="actDate" placeholder="如：2026-11-20" /></div>' +
+        '<div class="field"><label class="field-label">活动场地</label><input type="text" id="actVenue" placeholder="如：西操场 1 号场地" /></div>' +
+      '</div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label class="field-label">开始时间</label><input type="text" id="actStart" placeholder="如：16:20" /></div>' +
+        '<div class="field"><label class="field-label">结束时间</label><input type="text" id="actEnd" placeholder="如：17:50" /></div>' +
+      '</div>' +
+      '<div class="field"><label class="field-label">活动说明</label><textarea id="actDesc" placeholder="如：请成员提前 10 分钟到场热身"></textarea></div>' +
+      '<div class="field"><label class="field-label">活动附件</label><input type="text" id="actFile" placeholder="如：友谊赛战术演练与出场分组表.pdf" /></div>';
+    openSheet('发布新活动', body,
+      '<button type="button" class="btn btn-primary" data-act="activity:submit">发布活动</button>', true);
+  }
+
+  function openRenewal() {
+    var body =
+      '<div class="kv-list">' +
+        '<div><span>当前学期</span><b>' + CURRENT_TERM + '</b></div>' +
+        '<div><span>延续学期</span><b>2026-2027 学年下学期</b></div>' +
+      '</div>' +
+      '<div class="field"><label class="field-label"><b>*</b>申请说明</label><textarea id="renewalReason" placeholder="如：社团下学期计划继续开展常规活动与成果展示"></textarea></div>' +
+      '<p class="sheet-note">提交后将进入教师审批，审批通过后社团自动延续到下学期。</p>';
+    openSheet('申请延续到下学期', body,
+      '<button type="button" class="btn btn-primary" data-act="renewal:submit">提交申请</button>', true);
+  }
+
+  function openEndApply() {
+    var club = currentManage();
+    var body =
+      '<div class="kv-list">' +
+        '<div><span>所属社团</span><b>' + club.name + '</b></div>' +
+        '<div><span>当前学期</span><b>' + CURRENT_TERM + '</b></div>' +
+      '</div>' +
+      '<div class="field"><label class="field-label"><b>*</b>申请说明</label>' +
+        '<textarea id="endReason" placeholder="如：本学期社团已完成既定目标，申请提前结束本学期运行"></textarea>' +
+      '</div>' +
+      '<p class="sheet-note">提交后将进入教师审批，审批通过后社团本学期运行结束，成员名册与活动记录归档。</p>';
+    openSheet('申请提前结束', body,
+      '<button type="button" class="btn btn-primary danger" data-act="end:submit">提交申请</button>', true);
+  }
+
+  function openActivityDetail(index) {
+    var club = currentManage();
+    if (!club.activities[index]) return;
+    moreIndex = index;
+    window.ActivityPage.open(index);
+  }
+
+  var attendanceCtx = null;
+  var recordIndex = -1;
+  var editIndex = -1;
+  var moreIndex = -1;
+
+  function openAttendance(index) {
+    var club = currentManage();
+    var activity = club.activities[index];
+    if (!activity) return;
+    attendanceCtx = { index: index, values: {} };
+    club.members.forEach(function (member) { attendanceCtx.values[member.name] = '正常出勤'; });
+    var body =
+      '<p class="sheet-lead">' + activity.title + ' · ' + activity.day + ' ' + activity.week + ' ' + activity.time + '</p>' +
+      '<div class="attend-list">' + club.members.map(function (member) {
+        var value = attendanceCtx.values[member.name];
+        return '<div class="attend-row">' +
+          '<span class="member-avatar">' + member.name.charAt(0) + '</span>' +
+          '<div class="attend-main">' +
+            '<h4>' + member.name + '<span class="role-pill ' + (member.role === '社长' ? 'leader' : '') + '">' + member.role + '</span></h4>' +
+            '<p>' + member.cls + '</p>' +
+          '</div>' +
+          '<div class="attend-options">' + ['正常出勤', '缺勤', '请假'].map(function (option) {
+            return '<button type="button" class="' + (value === option ? 'active ' : '') + (option === '正常出勤' ? 'ok' : option === '缺勤' ? 'absent' : 'leave') +
+              '" data-act="attendance:mark" data-name="' + member.name + '" data-value="' + option + '">' + option + '</button>';
+          }).join('') + '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+    openSheet('考勤点名', body, '<button type="button" class="btn btn-primary" data-act="attendance:submit">保存</button>', true);
+  }
+
+  function openRecord(index) {
+    var club = currentManage();
+    var activity = club.activities[index];
+    if (!activity) return;
+    recordIndex = index;
+    var body =
+      '<div class="kv-list">' +
+        '<div><span>活动名称</span><b>' + activity.title + '</b></div>' +
+        '<div><span>活动时间</span><b>' + activity.day + ' ' + activity.week + ' · ' + activity.time + '</b></div>' +
+        '<div><span>考勤情况</span><b>' + activity.attendance + '</b></div>' +
+      '</div>' +
+      '<div class="field"><label class="field-label"><b>*</b>活动记录</label>' +
+        '<textarea id="recordText" placeholder="如：完成传接球与分组对抗训练，全员到场并完成器材归还">' + (activity.recordText || '') + '</textarea>' +
+      '</div>' +
+      '<div class="field"><label class="field-label">过程材料</label>' +
+        '<input type="text" id="recordFile" value="' + (activity.attachment || '') + '" placeholder="如：训练记录与现场照片.pdf" />' +
+      '</div>';
+    openSheet('填写活动记录', body, '<button type="button" class="btn btn-primary" data-act="record:submit">保存</button>', true);
+  }
+
+  function openEditActivity(index) {
+    var club = currentManage();
+    var activity = club.activities[index];
+    if (!activity) return;
+    editIndex = index;
+    var timeParts = String(activity.time).split(' - ');
+    var body =
+      '<div class="field"><label class="field-label"><b>*</b>活动名称</label>' +
+        '<input type="text" id="actTitle" value="' + activity.title + '" />' +
+      '</div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label class="field-label">活动日期</label><input type="text" id="actDate" placeholder="如：2026-11-20" value="' + (activity.fullDate || '') + '" /></div>' +
+        '<div class="field"><label class="field-label">活动场地</label><input type="text" id="actVenue" value="' + activity.venue + '" /></div>' +
+      '</div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label class="field-label">开始时间</label><input type="text" id="actStart" value="' + (timeParts[0] || '') + '" /></div>' +
+        '<div class="field"><label class="field-label">结束时间</label><input type="text" id="actEnd" value="' + (timeParts[1] || '') + '" /></div>' +
+      '</div>' +
+      '<div class="field"><label class="field-label">活动说明</label><textarea id="actDesc">' + activity.desc + '</textarea></div>' +
+      '<div class="field"><label class="field-label">活动附件</label><input type="text" id="actFile" value="' + (activity.attachment || '') + '" /></div>';
+    openSheet('编辑活动信息', body, '<button type="button" class="btn btn-primary" data-act="activity:saveEdit">保存修改</button>', true);
+  }
+
+  function openAllMoments() {
+    var club = currentManage();
+    location.href = 'activity-moments.html?club=' + encodeURIComponent(club.name) + '&from=clubs';
+  }
+
+  function openCreditReview(index) {
+    var club = currentManage();
+    var credit = club.credits[index];
+    if (!credit) return;
+    var body =
+      '<div class="applicant-head"><span class="member-avatar">' + credit.name.charAt(0) + '</span>' +
+        '<div><h3>' + credit.name + '<em>' + credit.role + '</em></h3><p>' + credit.cls + '</p></div>' +
+      '</div>' +
+      '<div class="kv-list">' +
+        '<div><span>系统记录时长</span><b>' + credit.system + ' 小时</b></div>' +
+        '<div><span>申报学时</span><b>' + credit.declared + ' 学时</b></div>' +
+        '<div><span>审核状态</span><b>' + credit.status + '</b></div>' +
+      '</div>' +
+      '<div class="sheet-block"><h4>申请内容</h4><p>' + credit.reason + '</p></div>' +
+      (credit.note ? '<div class="sheet-block"><h4>审核意见</h4><p>' + credit.note + '</p></div>' : '') +
+      '<div class="field"><label class="field-label">本次审核意见</label><textarea id="creditNote" placeholder="如：同意认定 12 学时"></textarea></div>';
+    openSheet('审核学分申请', body,
+      '<div class="sheet-foot-actions">' +
+        '<button type="button" class="btn btn-secondary" data-act="credit:return" data-index="' + index + '">退回修改</button>' +
+        '<button type="button" class="btn btn-primary" data-act="credit:approve" data-index="' + index + '">通过</button>' +
+      '</div>', true);
+  }
+
+  function openCreditDetail(index) {
+    var club = currentManage();
+    var credit = club.credits[index];
+    if (!credit) return;
+    var body =
+      '<div class="applicant-head"><span class="member-avatar">' + credit.name.charAt(0) + '</span>' +
+        '<div><h3>' + credit.name + '<em>' + credit.role + '</em></h3><p>' + credit.cls + '</p></div>' +
+      '</div>' +
+      '<div class="kv-list">' +
+        '<div><span>系统记录时长</span><b>' + credit.system + ' 小时</b></div>' +
+        '<div><span>申报学时</span><b>' + credit.declared + ' 学时</b></div>' +
+        '<div><span>审核状态</span><b>' + credit.status + '</b></div>' +
+      '</div>' +
+      '<div class="sheet-block"><h4>申请内容</h4><p>' + credit.reason + '</p></div>' +
+      (credit.note ? '<div class="sheet-block"><h4>审核意见</h4><p>' + credit.note + '</p></div>' : '');
+    openSheet('学分申请详情', body,
+      '<button type="button" class="btn btn-secondary" data-act="sheet:close">关闭</button>', true);
+  }
+
+  function openSelfApply(index) {
+    var club = currentManage();
+    var credit = club.credits[index];
+    if (!credit) return;
+    var attendedDone = club.activities.filter(function (item) { return attendanceDone(item); }).length;
+    var recordedDone = club.activities.filter(function (item) { return recordDone(item); }).length;
+    var body =
+      '<p class="sheet-lead">' + club.name + ' · 社长申报</p>' +
+      '<div class="stat-grid">' +
+        '<div class="stat-cell"><span>组织活动</span><strong>' + club.activities.length + '<em>场</em></strong></div>' +
+        '<div class="stat-cell"><span>系统记录时长</span><strong>' + (credit.system || 0) + '<em>小时</em></strong></div>' +
+        '<div class="stat-cell"><span>完成考勤</span><strong>' + attendedDone + '<em>场</em></strong></div>' +
+        '<div class="stat-cell"><span>完成记录</span><strong>' + recordedDone + '<em>场</em></strong></div>' +
+      '</div>' +
+      '<div class="field"><label class="field-label"><b>*</b>申报学时</label>' +
+        '<input type="number" id="selfHours" min="0" step="0.5" value="' + (credit.declared || '') + '" placeholder="如：15" />' +
+      '</div>' +
+      '<div class="field"><label class="field-label">收获与体会</label>' +
+        '<textarea id="selfSummary" placeholder="如：本学期负责社团整体运营与每周训练组织">' + (credit.reason || '') + '</textarea>' +
+      '</div>';
+    openSheet('申请社团学分', body,
+      '<button type="button" class="btn btn-primary" data-act="credit:selfSubmit" data-index="' + index + '">提交申请</button>', true);
+  }
+
+  var showcaseDraft = null;
+
+  function openShowcaseAdd() {
+    var club = currentManage();
+    var isWork = state.showcaseTab === 'works';
+    showcaseDraft = { media: PHOTOS.football, creators: [] };
+    var creatorNames = club.members.map(function (member) { return member.name; }).concat(['全体成员']);
+    var body =
+      '<div class="field"><label class="field-label">' + (isWork ? '作品名称' : '荣誉名称') + '</label>' +
+        '<input type="text" id="scTitle" placeholder="' + (isWork ? '如：校园足球战术手册' : '如：校园足球联赛冠军') + '" />' +
+      '</div>' +
+      '<div class="field"><label class="field-label">' + (isWork ? '作品媒体' : '荣誉证明') + '</label>' +
+        '<div class="sc-media">' + [PHOTOS.football, PHOTOS.doc, PHOTOS.read].map(function (src) {
+          return '<button type="button" class="' + (src === showcaseDraft.media ? 'selected' : '') + '" data-act="showcase:media" data-src="' + src + '">' +
+            '<img src="' + src + '" alt="选择媒体" />' +
+          '</button>';
+        }).join('') + '</div>' +
+      '</div>' +
+      (isWork
+        ? '<div class="field"><label class="field-label">实际创作成员</label><div class="sc-creators">' + creatorNames.map(function (name) {
+            return '<button type="button" data-act="showcase:creator" data-name="' + name + '">' + name + '</button>';
+          }).join('') + '</div></div>'
+        : '<div class="field"><label class="field-label">获得时间</label><input type="text" id="scTime" placeholder="如：2026-10" /></div>') +
+      '<div class="field"><label class="field-label">说明</label><textarea id="scDesc" placeholder="补充作品或荣誉的相关说明"></textarea></div>';
+    openSheet(isWork ? '上传作品' : '登记荣誉', body,
+      '<button type="button" class="btn btn-primary" data-act="showcase:submit">保存并公开展示</button>', true);
+  }
+
+  /* ---------- 事件 ---------- */
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    var head = event.target.closest('[data-act="club:view"]');
+    if (head) {
+      event.preventDefault();
+      location.href = 'club-detail.html?id=' + head.getAttribute('data-id') + '&joined=1';
+      return;
+    }
+    var activityRow = event.target.closest('[data-act="activity:detail"]');
+    if (activityRow) {
+      event.preventDefault();
+      openActivityDetail(Number(activityRow.getAttribute('data-index')));
+    }
   });
 
-  document.getElementById('clubCategory').addEventListener('change', function (event) {
-    var cover = coverMap[event.target.value];
-    if (cover) selectCover(cover);
+  document.addEventListener('click', function (event) {
+    var el = event.target.closest('[data-act]');
+    if (!el) {
+      if (event.target === sheetMask) closeSheet();
+      if (event.target === confirmMask) closeConfirm();
+      return;
+    }
+    var act = el.getAttribute('data-act');
+
+    if (act === 'sheet:close') return closeSheet();
+    if (act === 'confirm:no') return closeConfirm();
+    if (act === 'confirm:yes') {
+      var callback = confirmCallback;
+      closeConfirm();
+      if (callback) callback();
+      return;
+    }
+
+    if (act === 'pick') return openPicker(el.getAttribute('data-kind'));
+    if (act === 'pick:choose') {
+      var kind = el.getAttribute('data-kind');
+      var value = el.getAttribute('data-value');
+      if (PICKERS[kind]) PICKERS[kind].apply(value);
+      closeSheet();
+      render();
+      return;
+    }
+
+    if (act === 'rejected:open') {
+      openRejectedSheet();
+      return;
+    }
+    if (act === 'rejected:reapply') {
+      var rejectedId = el.getAttribute('data-id');
+      var record = MINE.rejected.filter(function (item) { return item.id === rejectedId; })[0];
+      if (!record || record.reapplied) return;
+      record.reapplied = true;
+      openRejectedSheet();
+      render();
+      toast('已重新提交「' + record.name + '」的报名申请，等待社长审核');
+      return;
+    }
+
+    if (act === 'pending:toggle') {
+      state.pendingOpen = !state.pendingOpen;
+      render();
+      return;
+    }
+    if (act === 'pending:cancel') {
+      openConfirm('取消「' + MINE.pending.name + '」的报名？', '取消后本学期将无法参加该社团活动，再次加入需重新提交申请。', function () {
+        state.pendingWithdrawn = true;
+        state.pendingOpen = false;
+        render();
+        toast('已取消报名申请');
+      });
+      return;
+    }
+
+    if (act === 'club:expand') {
+      var expandId = el.getAttribute('data-id');
+      state.expanded = state.expanded === expandId ? '' : expandId;
+      render();
+      return;
+    }
+    if (act === 'club:view') {
+      location.href = 'club-detail.html?id=' + el.getAttribute('data-id') + '&joined=1';
+      return;
+    }
+    if (act === 'club:allActivities') return openAllActivities(el.getAttribute('data-id'));
+    if (act === 'allact:back') return closeAllActivities();
+    if (act === 'credit:apply') {
+      var applyClub = findJoined(el.getAttribute('data-id'));
+      if (applyClub) openCreditApply(applyClub);
+      return;
+    }
+    if (act === 'credit:view') {
+      var viewClub = findJoined(el.getAttribute('data-id'));
+      if (viewClub) openCreditResult(viewClub);
+      return;
+    }
+    if (act === 'credit:viewApply') {
+      var pendingClub = findJoined(el.getAttribute('data-id'));
+      if (pendingClub) openCreditPending(pendingClub);
+      return;
+    }
+    if (act === 'credit:withdraw') {
+      var withdrawClub = findJoined(el.getAttribute('data-id'));
+      if (!withdrawClub) return;
+      openConfirm('撤回学分申请？', '撤回后本次申请作废且无法恢复，认定学分需重新提交申请。', function () {
+        withdrawClub.credit = 'none';
+        closeSheet();
+        render();
+        toast('已撤回「' + withdrawClub.name + '」的学分申请');
+      });
+      return;
+    }
+    if (act === 'credit:submit') {
+      var submitClub = findJoined(el.getAttribute('data-id'));
+      if (!submitClub) return;
+      var hoursInput = document.getElementById('creditHours');
+      var summaryInput = document.getElementById('creditSummary');
+      var hours = hoursInput ? hoursInput.value.trim() : '';
+      if (!hours) { toast('请填写申报学时'); return; }
+      submitClub.credit = 'pending';
+      submitClub.pendingHours = hours;
+      submitClub.creditSummary = summaryInput ? summaryInput.value.trim() : '';
+      closeSheet();
+      render();
+      toast('学分申请已提交，等待社长初审');
+      return;
+    }
+
+    if (act === 'moment:open') {
+      location.href = 'activity-moments.html?id=' + encodeURIComponent(el.getAttribute('data-id'));
+      return;
+    }
+
+    if (act === 'manage:tab') {
+      state.manageTab = el.getAttribute('data-tab');
+      render();
+      return;
+    }
+    if (act === 'member:clear') {
+      state.memberKeyword = '';
+      render();
+      return;
+    }
+    if (act === 'members:export') {
+      toast('已导出「' + currentManage().name + '」成员名单 Excel 表格');
+      return;
+    }
+    if (act === 'history:open') return openHistory();
+
+    if (act === 'applicant:review') return openApplicantReview(Number(el.getAttribute('data-index')));
+    if (act === 'applicant:approve') {
+      var approveClub = currentManage();
+      var approveIndex = Number(el.getAttribute('data-index'));
+      var approved = approveClub.applicants[approveIndex];
+      if (!approved) return;
+      approveClub.applicants.splice(approveIndex, 1);
+      approveClub.members.push({ name: approved.name, role: '成员', cls: approved.cls, join: '2026-09-18', count: 0, phone: approved.phone });
+      closeSheet();
+      render();
+      toast('已通过「' + approved.name + '」的入团申请');
+      return;
+    }
+    if (act === 'applicant:reject') {
+      var rejectClub = currentManage();
+      var rejectIndex = Number(el.getAttribute('data-index'));
+      var rejected = rejectClub.applicants[rejectIndex];
+      if (!rejected) return;
+      rejectClub.applicants.splice(rejectIndex, 1);
+      closeSheet();
+      render();
+      toast('已退回「' + rejected.name + '」的入团申请');
+      return;
+    }
+
+    if (act === 'activity:attendance') {
+      var attendanceRaw = el.getAttribute('data-index');
+      var attendanceIndex = attendanceRaw === null ? moreIndex : Number(attendanceRaw);
+      return openAttendance(attendanceIndex);
+    }
+    if (act === 'attendance:mark') {
+      if (!attendanceCtx) return;
+      var markName = el.getAttribute('data-name');
+      attendanceCtx.values[markName] = el.getAttribute('data-value');
+      var markRow = el.closest('.attend-row');
+      if (markRow) {
+        Array.prototype.forEach.call(markRow.querySelectorAll('.attend-options button'), function (button) {
+          button.classList.toggle('active', button === el);
+        });
+      }
+      return;
+    }
+    if (act === 'attendance:submit') {
+      if (!attendanceCtx) return;
+      var attendanceClub = currentManage();
+      var attendanceActivity = attendanceClub.activities[attendanceCtx.index];
+      if (!attendanceActivity) return;
+      var totalMembers = attendanceClub.members.length;
+      var presentCount = 0;
+      var absentCount = 0;
+      var leaveCount = 0;
+      Object.keys(attendanceCtx.values).forEach(function (key) {
+        var marked = attendanceCtx.values[key];
+        if (marked === '正常出勤') presentCount += 1;
+        else if (marked === '缺勤') absentCount += 1;
+        else leaveCount += 1;
+      });
+      attendanceActivity.attendance = presentCount === totalMembers
+        ? '实到 ' + totalMembers + ' 人（全勤）'
+        : '正常出勤 ' + presentCount + ' 人' +
+          (absentCount ? ' · 缺勤 ' + absentCount + ' 人' : '') +
+          (leaveCount ? ' · 请假 ' + leaveCount + ' 人' : '');
+      attendanceActivity.attendanceDone = true;
+      attendanceCtx = null;
+      closeSheet();
+      render();
+      window.ActivityPage.refresh();
+      toast('考勤已保存');
+      return;
+    }
+    if (act === 'activity:record') {
+      var recordRaw = el.getAttribute('data-index');
+      var recordTarget = recordRaw === null ? moreIndex : Number(recordRaw);
+      return openRecord(recordTarget);
+    }
+    if (act === 'record:submit') {
+      var recordClub = currentManage();
+      var recordActivity = recordClub.activities[recordIndex];
+      if (!recordActivity) return;
+      var recordTextEl = document.getElementById('recordText');
+      var recordFileEl = document.getElementById('recordFile');
+      var recordTextValue = recordTextEl ? recordTextEl.value.trim() : '';
+      if (!recordTextValue) { toast('请填写活动记录'); return; }
+      recordActivity.recordText = recordTextValue;
+      recordActivity.record = '已填活动记录';
+      recordActivity.recordDone = true;
+      recordActivity.attachment = recordFileEl ? recordFileEl.value.trim() : recordActivity.attachment;
+      closeSheet();
+      render();
+      window.ActivityPage.refresh();
+      toast('活动记录已保存');
+      return;
+    }
+    if (act === 'activity:edit') return openEditActivity(moreIndex);
+    if (act === 'activity:delete') {
+      var delRaw = el.getAttribute('data-index');
+      var delIndex = delRaw === null ? moreIndex : Number(delRaw);
+      var deleteClub = currentManage();
+      var deleteActivity = deleteClub.activities[delIndex];
+      if (!deleteActivity) return;
+      openConfirm('删除活动', '确定删除活动【' + deleteActivity.title + '】？删除后无法恢复。', function () {
+        deleteClub.activities.splice(delIndex, 1);
+        closeSheet();
+        window.ActivityPage.close();
+        render();
+        toast('已删除「' + deleteActivity.title + '」');
+      }, '确认删除');
+      return;
+    }
+    if (act === 'activity:saveEdit') {
+      var editClub = currentManage();
+      var editActivity = editClub.activities[editIndex];
+      if (!editActivity) return;
+      var editTitleEl = document.getElementById('actTitle');
+      var editTitleValue = editTitleEl ? editTitleEl.value.trim() : '';
+      if (!editTitleValue) { toast('请填写活动名称'); return; }
+      var editDate = (document.getElementById('actDate') || {}).value || '';
+      var editStart = (document.getElementById('actStart') || {}).value || '';
+      var editEnd = (document.getElementById('actEnd') || {}).value || '';
+      editActivity.title = editTitleValue;
+      editActivity.venue = ((document.getElementById('actVenue') || {}).value || editActivity.venue).trim();
+      editActivity.time = (editStart || '待定') + (editEnd ? ' - ' + editEnd : '');
+      editActivity.desc = ((document.getElementById('actDesc') || {}).value || editActivity.desc).trim();
+      editActivity.attachment = ((document.getElementById('actFile') || {}).value || '').trim();
+      if (editDate) {
+        editActivity.fullDate = editDate.trim();
+        var editDateParts = editActivity.fullDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (editDateParts) editActivity.day = Number(editDateParts[2]) + '.' + editDateParts[3];
+      }
+      closeSheet();
+      render();
+      window.ActivityPage.refresh();
+      toast('活动信息已更新');
+      return;
+    }
+    if (act === 'activity:detail') return openActivityDetail(Number(el.getAttribute('data-index')));
+    if (act === 'activity:moments') {
+      var activityClub = currentManage();
+      var activityIndex = Number(el.getAttribute('data-index'));
+      var activity = activityClub.activities[activityIndex];
+      if (!activity) return;
+      location.href = 'activity-moments.html?id=' + encodeURIComponent(activity.id) + '&from=clubs';
+      return;
+    }
+    if (act === 'activity:publish') return openPublishActivity();
+    if (act === 'activity:allMoments') return openAllMoments();
+    if (act === 'activity:submit') {
+      var publishTitle = document.getElementById('actTitle');
+      var title = publishTitle ? publishTitle.value.trim() : '';
+      if (!title) { toast('请填写活动名称'); return; }
+      var dateValue = (document.getElementById('actDate') || {}).value || '';
+      var venueValue = (document.getElementById('actVenue') || {}).value || '';
+      var startValue = (document.getElementById('actStart') || {}).value || '';
+      var endValue = (document.getElementById('actEnd') || {}).value || '';
+      var descValue = (document.getElementById('actDesc') || {}).value || '';
+      var fileValue = (document.getElementById('actFile') || {}).value || '';
+      var dateParts = dateValue.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      currentManage().activities.unshift({
+        id: 'act-' + Date.now(),
+        day: dateParts ? Number(dateParts[2]) + '.' + dateParts[3] : '待定',
+        week: '待定',
+        title: title,
+        state: '待开展',
+        time: (startValue || '待定') + (endValue ? ' - ' + endValue : ''),
+        venue: venueValue || '待定',
+        attendance: '待点名（应到 ' + currentManage().members.length + ' 人）',
+        record: '未填活动记录',
+        attachment: fileValue,
+        shares: 0,
+        desc: descValue || '活动说明待补充。'
+      });
+      state.manageTab = 'activities';
+      closeSheet();
+      render();
+      toast('活动已发布，等待成员查看');
+      return;
+    }
+
+    if (act === 'renewal:open') return openRenewal();
+    if (act === 'end:open') return openEndApply();
+    if (act === 'end:submit') {
+      var endReasonEl = document.getElementById('endReason');
+      if (!endReasonEl || !endReasonEl.value.trim()) { toast('请填写申请说明'); return; }
+      currentManage().endPending = true;
+      closeSheet();
+      render();
+      toast('提前结束申请已提交，等待教师审批');
+      return;
+    }
+    if (act === 'renewal:submit') {
+      var reasonInput = document.getElementById('renewalReason');
+      if (!reasonInput || !reasonInput.value.trim()) { toast('请填写申请说明'); return; }
+      closeSheet();
+      toast('延续到下学期申请已提交，等待教师确认');
+      return;
+    }
+
+    if (act === 'showcase:add') return openShowcaseAdd();
+    if (act === 'showcase:media') {
+      if (!showcaseDraft) return;
+      showcaseDraft.media = el.getAttribute('data-src');
+      Array.prototype.forEach.call(document.querySelectorAll('.sc-media button'), function (button) {
+        button.classList.toggle('selected', button === el);
+      });
+      return;
+    }
+    if (act === 'showcase:creator') {
+      if (!showcaseDraft) return;
+      var creatorName = el.getAttribute('data-name');
+      if (creatorName === '全体成员') {
+        showcaseDraft.creators = showcaseDraft.creators.indexOf('全体成员') === -1 ? ['全体成员'] : [];
+      } else if (showcaseDraft.creators.indexOf(creatorName) === -1) {
+        showcaseDraft.creators = showcaseDraft.creators.filter(function (name) { return name !== '全体成员'; }).concat([creatorName]);
+      } else {
+        showcaseDraft.creators = showcaseDraft.creators.filter(function (name) { return name !== creatorName; });
+      }
+      Array.prototype.forEach.call(document.querySelectorAll('.sc-creators button'), function (button) {
+        button.classList.toggle('selected', showcaseDraft.creators.indexOf(button.getAttribute('data-name')) !== -1);
+      });
+      return;
+    }
+    if (act === 'showcase:submit') {
+      if (!showcaseDraft) return;
+      var showcaseClub = currentManage();
+      var isWorkItem = state.showcaseTab === 'works';
+      var scTitleValue = ((document.getElementById('scTitle') || {}).value || '').trim();
+      var scDescValue = ((document.getElementById('scDesc') || {}).value || '').trim();
+      var nowDate = new Date();
+      var dateText = nowDate.getFullYear() + '-' +
+        String(nowDate.getMonth() + 1).padStart(2, '0') + '-' +
+        String(nowDate.getDate()).padStart(2, '0');
+      if (isWorkItem) {
+        showcaseClub.showcase.works.unshift({
+          title: scTitleValue || '未命名作品',
+          creator: showcaseDraft.creators.join('、') || '全体成员',
+          date: dateText,
+          desc: scDescValue || '暂无说明',
+          image: showcaseDraft.media
+        });
+      } else {
+        var scTimeValue = ((document.getElementById('scTime') || {}).value || '').trim() || dateText.slice(0, 7);
+        showcaseClub.showcase.honors.unshift({
+          title: scTitleValue || '未命名荣誉',
+          time: scTimeValue,
+          date: dateText,
+          desc: scDescValue || '暂无说明',
+          image: showcaseDraft.media
+        });
+      }
+      showcaseDraft = null;
+      closeSheet();
+      render();
+      toast(isWorkItem ? '作品已上传并公开展示' : '荣誉已登记并公开展示');
+      return;
+    }
+    if (act === 'showcase:tab') {
+      state.showcaseTab = el.getAttribute('data-tab');
+      render();
+      return;
+    }
+    if (act === 'credit:filter') {
+      state.creditFilter = el.getAttribute('data-filter');
+      render();
+      return;
+    }
+    if (act === 'credit:goProcess') {
+      var processClub = currentManage();
+      var nextIndex = -1;
+      processClub.credits.forEach(function (item, index) {
+        if (nextIndex === -1 && (item.status === '待初审' || item.status === '待社长重审')) nextIndex = index;
+      });
+      if (nextIndex === -1) { toast('当前没有待处理的学分申请'); return; }
+      return openCreditReview(nextIndex);
+    }
+    if (act === 'credit:selfApply') return openSelfApply(Number(el.getAttribute('data-index')));
+    if (act === 'credit:selfWithdraw') {
+      var selfClub = currentManage();
+      var selfIndex = Number(el.getAttribute('data-index'));
+      var selfCredit = selfClub.credits[selfIndex];
+      if (!selfCredit) return;
+      openConfirm('撤回学分申请？', '撤回后本次申请作废且无法恢复，认定学分需重新提交申请。', function () {
+        selfCredit.status = '未申请';
+        closeSheet();
+        render();
+        toast('已撤回学分申请');
+      });
+      return;
+    }
+    if (act === 'credit:selfSubmit') {
+      var submitSelfClub = currentManage();
+      var submitSelfIndex = Number(el.getAttribute('data-index'));
+      var submitSelfCredit = submitSelfClub.credits[submitSelfIndex];
+      if (!submitSelfCredit) return;
+      var selfHoursEl = document.getElementById('selfHours');
+      var selfSummaryEl = document.getElementById('selfSummary');
+      var selfHoursValue = selfHoursEl ? selfHoursEl.value.trim() : '';
+      if (!selfHoursValue) { toast('请填写申报学时'); return; }
+      submitSelfCredit.declared = selfHoursValue;
+      submitSelfCredit.reason = selfSummaryEl ? selfSummaryEl.value.trim() : submitSelfCredit.reason;
+      submitSelfCredit.status = '待教师审核';
+      closeSheet();
+      render();
+      toast('学分申请已提交，等待教师审核');
+      return;
+    }
+    if (act === 'credit:review') return openCreditReview(Number(el.getAttribute('data-index')));
+    if (act === 'credit:detail') return openCreditDetail(Number(el.getAttribute('data-index')));
+    if (act === 'credit:approve' || act === 'credit:return') {
+      var creditClub = currentManage();
+      var creditIndex = Number(el.getAttribute('data-index'));
+      var credit = creditClub.credits[creditIndex];
+      if (!credit) return;
+      var noteInput = document.getElementById('creditNote');
+      var note = noteInput ? noteInput.value.trim() : '';
+      if (act === 'credit:approve') {
+        credit.status = '已认定';
+        credit.note = note || '审核通过。';
+      } else {
+        credit.status = '已退回';
+        credit.note = note || '请按系统记录时长调整申报学时后重新提交。';
+      }
+      closeSheet();
+      render();
+      toast(act === 'credit:approve' ? '已通过「' + credit.name + '」的学分申请' : '已退回「' + credit.name + '」的学分申请');
+      return;
+    }
   });
 
-  document.getElementById('saveBtn').addEventListener('click', function () {
-    window.protoToast(isResubmit ? '修改已暂存，可稍后继续完善' : '已保存草稿，可在“社团申报”中继续编辑');
+  document.addEventListener('change', function (event) {
+    if (event.target.id === 'memberSearch') {
+      state.memberKeyword = event.target.value;
+      var list = document.getElementById('memberList');
+      if (list) list.innerHTML = membersHtml(currentManage());
+      return;
+    }
   });
 
-  var successMask = document.getElementById('successMask');
-
-  document.getElementById('submitBtn').addEventListener('click', function () {
-    var name = document.getElementById('clubName').value.trim();
-    var summary = document.getElementById('clubSummary').value.trim();
-    var plan = document.getElementById('clubPlan').value.trim();
-
-    if (!name) return window.protoToast('请填写社团名称');
-    if (!document.getElementById('clubCategory').value) return window.protoToast('请选择社团类别');
-    if (!summary) return window.protoToast('请填写社团简介');
-    if (!plan) return window.protoToast('请填写活动计划');
-
-    document.getElementById('successName').textContent = name;
-    successMask.classList.add('show');
+  document.addEventListener('input', function (event) {
+    if (event.target.id === 'memberSearch') {
+      state.memberKeyword = event.target.value;
+      var list = document.getElementById('memberList');
+      if (list) list.innerHTML = membersHtml(currentManage());
+    }
+    if (event.target.id === 'creditSearch') {
+      state.creditKeyword = event.target.value;
+      var creditList = document.getElementById('creditList');
+      if (creditList) creditList.innerHTML = creditRowsHtml(currentManage());
+    }
   });
 
-  document.getElementById('continueEdit').addEventListener('click', function () {
-    successMask.classList.remove('show');
-  });
+  window.ActivityPage.init({ getClub: currentManage, from: 'clubs' });
 
-  successMask.addEventListener('click', function (event) {
-    if (event.target === successMask) successMask.classList.remove('show');
-  });
+  render();
 })();
 </script>
 <!-- proto-review-bundle -->
