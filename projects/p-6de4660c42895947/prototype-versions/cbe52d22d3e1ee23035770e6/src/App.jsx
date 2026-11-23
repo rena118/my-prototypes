@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Compass,
   ChartLineUp,
@@ -36,7 +36,9 @@ import {
   Eye
 } from '@phosphor-icons/react';
 
-// 对齐学生桌面端真实数据的社团名录
+const CURRENT_TERM = '2026-2027 学年上学期';
+
+// 对齐学生手机端社团广场 / 社团详情的社团名录
 const PLAZA_CLUBS = [
   {
     id: 'football',
@@ -44,11 +46,23 @@ const PLAZA_CLUBS = [
     category: '体育',
     captain: '赵子安',
     contact: '138 0000 9218',
-    cover: '/assets/poster-football.jpg',
+    cover: 'assets/poster-football.jpg',
     members: 18,
     capacity: 30,
     short: '面向喜欢足球的同学，开展日常训练、友谊赛和校园足球活动。',
     recruitment: '有基础或愿意长期参加训练的同学均可申请。',
+    intro: '足球联盟是学校历史最久的体育社团之一，面向全校喜欢足球的同学开放。社团每周安排固定训练，并组织校内友谊赛与校际交流赛。',
+    plan: '每周四开展常规训练，学期内组织校园友谊赛与校际交流赛，学期末进行队内总结赛。',
+    events: [
+      { md: '10.23', wd: '周四', title: '校园友谊赛', time: '16:20-18:00', venue: '西操场' },
+      { md: '10.30', wd: '周四', title: '日常训练', time: '16:20-18:00', venue: '西操场' },
+      { md: '11.06', wd: '周四', title: '校际交流赛', time: '15:00-17:00', venue: '东操场' },
+      { md: '11.13', wd: '周四', title: '日常训练', time: '16:20-18:00', venue: '西操场' },
+      { md: '11.20', wd: '周四', title: '队内对抗赛', time: '16:20-18:00', venue: '西操场' }
+    ],
+    term: CURRENT_TERM,
+    state: 'open',
+    applyEnd: '2026 年 9 月 20 日',
     timeParts: { days: '3', hours: '08', mins: '24', secs: 36 },
     applyEnded: false,
     isOpen: true,
@@ -59,11 +73,23 @@ const PLAZA_CLUBS = [
     category: '科技',
     captain: '陈闻远',
     contact: '136 0000 5306',
-    cover: '/assets/poster-robot.jpg',
+    cover: 'assets/poster-robot.jpg',
     members: 12,
     capacity: 20,
     short: '围绕结构搭建、编程和创意挑战，完成可展示的机器人作品。',
     recruitment: '对机械、编程或创意设计感兴趣即可。',
+    intro: '机器人探索社聚焦结构搭建、编程控制与创意挑战，成员以小组形式完成可展示的机器人作品，并参与校内外科创活动。',
+    plan: '每周五开展结构搭建与编程训练，学期中完成一次作品展示，学期末参加校级科创挑战赛。',
+    events: [
+      { md: '10.24', wd: '周五', title: '结构搭建训练', time: '15:30-17:00', venue: '创客教室 301' },
+      { md: '10.31', wd: '周五', title: '编程控制训练', time: '15:30-17:00', venue: '创客教室 301' },
+      { md: '11.07', wd: '周五', title: '作品方案评审', time: '15:30-17:00', venue: '创客教室 301' },
+      { md: '11.14', wd: '周五', title: '机器人联调', time: '15:30-17:00', venue: '创客教室 301' },
+      { md: '11.21', wd: '周五', title: '校内科创挑战赛', time: '14:00-17:00', venue: '科技楼报告厅' }
+    ],
+    term: CURRENT_TERM,
+    state: 'open',
+    applyEnd: '2026 年 9 月 20 日',
     timeParts: { days: '2', hours: '11', mins: '03', secs: 12 },
     applyEnded: false,
     isOpen: true,
@@ -74,11 +100,23 @@ const PLAZA_CLUBS = [
     category: '艺术',
     captain: '李若彤',
     contact: '139 0000 1860',
-    cover: '/assets/poster-drama.jpg',
+    cover: 'assets/poster-drama.jpg',
     members: 24,
     capacity: 24,
     short: '从剧本、表演到舞台设计，共同完成一场属于学生的校园演出。',
     recruitment: '欢迎表演、编剧、灯光与舞美方向的同学。',
+    intro: '光影戏剧社由一群热爱舞台的同学组成，从剧本创作、表演排练到灯光舞美，全部由学生自主完成。',
+    plan: '每周六开展剧本围读与片段排练，学期末完成舞台走位、全剧联排与校内展演。',
+    events: [
+      { md: '10.25', wd: '周六', title: '剧本围读', time: '15:30-17:30', venue: '报告厅' },
+      { md: '11.01', wd: '周六', title: '片段排练', time: '15:30-17:30', venue: '报告厅' },
+      { md: '11.08', wd: '周六', title: '舞台走位', time: '14:00-17:00', venue: '报告厅' },
+      { md: '11.15', wd: '周六', title: '全剧联排', time: '14:00-17:00', venue: '报告厅' },
+      { md: '11.22', wd: '周六', title: '校内展演', time: '19:00-20:30', venue: '报告厅' }
+    ],
+    term: CURRENT_TERM,
+    state: 'full',
+    applyEnd: '2026 年 9 月 20 日',
     timeParts: { days: '3', hours: '08', mins: '24', secs: 36 },
     applyEnded: false,
     isOpen: false, // 名额已满
@@ -89,21 +127,40 @@ const PLAZA_CLUBS = [
     category: '人文',
     captain: '周予安',
     contact: '137 0000 2648',
-    cover: '/assets/poster-reading.jpg',
+    cover: 'assets/poster-reading.jpg',
     members: 21,
     capacity: 36,
     short: '一起读、一起聊，从一本书延伸到更广阔的世界。',
     recruitment: '愿意稳定参加共读与分享活动。',
-    applyEnd: '2026-09-20 00:00',
+    intro: '山海阅读会希望把阅读变成一件可以分享的事。每两周一次共读，由成员轮流领读，并在学期末整理共读手记。',
+    plan: '每两周一次共读分享，学期末整理共读手记并完成一次主题分享。',
+    events: [
+      { md: '10.27', wd: '周一', title: '共读分享', time: '12:30-13:20', venue: '图书馆 302' },
+      { md: '11.03', wd: '周一', title: '共读分享', time: '12:30-13:20', venue: '图书馆 302' },
+      { md: '11.10', wd: '周一', title: '主题分享', time: '12:30-13:20', venue: '图书馆 302' },
+      { md: '11.17', wd: '周一', title: '共读分享', time: '12:30-13:20', venue: '图书馆 302' },
+      { md: '11.24', wd: '周一', title: '学期手记整理', time: '12:30-13:20', venue: '图书馆 302' }
+    ],
+    term: CURRENT_TERM,
+    state: 'closed',
+    applyEnd: '2026 年 9 月 20 日',
     applyEnded: true,
     isOpen: false, // 已截止
   }
 ];
 
+// 风采上传人展示：仅保留姓名，时间统一为「MM-DD HH:mm」
+const showcaseUploader = (uploader) => (uploader || '学生社长').split(' · ')[0];
+const showcaseUploadTime = (date, index) => {
+  const times = ['16:40', '09:12', '18:30', '20:15', '10:26', '14:05'];
+  return `${(date || '').slice(5)} ${times[index % times.length]}`;
+};
+
 // 对齐学生桌面端申报真实数据（包含待审核、已通过、未通过及教师审核意见）
 const INITIAL_PROPOSAL_RECORDS = [
   {
     id: 'prop-1',
+    term: '2026-2027 学年上学期',
     name: '城市观察社',
     category: '人文',
     status: 'pending', // 'pending' | 'approved' | 'rejected'
@@ -111,7 +168,7 @@ const INITIAL_PROPOSAL_RECORDS = [
     captain: '赵子易',
     capacity: 30,
     submittedAt: '2026-09-15 14:30',
-    cover: '/assets/poster-reading.jpg',
+    cover: 'assets/poster-reading.jpg',
     venueDesc: '需容纳30人且配有投影的多媒体教室（近西操场）',
     short: '记录城市空间与变迁，开展社会学微调研与摄影走访。',
     recruitment: '对城市空间、社会调查与摄影写作感兴趣的同学。',
@@ -119,6 +176,7 @@ const INITIAL_PROPOSAL_RECORDS = [
   },
   {
     id: 'prop-2',
+    term: '2026-2027 学年上学期',
     name: '校园纪录片社',
     category: '艺术',
     status: 'approved',
@@ -126,7 +184,7 @@ const INITIAL_PROPOSAL_RECORDS = [
     captain: '赵子易',
     capacity: 20,
     submittedAt: '2026-09-12 16:10',
-    cover: '/assets/poster-drama.jpg',
+    cover: 'assets/poster-drama.jpg',
     venue: '影视工作室',
     short: '用镜头捕捉校园真实生活与师生故事，创作原创短片。',
     recruitment: '欢迎对摄影剪辑、导演与编导感兴趣的同学。',
@@ -134,6 +192,7 @@ const INITIAL_PROPOSAL_RECORDS = [
   },
   {
     id: 'prop-3',
+    term: '2026-2027 学年上学期',
     name: '古诗词吟诵社',
     category: '人文',
     status: 'rejected',
@@ -141,7 +200,7 @@ const INITIAL_PROPOSAL_RECORDS = [
     captain: '赵子易',
     capacity: 25,
     submittedAt: '2026-09-06 10:15',
-    cover: '/assets/poster-reading.jpg',
+    cover: 'assets/poster-reading.jpg',
     venue: '图书馆 302',
     venueDesc: '周三下午使用，需配备古琴及朗诵长桌',
     teacherFeedback: {
@@ -171,7 +230,8 @@ const CLUB_SHOWCASE_DATA = {
         title: "《校园足球战术手册》",
         creator: "足球联盟 · 集体创作",
         desc: "整理 12 套常用站位与跑位路线，配 36 张手绘图解，已作为新社员训练教材。",
-        cover: "/assets/gallery-sports.jpg",
+        cover: "assets/gallery-sports.jpg",
+        photos: ["assets/moment-team-1.jpg", "assets/moment-team-2.jpg"],
         date: "2026-10-20",
         uploader: "赵子安 · 社长上传"
       },
@@ -180,7 +240,8 @@ const CLUB_SHOWCASE_DATA = {
         title: "《颠球百日打卡》记录册",
         creator: "赵子安 · 社长",
         desc: "连续 100 天颠球打卡影像与数据曲线，最好成绩单次 214 个。",
-        cover: "/assets/gallery-sports.jpg",
+        cover: "assets/gallery-sports.jpg",
+        photos: ["assets/moment-team-3.jpg"],
         date: "2026-10-12",
         uploader: "赵子安 · 社长上传"
       },
@@ -189,7 +250,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "守门员扑救动作拆解图",
         creator: "陈沐阳",
         desc: "以慢动作截图拆解侧扑、单手托球等 8 个标准动作。",
-        cover: "/assets/gallery-sports.jpg",
+        cover: "assets/gallery-sports.jpg",
         date: "2026-09-30",
         uploader: "赵子安 · 社长上传"
       },
@@ -198,7 +259,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "「班级联赛」策划案",
         creator: "李一诺",
         desc: "面向全校 24 个班级的迷你联赛方案，含赛程编排与安全预案。",
-        cover: "/assets/gallery-sports.jpg",
+        cover: "assets/gallery-sports.jpg",
         date: "2026-09-22",
         uploader: "赵子安 · 社长上传"
       },
@@ -207,7 +268,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "足球社队徽设计稿（第三版）",
         creator: "苏晓",
         desc: "以盾牌与星星为元素的新版队徽，经全员投票定为社团新形象。",
-        cover: "/assets/gallery-sports.jpg",
+        cover: "assets/gallery-sports.jpg",
         date: "2026-09-15",
         uploader: "赵子安 · 社长上传"
       }
@@ -218,7 +279,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "校园足球联赛 · 冠军",
         time: "2026-10",
         desc: "在校级足球联赛决赛中斩获总冠军。",
-        cover: "/assets/cert-fb-h1.png",
+        cover: "assets/cert-fb-h1.png",
         date: "2026-10-24",
         uploader: "赵子安 · 社长上传"
       },
@@ -227,7 +288,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "优秀学生社团",
         time: "2026-06",
         desc: "获评学校本学年五星级优秀学生社团。",
-        cover: "/assets/cert-fb-h3.png",
+        cover: "assets/cert-fb-h3.png",
         date: "2026-06-20",
         uploader: "赵子安 · 社长上传"
       },
@@ -236,7 +297,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "最佳组织奖",
         time: "2026-05",
         desc: "校园体育文化节优秀赛事组织奖。",
-        cover: "/assets/cert-fb-h4.png",
+        cover: "assets/cert-fb-h4.png",
         date: "2026-05-18",
         uploader: "赵子安 · 社长上传"
       }
@@ -249,7 +310,8 @@ const CLUB_SHOWCASE_DATA = {
         title: "校园人物微纪录片《微光》",
         creator: "林小薇 · 导演",
         desc: "记录食堂师傅与保洁阿姨的一天，成片入选校电视台展播。",
-        cover: "/assets/gallery-art.jpg",
+        cover: "assets/gallery-art.jpg",
+        photos: ["assets/moment-anime-1.png"],
         date: "2026-10-18",
         uploader: "林小薇 · 社长上传"
       },
@@ -258,7 +320,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "秋日落叶分镜手绘稿",
         creator: "纪录片社创作一组",
         desc: "全套 28 镜分镜手绘草图，包含光影与焦段标注。",
-        cover: "/assets/gallery-art.jpg",
+        cover: "assets/gallery-art.jpg",
         date: "2026-10-05",
         uploader: "林小薇 · 社长上传"
       }
@@ -269,7 +331,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "校原创短视频大赛 · 一等奖",
         time: "2026-09",
         desc: "作品《微光》荣获校第十二届短视频大赛一等奖。",
-        cover: "/assets/cert-dr-h1.png",
+        cover: "assets/cert-dr-h1.png",
         date: "2026-09-28",
         uploader: "林小薇 · 社长上传"
       },
@@ -278,7 +340,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "校园美育特别贡献社团",
         time: "2026-06",
         desc: "为校园戏剧节及各类校级活动提供高水平影像支持。",
-        cover: "/assets/cert-dr-h3.png",
+        cover: "assets/cert-dr-h3.png",
         date: "2026-06-15",
         uploader: "林小薇 · 社长上传"
       }
@@ -291,7 +353,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "双足巡线避障车装配图纸",
         creator: "陈闻远、机械组",
         desc: "采用自主设计的 3D 打印轻量化底盘与红外测距算法。",
-        cover: "/assets/gallery-tech.jpg",
+        cover: "assets/gallery-tech.jpg",
         date: "2026-10-15",
         uploader: "陈闻远 · 社长上传"
       },
@@ -300,7 +362,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "机械抓手控制固件代码 (v2.1)",
         creator: "编程组集体",
         desc: "优化 PID 闭环电机响应，抓取准确率提升至 96%。",
-        cover: "/assets/gallery-tech.jpg",
+        cover: "assets/gallery-tech.jpg",
         date: "2026-09-28",
         uploader: "陈闻远 · 社长上传"
       }
@@ -311,7 +373,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "青少年科创挑战赛 · 二等奖",
         time: "2026-05",
         desc: "市级青少年机器人创意设计挑战赛团体二等奖。",
-        cover: "/assets/cert-fb-h5.png",
+        cover: "assets/cert-fb-h5.png",
         date: "2026-05-20",
         uploader: "陈闻远 · 社长上传"
       }
@@ -324,7 +386,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "《山海经》异兽想象图集",
         creator: "读书会共读小组",
         desc: "汇编 15 幅神话异兽手绘插图与现代神话考证笔记。",
-        cover: "/assets/gallery-humanities.jpg",
+        cover: "assets/gallery-humanities.jpg",
         date: "2026-09-25",
         uploader: "周予安 · 社长上传"
       }
@@ -335,7 +397,7 @@ const CLUB_SHOWCASE_DATA = {
         title: "书香校园 · 十佳读书社团",
         time: "2026-04",
         desc: "获评海淀区“书香校园”十佳学生读书组织。",
-        cover: "/assets/cert-rd-h1.png",
+        cover: "assets/cert-rd-h1.png",
         date: "2026-04-23",
         uploader: "周予安 · 社长上传"
       }
@@ -361,7 +423,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m1",
         actId: "act-1",
         actName: "校园足球友谊交流赛",
-        photo: "/assets/moment-team-1.jpg",
+        photo: "assets/moment-team-1.jpg",
         author: "顾一然",
         time: "活动前 1 天",
         isFeatured: true,
@@ -371,7 +433,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m2",
         actId: "act-1",
         actName: "校园足球友谊交流赛",
-        photo: "/assets/moment-team-2.jpg",
+        photo: "assets/moment-team-2.jpg",
         author: "张子墨",
         time: "活动前 18 小时",
         isFeatured: false,
@@ -381,7 +443,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m3",
         actId: "act-2",
         actName: "周三战术跑位与阵型协同训练",
-        photo: "/assets/moment-team-3.jpg",
+        photo: "assets/moment-team-3.jpg",
         author: "顾一然",
         time: "16:10",
         isFeatured: true,
@@ -391,7 +453,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m4",
         actId: "act-2",
         actName: "周三战术跑位与阵型协同训练",
-        photo: "/assets/gallery-sports.jpg",
+        photo: "assets/gallery-sports.jpg",
         author: "沈清越",
         time: "16:15",
         isFeatured: false,
@@ -401,7 +463,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m5",
         actId: "act-2",
         actName: "周三战术跑位与阵型协同训练",
-        photo: "/assets/moment-team-1.jpg",
+        photo: "assets/moment-team-1.jpg",
         author: "赵子易",
         time: "16:18",
         isFeatured: true,
@@ -411,7 +473,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m6",
         actId: "act-3",
         actName: "校际交流准备与体能恢复加练",
-        photo: "/assets/moment-team-2.jpg",
+        photo: "assets/moment-team-2.jpg",
         author: "陈思语",
         time: "17:45",
         isFeatured: true,
@@ -421,7 +483,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m7",
         actId: "act-3",
         actName: "校际交流准备与体能恢复加练",
-        photo: "/assets/moment-team-3.jpg",
+        photo: "assets/moment-team-3.jpg",
         author: "许嘉禾",
         time: "17:50",
         isFeatured: false,
@@ -431,7 +493,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m8",
         actId: "act-4",
         actName: "上周三高位逼抢与协防专题演练",
-        photo: "/assets/gallery-sports.jpg",
+        photo: "assets/gallery-sports.jpg",
         author: "顾一然",
         time: "10-16 18:10",
         isFeatured: false,
@@ -441,7 +503,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m9",
         actId: "act-4",
         actName: "上周三高位逼抢与协防专题演练",
-        photo: "/assets/moment-team-1.jpg",
+        photo: "assets/moment-team-1.jpg",
         author: "张子墨",
         time: "10-16 18:30",
         isFeatured: false,
@@ -451,7 +513,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m10",
         actId: "act-5",
         actName: "周三传切配合与攻防转换实训",
-        photo: "/assets/moment-team-2.jpg",
+        photo: "assets/moment-team-2.jpg",
         author: "赵子易",
         time: "10-09 18:00",
         isFeatured: true,
@@ -461,7 +523,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m11",
         actId: "act-5",
         actName: "周三传切配合与攻防转换实训",
-        photo: "/assets/moment-team-3.jpg",
+        photo: "assets/moment-team-3.jpg",
         author: "周天羽",
         time: "10-09 19:20",
         isFeatured: true,
@@ -471,7 +533,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m12",
         actId: "act-6",
         actName: "学期初全员选拔与基础技术测试",
-        photo: "/assets/gallery-sports.jpg",
+        photo: "assets/gallery-sports.jpg",
         author: "顾一然",
         time: "09-25 18:00",
         isFeatured: true,
@@ -481,7 +543,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m13",
         actId: "act-6",
         actName: "学期初全员选拔与基础技术测试",
-        photo: "/assets/moment-team-1.jpg",
+        photo: "assets/moment-team-1.jpg",
         author: "李一诺",
         time: "09-25 18:15",
         isFeatured: false,
@@ -491,7 +553,7 @@ const CLUB_MOMENTS_DATA = {
         id: "m14",
         actId: "act-6",
         actName: "学期初全员选拔与基础技术测试",
-        photo: "/assets/moment-team-2.jpg",
+        photo: "assets/moment-team-2.jpg",
         author: "陈沐阳",
         time: "09-25 18:40",
         isFeatured: true,
@@ -513,7 +575,7 @@ const CLUB_MOMENTS_DATA = {
         id: "dm1",
         actId: "dact-1",
         actName: "校园人物微纪录片初剪沟通会",
-        photo: "/assets/moment-anime-1.png",
+        photo: "assets/moment-anime-1.png",
         author: "林小薇",
         time: "15:40",
         isFeatured: true,
@@ -523,7 +585,7 @@ const CLUB_MOMENTS_DATA = {
         id: "dm2",
         actId: "dact-2",
         actName: "校园微纪录片补拍分工会",
-        photo: "/assets/moment-anime-2.png",
+        photo: "assets/moment-anime-2.png",
         author: "张同学",
         time: "昨天",
         isFeatured: false,
@@ -533,7 +595,7 @@ const CLUB_MOMENTS_DATA = {
         id: "dm3",
         actId: "dact-3",
         actName: "影视摄影构图与手持云台实操训练",
-        photo: "/assets/gallery-art.jpg",
+        photo: "assets/gallery-art.jpg",
         author: "陈同学",
         time: "10-18 16:30",
         isFeatured: true,
@@ -549,16 +611,16 @@ const INITIAL_ENROLL_APPLICATIONS = [
   {
     id: 'enroll-1',
     term: '2026-2027 学年上学期',
-    clubId: 'ai-robot',
-    clubName: '机器人探索社',
-    category: '科技',
-    cover: '/assets/poster-robot.jpg',
-    captain: '陈闻远',
-    contact: '136 0000 5306',
+    clubId: 'radio',
+    clubName: '校园广播站',
+    category: '人文',
+    cover: 'assets/poster-reading.jpg',
+    captain: '周予安',
+    contact: '137 0000 2648',
     status: 'pending', // 待审核
     statusText: '待审核',
     submittedAt: '2026-09-12 14:20',
-    note: '已协助孩子提交入团意向，等待学生社长陈闻远审核录用。'
+    note: '已协助孩子提交入团意向，等待学生社长周予安审核录用。'
   },
   {
     id: 'enroll-2',
@@ -566,7 +628,7 @@ const INITIAL_ENROLL_APPLICATIONS = [
     clubId: 'football',
     clubName: '足球联盟',
     category: '体育',
-    cover: '/assets/poster-football.jpg',
+    cover: 'assets/poster-football.jpg',
     captain: '赵子安',
     contact: '138 0000 9218',
     status: 'passed', // 已通过
@@ -578,10 +640,10 @@ const INITIAL_ENROLL_APPLICATIONS = [
   {
     id: 'enroll-2b',
     term: '2026-2027 学年上学期',
-    clubId: 'drama',
+    clubId: 'documentary',
     clubName: '校园纪录片社',
     category: '艺术',
-    cover: '/assets/poster-drama.jpg',
+    cover: 'assets/poster-drama.jpg',
     captain: '林小薇',
     contact: '139 0000 8122',
     status: 'passed', // 已通过
@@ -596,7 +658,7 @@ const INITIAL_ENROLL_APPLICATIONS = [
     clubId: 'drama-acting',
     clubName: '光影戏剧社',
     category: '艺术',
-    cover: '/assets/poster-reading.jpg',
+    cover: 'assets/poster-reading.jpg',
     captain: '李若彤',
     contact: '139 0000 1860',
     status: 'rejected', // 未通过
@@ -611,7 +673,7 @@ const INITIAL_ENROLL_APPLICATIONS = [
     clubId: 'reading',
     clubName: '山海阅读会',
     category: '人文',
-    cover: '/assets/poster-reading.jpg',
+    cover: 'assets/poster-reading.jpg',
     captain: '周予安',
     contact: '137 0000 2648',
     status: 'passed',
@@ -626,7 +688,7 @@ const INITIAL_ENROLL_APPLICATIONS = [
     clubId: 'football',
     clubName: '足球联盟',
     category: '体育',
-    cover: '/assets/poster-football.jpg',
+    cover: 'assets/poster-football.jpg',
     captain: '赵子安',
     contact: '138 0000 9218',
     status: 'rejected',
@@ -641,7 +703,7 @@ const INITIAL_ENROLL_APPLICATIONS = [
     clubId: 'mun',
     clubName: '模拟联合国社',
     category: '人文',
-    cover: '/assets/poster-reading.jpg',
+    cover: 'assets/poster-reading.jpg',
     captain: '张越',
     contact: '138 0000 7712',
     status: 'passed',
@@ -656,18 +718,20 @@ export default function App() {
   // 当前处于的视图页面：'main' (广场/报告) | 'proposeCenter' (社团申报专区) | 'proposeForm' (申报表单)
   const [currentView, setCurrentView] = useState('main');
 
-  // 当前激活的双 Tab：'plaza' (社团广场) | 'report' (社团报告)
+  // 当前激活的双 Tab：'plaza' (社团广场) | 'report' (分析报告)
   const [activeTab, setActiveTab] = useState('plaza');
 
   // 当前演示数据为孩子已有社团记录；后续接入真实数据后由记录状态决定
   const childState = 'joined';
 
-  // 社团报告：AI 智读手动触发状态 ('idle' | 'loading' | 'done')
-  const [reportAiStatus, setReportAiStatus] = useState('idle');
+  // 分析报告：AI 解读弹层开合（与学生手机端 analysis.html 一致，点悬浮按钮打开）
+  const [reportAiOpen, setReportAiOpen] = useState(false);
 
   // 孩子的社团申报列表（支持修改重新提交、撤回、新建）
   const [proposalRecords, setProposalRecords] = useState(INITIAL_PROPOSAL_RECORDS);
   const [editingProposal, setEditingProposal] = useState(null); // 当前正在编辑的申请
+  const [selectedProposalTerm, setSelectedProposalTerm] = useState(CURRENT_TERM); // 申报列表学期筛选
+  const [isGuideOpen, setIsGuideOpen] = useState(false); // 申报说明弹窗
 
   // 孩子的社团草稿箱数据（初始 1 条草稿，对齐学生桌面端截图 1 中的“我的草稿 (1)”）
   const [draftRecords, setDraftRecords] = useState([
@@ -688,6 +752,11 @@ export default function App() {
   const [isDraftsModalOpen, setIsDraftsModalOpen] = useState(false);
   const [viewingDetailRecord, setViewingDetailRecord] = useState(null);
 
+  // 当前所选学期过滤后的申报记录
+  const visibleProposalRecords = proposalRecords.filter(
+    record => (record.term || CURRENT_TERM) === selectedProposalTerm
+  );
+
   // 【我报名的社团】报名申请列表状态（支持学期切换、待审核取消报名、未通过重新报名）
   const [enrollApplications, setEnrollApplications] = useState(INITIAL_ENROLL_APPLICATIONS);
   const [selectedEnrollTerm, setSelectedEnrollTerm] = useState('2026-2027 学年上学期');
@@ -696,7 +765,6 @@ export default function App() {
   const [showcaseSubTab, setShowcaseSubTab] = useState('works'); // 'works' (作品集锦) | 'honors' (荣誉时刻)
   const [viewingClubMoments, setViewingClubMoments] = useState(null); // 当前查看全部活动瞬间的社团
   const [selectedMomentActivity, setSelectedMomentActivity] = useState('all'); // 全部活动瞬间当前选中的活动筛选
-  const [previewShowcaseItem, setPreviewShowcaseItem] = useState(null); // 预览作品/荣誉大图
   const [previewMomentItem, setPreviewMomentItem] = useState(null); // 预览活动瞬间大图
   const [navHistory, setNavHistory] = useState('main'); // 返回上一页的来源 ('main' | 'myApplications')
   const [isPendingExpanded, setIsPendingExpanded] = useState(false); // 待审核是否展开
@@ -767,7 +835,7 @@ export default function App() {
         clubId: currentClubForApply.id || `club-${Date.now()}`,
         clubName: currentClubForApply.name,
         category: currentClubForApply.category,
-        cover: currentClubForApply.cover || '/assets/poster-reading.jpg',
+        cover: currentClubForApply.cover || 'assets/poster-reading.jpg',
         captain: currentClubForApply.captain,
         contact: currentClubForApply.contact || '',
         status: 'pending',
@@ -807,13 +875,43 @@ export default function App() {
   // 分类筛选
   const [selectedCategory, setSelectedCategory] = useState('全部');
 
+  // 学期筛选与「仅看可报名」开关（对齐学生手机端社团广场）
+  const [selectedTerm, setSelectedTerm] = useState(CURRENT_TERM);
+  const [onlyJoinable, setOnlyJoinable] = useState(false);
+
   // 搜索关键字
   const [searchKey, setSearchKey] = useState('');
 
-  // 弹窗控制：'applyModal' | 'recordsModal' | 'posterModal' | null
+  // 全屏图片预览（招新海报 / 作品集锦 / 荣誉时刻）
+  const [gallery, setGallery] = useState(null);
+  const galleryDragX = useRef(0);
+
+  const openGallery = (media, index = 0, title = '', sub = '') => {
+    setGallery({ media, index, title, sub });
+  };
+  const stepGallery = (dir) => {
+    setGallery((prev) => {
+      if (!prev) return prev;
+      const next = prev.index + dir;
+      if (next < 0 || next >= prev.media.length) return prev;
+      return { ...prev, index: next };
+    });
+  };
+
+  useEffect(() => {
+    if (!gallery) return;
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setGallery(null);
+      if (event.key === 'ArrowLeft') stepGallery(-1);
+      if (event.key === 'ArrowRight') stepGallery(1);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [gallery]);
+
+  // 弹窗控制：'applyModal' | 'recordsModal' | null
   const [modalType, setModalType] = useState(null);
   const [currentClubForApply, setCurrentClubForApply] = useState(null);
-  const [previewPosterClub, setPreviewPosterClub] = useState(null);
 
   // 打开申报表单（新建或修改）
   const handleOpenForm = (record = null) => {
@@ -931,6 +1029,7 @@ export default function App() {
           // 原本是草稿，直接转入已提交申报列表
           const newSubmitted = {
             id: editingProposal.id,
+            term: selectedProposalTerm,
             name: formName,
             category: formCategory,
             captain: '赵子易',
@@ -938,7 +1037,7 @@ export default function App() {
             status: 'pending',
             statusText: '待审核',
             submittedAt: '刚刚',
-            cover: '/assets/poster-football.jpg',
+            cover: 'assets/poster-football.jpg',
             venue: formVenue,
             venueDesc: formVenueDesc,
             short: formShort,
@@ -953,6 +1052,7 @@ export default function App() {
       // 新建记录
       const newRec = {
         id: `prop-${Date.now()}`,
+        term: selectedProposalTerm,
         name: formName,
         category: formCategory,
         captain: '赵子易',
@@ -960,7 +1060,7 @@ export default function App() {
         status: 'pending',
         statusText: '待审核',
         submittedAt: '刚刚',
-        cover: '/assets/poster-football.jpg',
+        cover: 'assets/poster-football.jpg',
         venue: formVenue,
         venueDesc: formVenueDesc,
         short: formShort,
@@ -973,9 +1073,9 @@ export default function App() {
     setCurrentView('proposeCenter');
   };
 
-  // 撤回申报（完全对齐桌面端：留在当前页面，状态变更为已撤回）
+  // 撤回申报（完全对齐学生手机端：留在当前页面，状态变更为已撤回）
   const handleWithdraw = (record) => {
-    if (confirm(`确定要撤回社团【${record.name}】的申报吗？\n撤回后申报将保留在当前列表，状态变更为已撤回，可修改后重新提交；若不再需要也可直接删除。`)) {
+    if (confirm(`确定要撤回社团【${record.name}】的申报吗？\n撤回后教师将无法审核，你可修改后重新提交。`)) {
       const now = new Date();
       const month = String(now.getMonth() + 1).padStart(2, '0');
       const day = String(now.getDate()).padStart(2, '0');
@@ -997,18 +1097,20 @@ export default function App() {
     }
   };
 
-  // 删除已撤回的申报记录（完全对齐桌面端）
-  const handleDeleteProposal = (record) => {
-    if (confirm(`确定要删除社团【${record.name}】的申报记录吗？删除后不可恢复。`)) {
-      setProposalRecords(prev => prev.filter(item => item.id !== record.id));
-    }
-  };
+  // 当前学期内孩子已报名的社团（待审核 / 已通过）
+  const enrolledClub = (club) => enrollApplications.find(
+    app => app.term === CURRENT_TERM
+      && (app.clubId === club.id || club.name.includes(app.clubName))
+      && (app.status === 'pending' || app.status === 'passed')
+  );
 
   // 过滤后的社团名录
   const filteredClubs = PLAZA_CLUBS.filter(club => {
+    const matchTerm = club.term === selectedTerm;
     const matchCat = selectedCategory === '全部' || club.category === selectedCategory;
     const matchKey = club.name.includes(searchKey) || club.short.includes(searchKey) || club.recruitment.includes(searchKey);
-    return matchCat && matchKey;
+    const matchJoinable = !onlyJoinable || (club.state === 'open' && club.capacity > club.members && !enrolledClub(club));
+    return matchTerm && matchCat && matchKey && matchJoinable;
   });
 
   return (
@@ -1055,7 +1157,7 @@ export default function App() {
               ? (viewingClubMoments ? `${viewingClubMoments.name} · 全部活动瞬间` : '全部活动瞬间')
               : currentView === 'proposeForm'
               ? (editingProposal ? '修改社团申报' : '代孩子申报新社团')
-              : (activeTab === 'plaza' ? '社团广场' : '社团报告')}
+              : (activeTab === 'plaza' ? '社团广场' : '分析报告')}
           </div>
 
           {/* 微信原生胶囊避让区 */}
@@ -1067,28 +1169,15 @@ export default function App() {
         </div>
 
         {/* ========================================================= */}
-        {/* 视图 1：主页双 Tab（社团广场 / 社团报告）                   */}
+        {/* 视图 1：主页双 Tab（社团广场 / 分析报告）                   */}
         {/* ========================================================= */}
         {currentView === 'main' && (
           <>
             {/* Tab 1：【社团广场】（公域：全校社团名录、选报、建团代办） */}
             {activeTab === 'plaza' && (
               <div className="tab-content">
-                
-                {/* 1. 搜索框通栏 */}
-                <div className="search-full-width">
-                  <div className="plaza-search-box">
-                    <MagnifyingGlass size={16} color="#64748b" />
-                    <input
-                      className="plaza-search-input"
-                      placeholder="搜索感兴趣的社团名称或关键词"
-                      value={searchKey}
-                      onChange={(e) => setSearchKey(e.target.value)}
-                    />
-                  </div>
-                </div>
 
-                {/* 2. 双服务对仗合一卡片：【社团申报】 + 【我报名的】 */}
+                {/* 1. 双服务入口：【社团申报】 + 【我报名的】（保留 tab 切换） */}
                 <div className="service-twin-card">
                   {/* 左：社团申报（点击进入对齐桌面端的社团申报专区页） */}
                   <div
@@ -1100,7 +1189,6 @@ export default function App() {
                     </div>
                     <div className="service-text-group">
                       <span className="service-title">社团申报</span>
-                      <span className="service-subtitle">发起创团与进度</span>
                     </div>
                   </div>
 
@@ -1114,7 +1202,6 @@ export default function App() {
                     </div>
                     <div className="service-text-group">
                       <span className="service-title">我报名的</span>
-                      <span className="service-subtitle">已选社团与录用</span>
                     </div>
                     {enrollApplications.filter(a => a.status === 'pending').length > 0 && (
                       <span className="service-badge">
@@ -1124,494 +1211,445 @@ export default function App() {
                   </div>
                 </div>
 
-            {/* 3. 精致浅色微胶囊筛选栏（12px字号、高质感淡蓝选中） */}
-            <div className="category-pill-bar">
-              {['全部', '体育', '科技', '艺术', '人文'].map((cat) => (
-                <div
-                  key={cat}
-                  className={`modern-pill-item ${selectedCategory === cat ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(cat)}
-                >
-                  {cat}
+                {/* 2. 搜索框 */}
+                <div className="search-full-width">
+                  <div className="plaza-search-box">
+                    <MagnifyingGlass size={16} color="#64748b" />
+                    <input
+                      className="plaza-search-input"
+                      placeholder="搜索社团名称"
+                      value={searchKey}
+                      onChange={(e) => setSearchKey(e.target.value)}
+                    />
+                  </div>
                 </div>
-              ))}
-            </div>
 
-            {/* 4. 全校招新社团卡片列表（参考综合实践活动规范：左图右文 + 底行微翻牌倒计时） */}
-            <div className="club-card-list">
-              {filteredClubs.map((club) => {
-                const seats = club.capacity - club.members;
-                const dynamicSecs = club.timeParts ? String(secondsTick).padStart(2, '0') : '00';
-                return (
-                  <div
-                    key={club.id}
-                    className="plaza-club-card"
-                    onClick={() => {
+                {/* 3. 筛选行：类别 / 学期 / 仅看可报名（对齐学生手机端） */}
+                <div className="filter-row">
+                  <select
+                    className="filter-select"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    aria-label="选择社团类别"
+                  >
+                    {['全部', '体育', '艺术', '科技', '人文'].map((cat) => (
+                      <option key={cat} value={cat}>{cat === '全部' ? '全部类别' : cat}</option>
+                    ))}
+                  </select>
+                  <select
+                    className="filter-select"
+                    value={selectedTerm}
+                    onChange={(e) => setSelectedTerm(e.target.value)}
+                    aria-label="选择学期"
+                  >
+                    {ENROLL_TERM_OPTIONS.map((term) => (
+                      <option key={term} value={term}>{term}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className={`filter-toggle ${onlyJoinable ? 'on' : ''}`}
+                    onClick={() => setOnlyJoinable((prev) => !prev)}
+                  >
+                    仅看可报名
+                  </button>
+                </div>
+
+                {/* 4. 统计行 */}
+                <div className="plaza-summary">
+                  <span>{selectedTerm === CURRENT_TERM ? '本学期' : selectedTerm}共 {filteredClubs.length} 个社团</span>
+                </div>
+
+                {/* 5. 社团卡片列表（左图右文 + 底部截止时间与操作） */}
+                <div className="plaza-list">
+                  {filteredClubs.map((club) => {
+                    const seats = Math.max(club.capacity - club.members, 0);
+                    const applied = enrolledClub(club);
+                    const isFull = club.state === 'full' || seats <= 0;
+                    const canApply = club.state === 'open' && !isFull && !applied;
+                    const openDetail = () => {
                       setViewingClubDetail(club);
                       setDetailTab('info');
                       setNavHistory('main');
                       setCurrentView('clubDetail');
-                    }}
-                  >
-                    {/* 顶行：社团名称 + 类别徽章 */}
-                    <div className="plaza-card-top">
-                      <div className="plaza-card-title-group">
-                        <span className="plaza-club-name">{club.name}</span>
-                        <span className="tag-badge tag-category">{club.category}</span>
-                      </div>
-                    </div>
+                    };
+                    const handleAction = (event) => {
+                      event.stopPropagation();
+                      if (applied) {
+                        if (confirm(`确定要取消【${club.name}】的报名吗？\n取消后可重新选报其他社团。`)) {
+                          setEnrollApplications(prev => prev.filter(item => item.id !== applied.id));
+                          alert(`已取消【${club.name}】的报名。`);
+                        }
+                        return;
+                      }
+                      if (club.state === 'closed') {
+                        openDetail();
+                        return;
+                      }
+                      if (!canApply) return;
+                      setCurrentClubForApply(club);
+                      setApplyReason('');
+                      setModalType('applyModal');
+                    };
 
-                    {/* 中间主体：左侧精美封面海报 + 右侧4项属性（简介、要求、社长、名额，等高完美对齐） */}
-                    <div className="plaza-card-middle-body">
-                      {club.cover && (
-                        <div className="plaza-card-cover-wrap">
-                          <img src={club.cover} alt={club.name} className="plaza-card-cover-img" />
+                    return (
+                      <article key={club.id} className="plaza-card" onClick={openDetail}>
+                        <div className="plaza-card-head">
+                          <div className="plaza-card-head-left">
+                            <h3>{club.name}</h3>
+                            <span className="tag tag-cat">{club.category}</span>
+                          </div>
                         </div>
-                      )}
 
-                      <div className="plaza-info-lines">
-                        <p className="info-line">
-                          <span className="info-label">社团简介：</span>
-                          <span className="info-text">{club.short}</span>
-                        </p>
-                        <p className="info-line">
-                          <span className="info-label">招募要求：</span>
-                          <span className="info-text">{club.recruitment}</span>
-                        </p>
-                        <p className="info-line">
-                          <span className="info-label">学生社长：</span>
-                          <span className="info-text">{club.captain}</span>
-                          {club.contact && (
-                            <span className="leader-phone-pill">
-                              <Phone size={10} weight="bold" />
-                              <span>{club.contact}</span>
+                        <div className="plaza-card-main">
+                          <div className="plaza-card-cover" style={{ backgroundImage: `url('${club.cover}')` }} />
+                          <div className="plaza-card-body">
+                            <div className="info-row">
+                              <span className="info-label">社团简介：</span>
+                              <span className="info-text">{club.short}</span>
+                            </div>
+                            <div className="info-row">
+                              <span className="info-label">招新说明：</span>
+                              <span className="info-text">{club.recruitment}</span>
+                            </div>
+                            <div className="info-row">
+                              <span className="info-label">学生社长：</span>
+                              <span className="info-inline">
+                                {club.captain}
+                                {club.contact && (
+                                  <span className="phone-chip">
+                                    <Phone size={9} weight="bold" />
+                                    {club.contact}
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                            <div className="info-row">
+                              <span className="info-label">成员名额：</span>
+                              <span className="info-inline">
+                                {club.members} / {club.capacity} 人
+                                {seats > 0
+                                  ? <span className="seat-chip">剩余名额 {seats}</span>
+                                  : <span className="seat-chip full">名额已满</span>}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="plaza-card-foot">
+                          {club.state === 'closed' ? (
+                            <span className="plaza-deadline muted">报名截止：{club.applyEnd}</span>
+                          ) : (
+                            <span className="plaza-deadline">
+                              距报名截止：{club.timeParts?.days || '0'}天 {club.timeParts?.hours || '00'}小时 {club.timeParts?.mins || '00'}分 {String(secondsTick).padStart(2, '0')}秒
                             </span>
                           )}
-                        </p>
-                        <p className="info-line">
-                          <span className="info-label">成员名额：</span>
-                          <span className="info-text">{club.members} / {club.capacity} 人</span>
-                          {seats > 0 ? (
-                            <span className="quota-pill normal">剩余 {seats} 人</span>
+
+                          {applied ? (
+                            <button type="button" className="btn btn-joined" onClick={handleAction}>取消报名</button>
+                          ) : club.state === 'closed' ? (
+                            <button type="button" className="btn btn-secondary" onClick={handleAction}>查看社团</button>
+                          ) : isFull ? (
+                            <span className="tip-wrap" data-tip="该社团人员已达上限，暂时不能报名哦~先看看其他社团吧">
+                              <button type="button" className="btn btn-primary" disabled>代孩子报名</button>
+                            </span>
                           ) : (
-                            <span className="quota-pill full">名额已满</span>
+                            <button type="button" className="btn btn-primary" onClick={handleAction}>代孩子报名</button>
                           )}
-                        </p>
-                      </div>
-                    </div>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
 
-                    {/* 底部同行：左侧参考综合实践的暖橙微翻牌倒计时 + 右侧 [代孩子报名] 主按钮 */}
-                    <div className="plaza-card-bottom-row">
-                      <div className="bottom-countdown-group">
-                        {club.applyEnded ? (
-                          <span className="countdown-ended-text">报名截止：{club.applyEnd}</span>
-                        ) : (
-                          <div className="flip-countdown-wrap">
-                            <span className="flip-label">距报名截止</span>
-                            <span className="flip-box">{club.timeParts?.days || '0'}</span>
-                            <span className="flip-unit">天</span>
-                            <span className="flip-box">{club.timeParts?.hours || '00'}</span>
-                            <span className="flip-colon">:</span>
-                            <span className="flip-box">{club.timeParts?.mins || '00'}</span>
-                            <span className="flip-colon">:</span>
-                            <span className="flip-box">{dynamicSecs}</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <button
-                        className="apply-action-btn"
-                        disabled={!club.isOpen || club.applyEnded || seats <= 0}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCurrentClubForApply(club);
-                          setModalType('applyModal');
-                        }}
-                      >
-                        {club.applyEnded ? '已截止' : (club.isOpen && seats > 0 ? '代孩子报名' : '名额已满')}
-                      </button>
-                    </div>
+                {filteredClubs.length === 0 && (
+                  <div className="plaza-empty">
+                    <strong>没有找到匹配的社团</strong>
+                    <span>可以换一个关键词，或取消当前筛选条件后再试。</span>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+                )}
+              </div>
+            )}
 
         {/* ========================================================= */}
-        {/* Tab 2：【社团报告】（私域：孩子成长纪实、客观事实、学分）   */}
+        {/* Tab 2：【分析报告】（完全复用学生手机端 analysis.html）   */}
         {/* ========================================================= */}
         {activeTab === 'report' && (
-          <div className="tab-content report-tab-content">
-            {childState === 'joined' ? (
-              <>
-                {/* 1. 顶部学期身份与成长图鉴卡 (Hero Card - 对齐学生桌面端) */}
-                <div className="report-hero-card">
-                  <div className="report-hero-bg-orb" aria-hidden="true" />
-                  <div className="report-hero-head">
-                    <div className="report-hero-meta">
-                      <span className="report-term-badge">2026—2027 学年 · 上学期</span>
-                      <h2 className="report-hero-title">孩子的社团学期<em>图鉴</em></h2>
-                      <span className="report-student-sub">赵子易 · 初二 (3) 班 · 数据截至 2026 年 10 月 26 日</span>
+          <>
+            <div className="tab-content rp-report has-fab">
+              {childState === 'joined' ? (
+                <>
+                  {/* 报告封面（与学生手机端 analysis.html 完全一致） */}
+                  <section className="rp-hero">
+                    <span className="rp-hero-eyebrow">2026—2027 学年 · 上学期</span>
+                    <div className="rp-badge rp-badge-side">
+                      <span className="rp-badge-cap">已获得学分</span>
+                      <b>6<em>学分</em></b>
+                      <span className="rp-badge-hours">12 学时</span>
                     </div>
-                    {/* 学分徽章 */}
-                    <div className="report-credit-ring">
-                      <span className="ring-cap">已获得学分</span>
-                      <strong className="ring-val">1.5<em>分</em></strong>
-                      <span className="ring-hours">累计 16.0 学时</span>
-                    </div>
-                  </div>
+                    <h1>我的社团学期<em>图鉴</em></h1>
+                    <p className="rp-hero-sub">赵子易 · 数据截至 2026 年 10 月 26 日</p>
 
-                  {/* 成长特质画像标签 (Persona Chips - 100% 对齐学生桌面端) */}
-                  <div className="report-persona-chips">
-                    <span className="persona-chip blue">
-                      <Medal size={12} weight="fill" /> 高频到场
-                    </span>
-                    <span className="persona-chip violet">
-                      <ChatCircleDots size={12} weight="fill" /> 讨论活跃
-                    </span>
-                    <span className="persona-chip amber">
-                      <Star size={12} weight="fill" /> 金句制造者
-                    </span>
-                    <span className="persona-chip green">
-                      <PuzzlePiece size={12} weight="fill" /> 多社团玩家
-                    </span>
-                  </div>
-                </div>
-
-                {/* 2. AI 智读 · 30秒读懂这学期 (手动触发) */}
-                {reportAiStatus === 'idle' && (
-                  <div className="report-ai-card idle">
-                    <div className="report-ai-idle-row">
-                      <div className="report-ai-title">
-                        <span className="ai-icon-orb"><Sparkle size={13} weight="fill" /></span>
-                        <strong>AI 智读 · 30秒读懂这学期</strong>
-                      </div>
-                      <button
-                        type="button"
-                        className="ai-trigger-btn"
-                        onClick={() => {
-                          setReportAiStatus('loading');
-                          setTimeout(() => setReportAiStatus('done'), 800);
-                        }}
-                      >
-                        <Sparkle size={12} weight="fill" />
-                        <span>生成解读</span>
-                      </button>
-                    </div>
-                    <p className="report-ai-idle-desc">
-                      基于本学期 2 个社团、8 场出勤与 1 条精选发言客观事实生成
-                    </p>
-                  </div>
-                )}
-
-                {reportAiStatus === 'loading' && (
-                  <div className="report-ai-card loading">
-                    <div className="ai-loading-header">
-                      <span className="ai-icon-orb rotating"><Sparkle size={13} weight="fill" /></span>
-                      <strong className="ai-loading-title">正在生成学期成长解读...</strong>
-                    </div>
-                    <div className="ai-skeleton-box">
-                      <div className="ai-skeleton-line w-90" />
-                      <div className="ai-skeleton-line w-75" />
-                    </div>
-                  </div>
-                )}
-
-                {reportAiStatus === 'done' && (
-                  <div className="report-ai-card done">
-                    <div className="report-ai-header">
-                      <div className="report-ai-title">
-                        <span className="ai-icon-orb"><Sparkle size={13} weight="fill" /></span>
-                        <strong>AI 智读 · 30秒读懂这学期</strong>
-                      </div>
-                      <div className="ai-header-actions">
-                        <button
-                          type="button"
-                          className="ai-action-btn regen"
-                          onClick={() => {
-                            setReportAiStatus('loading');
-                            setTimeout(() => setReportAiStatus('done'), 600);
-                          }}
-                        >
-                          <ArrowClockwise size={11} weight="bold" />
-                          <span>重新生成</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="ai-action-btn close"
-                          onClick={() => setReportAiStatus('idle')}
-                        >
-                          <span>收起</span>
-                        </button>
-                      </div>
-                    </div>
-                    <p className="report-ai-summary">
-                      这学期孩子在 2 个社团里到场 8 次，出勤率 100%，稳稳的常驻选手。作为机器人社社长举办 5 场活动，在模联社讨论中贡献精选发言。
-                    </p>
-                    <div className="report-ai-details">
-                      <div className="ai-detail-item">
-                        <span className="ai-detail-dot amber" />
-                        <div>
-                          <strong>高光时刻</strong>
-                          <p>「联合国安理会议题模拟辩论」发言被社长设为精选，可以直接当学分证据。</p>
-                        </div>
-                      </div>
-                      <div className="ai-detail-item">
-                        <span className="ai-detail-dot blue" />
-                        <div>
-                          <strong>需要关注</strong>
-                          <p>满勤 20 学时已达成 16.0 学时（80%），各个社团的出勤都保持在 90% 以上，状态很稳。</p>
-                        </div>
-                      </div>
-                      <div className="ai-detail-item">
-                        <span className="ai-detail-dot green" />
-                        <div>
-                          <strong>下学期小目标</strong>
-                          <p>守住 90% 以上出勤率，再冲 2 条精选发言与特色实践成果。</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. 01 总览（指标与文案 100% 对齐学生桌面端） */}
-                <div className="report-section-block">
-                  <div className="section-head-title">
-                    <div className="section-head-main">
-                      <span className="section-idx-badge">01</span>
-                      <span>总览</span>
-                    </div>
-                    <span className="section-caption">本学期社团参与的关键数字，一屏看清整体节奏。</span>
-                  </div>
-                  <div className="report-kpi-row">
-                    <div className="report-kpi-item">
-                      <span className="kpi-label">参与社团</span>
-                      <strong className="kpi-num">2<small>个</small></strong>
-                      <span className="kpi-sub">本学期已加入</span>
-                    </div>
-                    <div className="report-kpi-item">
-                      <span className="kpi-label">活动出勤</span>
-                      <strong className="kpi-num">8<small>场</small></strong>
-                      <span className="kpi-sub">出勤率 100%</span>
-                    </div>
-                    <div className="report-kpi-item">
-                      <span className="kpi-label">累计学时</span>
-                      <strong className="kpi-num">16.0<small>h</small></strong>
-                      <span className="kpi-sub">8 场 × 2 学时</span>
-                    </div>
-                    <div className="report-kpi-item">
-                      <span className="kpi-label">折算学分</span>
-                      <strong className="kpi-num highlight">1.5<small>分</small></strong>
-                      <span className="kpi-sub">已认定 0.5 分</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 4. 02 我管理的社团（社长管理全社看板 - 100% 对齐桌面端） */}
-                <div className="report-section-block">
-                  <div className="section-head-title">
-                    <div className="section-head-main">
-                      <span className="section-idx-badge">02</span>
-                      <span>我管理的社团</span>
-                    </div>
-                    <span className="section-caption">AI 与智能机器人社 · 作为社长，全社的成员、活动与讨论运营情况。</span>
-                  </div>
-                  <div className="leader-cockpit-card">
-                    <div className="leader-cockpit-kpis">
-                      <div className="cockpit-kpi">
-                        <span className="c-label">社团成员</span>
-                        <strong className="c-val">24<small>/30人</small></strong>
-                        <span className="c-note">入社率 80%</span>
-                      </div>
-                      <div className="cockpit-kpi">
-                        <span className="c-label">本学期活动</span>
-                        <strong className="c-val">5<small>场</small></strong>
-                        <span className="c-note">已开展 5 场</span>
-                      </div>
-                      <div className="cockpit-kpi">
-                        <span className="c-label">全社出勤率</span>
-                        <strong className="c-val">86%</strong>
-                        <span className="c-note">5 场活动统计</span>
-                      </div>
-                      <div className="cockpit-kpi">
-                        <span className="c-label">发起话题</span>
-                        <strong className="c-val">2<small>个</small></strong>
-                        <span className="c-note">覆盖 2 场活动</span>
-                      </div>
-                      <div className="cockpit-kpi">
-                        <span className="c-label">成员发言</span>
-                        <strong className="c-val">14<small>条</small></strong>
-                        <span className="c-note">参与率 75%</span>
-                      </div>
-                      <div className="cockpit-kpi">
-                        <span className="c-label">社长运营学时</span>
-                        <strong className="c-val">10.0<small>h</small></strong>
-                        <span className="c-note">个人运营口径</span>
-                      </div>
-                    </div>
-                    <div className="leader-todo-box">
-                      <div className="leader-todo-info">
-                        <CheckCircle size={14} color="#16a34a" weight="fill" style={{ flexShrink: 0 }} />
-                        <span className="leader-todo-text">社长待办：全部场次考勤点名已完成</span>
-                      </div>
-                      <span className="leader-todo-tag">全部完成</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 5. 03 社团活动参与（仅作为团员参与的社团，社长社团不重复写出勤） */}
-                <div className="report-section-block">
-                  <div className="section-head-title">
-                    <div className="section-head-main">
-                      <span className="section-idx-badge">03</span>
-                      <span>社团活动参与</span>
-                    </div>
-                    <span className="section-caption">按社团查看每场活动的考勤结果与出勤率。</span>
-                  </div>
-
-                  {/* 参与社团：模拟联合国社（团员角色） */}
-                  <div className="report-club-card">
-                    <div className="report-club-header">
-                      <div>
-                        <div className="club-name-row">
-                          <strong className="report-club-name">模拟联合国社</strong>
-                          <span className="role-badge member">团员</span>
-                        </div>
-                        <span className="club-meta-sub">人文社科 · 32 名成员 · 每周五下午 阶梯教室A</span>
-                      </div>
-                      <div className="club-rate-pill">出勤率 100%</div>
-                    </div>
-
-                    {/* 出勤占比色条 */}
-                    <div className="club-progress-strip">
-                      <div className="strip-bar present" style={{ width: '67%' }} />
-                      <div className="strip-bar late" style={{ width: '33%' }} />
-                    </div>
-                    <div className="strip-legend">
-                      <span>出勤 <em>2</em> · 迟到 <em>1</em> · 缺勤 <em>0</em> · 请假 <em>0</em></span>
-                      <span>累计 <em>6.0</em> 学时</span>
-                    </div>
-
-                    {/* 逐场考勤足迹明细 */}
-                    <div className="attendance-timeline">
-                      <div className="timeline-event-item">
-                        <div className="event-info">
-                          <div className="event-title">第3次：联合国安理会议题模拟辩论</div>
-                          <span className="event-meta">10月18日 16:00 · 2.0 学时</span>
-                        </div>
-                        <span className="attend-tag present">正常到场</span>
-                      </div>
-                      <div className="timeline-event-item">
-                        <div className="event-info">
-                          <div className="event-title">第2次：立场文件撰写与外交磋商实务</div>
-                          <span className="event-meta">10月11日 16:00 · 2.0 学时</span>
-                        </div>
-                        <span className="attend-tag late">迟到10分钟</span>
-                      </div>
-                      <div className="timeline-event-item">
-                        <div className="event-info">
-                          <div className="event-title">第1次：新学期全团迎新例会</div>
-                          <span className="event-meta">9月27日 16:00 · 2.0 学时</span>
-                        </div>
-                        <span className="attend-tag present">正常到场</span>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="report-footnote">待确认的场次会在社长完成点名后更新；请假不计入出勤，迟到按已到场统计并计入出勤率。</p>
-                </div>
-
-                {/* 6. 04 讨论贡献 · 精选发言（去除未确认的成果归档，100% 对齐桌面端） */}
-                <div className="report-section-block">
-                  <div className="section-head-title">
-                    <div className="section-head-main">
-                      <span className="section-idx-badge">04</span>
-                      <span>讨论贡献</span>
-                    </div>
-                    <span className="section-caption">你在哪些活动讨论里发了言、说了什么，以及被社长精选的发言。</span>
-                  </div>
-                  <div className="report-quote-card">
-                    <span className="quote-mark" aria-hidden="true">“</span>
-                    <blockquote className="quote-content">
-                      在模拟安理会磋商中，多边谈判的关键是寻找各方核心利益的最小交集，而非单向说服。
-                    </blockquote>
-                    <div className="quote-caption">
-                      <span>模拟联合国社 · 联合国安理会议题模拟辩论</span>
-                      <span className="quote-badge">
-                        <Star size={11} weight="fill" /> 社长精选
+                    <div className="rp-personas">
+                      <span className="rp-persona tone-blue">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.6 6 6.4.5-4.9 4.2 1.5 6.3L12 16.3 6.4 19.6l1.5-6.3L3 9.1l6.4-.5z" /></svg>
+                        高频到场
+                      </span>
+                      <span className="rp-persona tone-amber">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4 19.5l1.3-4.4A7.5 7.5 0 1 1 20 11.5Z" /></svg>
+                        分享达人
+                      </span>
+                      <span className="rp-persona tone-violet">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.6 6 6.4.5-4.9 4.2 1.5 6.3L12 16.3 6.4 19.6l1.5-6.3L3 9.1l6.4-.5z" /></svg>
+                        精选常客
+                      </span>
+                      <span className="rp-persona tone-green">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><rect x="3.4" y="7.4" width="17.2" height="12.2" rx="2" /><path d="M8.4 7.4V5.3a1.6 1.6 0 0 1 1.6-1.6h4a1.6 1.6 0 0 1 1.6 1.6v2.1" /></svg>
+                        多社团玩家
                       </span>
                     </div>
-                  </div>
-                  <p className="report-footnote">本学期有 1 条精选发言可作为学分申请的证据。</p>
-                </div>
+                  </section>
 
-                {/* 7. 05 学时与学分（社团学时证书 - 100% 对齐桌面端） */}
-                <div className="report-section-block">
-                  <div className="section-head-title">
-                    <div className="section-head-main">
-                      <span className="section-idx-badge">05</span>
-                      <span>学时与学分</span>
+                  {/* 01 数据总览 */}
+                  <section className="rp-sec">
+                    <div className="rp-sec-head"><span className="rp-sec-no">01</span><h2>数据总览</h2></div>
+                    <div className="rp-grid">
+                      <article className="rp-metric">
+                        <span className="rp-metric-ico">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><rect x="3.4" y="7.4" width="17.2" height="12.2" rx="2" /><path d="M8.4 7.4V5.3a1.6 1.6 0 0 1 1.6-1.6h4a1.6 1.6 0 0 1 1.6 1.6v2.1" /><path d="M3.4 12.4h17.2" /></svg>
+                        </span>
+                        <strong>2<em>个</em></strong>
+                        <span className="rp-metric-label">我的社团</span>
+                        <span className="rp-metric-note">我管理 1 个 · 我加入 1 个</span>
+                      </article>
+                      <article className="rp-metric">
+                        <span className="rp-metric-ico">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3.6" y="5.4" width="16.8" height="15" rx="2.4" /><path d="M3.6 10h16.8M8.4 3.4v4M15.6 3.4v4" /></svg>
+                        </span>
+                        <strong>6<em>场</em></strong>
+                        <span className="rp-metric-label">活动出勤</span>
+                        <span className="rp-metric-note">共 9 场 · 出勤率 67%</span>
+                      </article>
+                      <article className="rp-metric">
+                        <span className="rp-metric-ico">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4 19.5l1.3-4.4A7.5 7.5 0 1 1 20 11.5Z" /></svg>
+                        </span>
+                        <strong>4<em>条</em></strong>
+                        <span className="rp-metric-label">活动分享</span>
+                        <span className="rp-metric-note">精选 2 条</span>
+                      </article>
+                      <article className="rp-metric">
+                        <span className="rp-metric-ico">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><ellipse cx="12" cy="7" rx="7" ry="3.2" /><path d="M5 7v5c0 1.8 3.1 3.2 7 3.2s7-1.4 7-3.2V7" /><path d="M5 12v5c0 1.8 3.1 3.2 7 3.2s7-1.4 7-3.2v-5" /></svg>
+                        </span>
+                        <strong>12<em>学时</em></strong>
+                        <span className="rp-metric-label">已认定学时</span>
+                        <span className="rp-metric-note">已申请 12 学时</span>
+                      </article>
                     </div>
-                    <span className="section-caption">每场出勤折算成学时，学时再按规则折算成学分。</span>
-                  </div>
-                  <div className="cert-card">
-                    <div className="cert-watermark" aria-hidden="true">
-                      <span>学时</span>
-                      <strong>专用章</strong>
-                    </div>
-                    <div className="cert-top-row">
-                      <span className="cert-eyebrow">2026—2027 学年 · 上学期</span>
-                      <span className="cert-term">北京市中小学校学生社团</span>
-                    </div>
-                    <div className="cert-name-row">
-                      <strong>社团学时证书</strong>
-                      <span>赵子易</span>
-                    </div>
-                    <p className="cert-summary-p">
-                      作为 <strong>AI 与智能机器人社</strong> 社长，管理 <strong>24</strong> 名成员、组织 <strong>5</strong> 场活动，累计 <strong>10.0</strong> 学时，折算 <strong>1.0</strong> 学分，其中 <strong>4.0</strong> 学时已认定。
-                    </p>
-                    <p className="cert-summary-p">
-                      本学期参与 <strong>1</strong> 个社团，完成 <strong>3</strong> 场活动出勤，累计 <strong>6.0</strong> 学时，折算 <strong>0.5</strong> 学分；其中 <strong>6.0</strong> 学时已认定。
-                    </p>
-                    {/* 进度条 */}
-                    <div className="cert-progress-box">
-                      <div className="cert-progress-bar">
-                        <div className="cert-progress-fill" style={{ width: '80%' }} />
-                      </div>
-                      <div className="cert-progress-text">
-                        <span>满勤上限 20.0 学时</span>
-                        <strong>已完成 80% (16.0h)</strong>
-                      </div>
-                    </div>
-                    <div className="cert-audit-status">
-                      <div className="audit-item">
-                        <span className="dot approved" />
-                        <span><strong>10.0 学时已认定</strong>（折算 1.0 学分）</span>
-                      </div>
-                      <div className="audit-item">
-                        <span className="dot pending" />
-                        <span><strong>6.0 学时审核流转中</strong>（折算 0.5 学分）</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  </section>
 
-                {/* 8. 学期结语与落款封印 (100% 对齐桌面端) */}
-                <div className="report-closing-card">
-                  <div className="closing-seal" aria-hidden="true">
-                    <span>2026</span>
-                    <strong>秋</strong>
-                    <em>社团报告</em>
-                  </div>
-                  <div className="closing-text">
-                    <h4>这一学期，孩子在社团里留下了扎实的成长足迹。</h4>
-                    <p>
-                      从第一场活动的签到，到发言被社长设为精选，这些记录都留在了这份报告里。作为 AI 与智能机器人社的社长，还成功举办了 5 场活动。下学期第一场活动，等你回来。
-                    </p>
-                  </div>
-                </div>
-              </>
-            ) : (
+                  {/* 02 我管理的 */}
+                  <section className="rp-sec">
+                    <div className="rp-sec-head"><span className="rp-sec-no">02</span><h2>我管理的</h2></div>
+                    <div className="rp-grid">
+                      <article className="rp-metric">
+                        <span className="rp-metric-ico">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><circle cx="9.2" cy="8.6" r="3.1" /><path d="M3.6 19.4a5.6 5.6 0 0 1 11.2 0" /><path d="M16.4 6.3a2.9 2.9 0 0 1 0 5.8" /><path d="M17.6 13.8a4.4 4.4 0 0 1 2.8 4.1" /></svg>
+                        </span>
+                        <strong>16<em>/ 30 人</em></strong>
+                        <span className="rp-metric-label">社团成员</span>
+                        <span className="rp-metric-note">入社率 53%</span>
+                      </article>
+                      <article className="rp-metric">
+                        <span className="rp-metric-ico">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3.6" y="5.4" width="16.8" height="15" rx="2.4" /><path d="M3.6 10h16.8M8.4 3.4v4M15.6 3.4v4" /></svg>
+                        </span>
+                        <strong>13<em>场</em></strong>
+                        <span className="rp-metric-label">本学期活动</span>
+                        <span className="rp-metric-note">已开展 8 · 待开展 5</span>
+                      </article>
+                      <article className="rp-metric">
+                        <span className="rp-metric-ico">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.4" /><path d="M12 7.4V12l3 1.8" /></svg>
+                        </span>
+                        <strong>86<em>%</em></strong>
+                        <span className="rp-metric-label">全社平均出勤率</span>
+                        <span className="rp-metric-note">按 8 场已开展活动统计</span>
+                      </article>
+                      <article className="rp-metric">
+                        <span className="rp-metric-ico">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-10.9 6.7L4 19.5l1.3-4.4A7.5 7.5 0 1 1 20 11.5Z" /></svg>
+                        </span>
+                        <strong>8<em>条</em></strong>
+                        <span className="rp-metric-label">成员分享</span>
+                        <span className="rp-metric-note">参与成员 4 人</span>
+                      </article>
+                      <article className="rp-metric">
+                        <span className="rp-metric-ico">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.6 6 6.4.5-4.9 4.2 1.5 6.3L12 16.3 6.4 19.6l1.5-6.3L3 9.1l6.4-.5z" /></svg>
+                        </span>
+                        <strong>3<em>条</em></strong>
+                        <span className="rp-metric-label">我设精选</span>
+                        <span className="rp-metric-note">展示在社团活动瞬间</span>
+                      </article>
+                    </div>
+                  </section>
+
+                  {/* 03 活动参与 */}
+                  <section className="rp-sec">
+                    <div className="rp-sec-head"><span className="rp-sec-no">03</span><h2>活动参与</h2></div>
+                    <div className="rp-clubs">
+                      <article className="rp-club">
+                        <div className="rp-club-head">
+                          <div>
+                            <div className="rp-club-title">足球联盟<span className="rp-role">社长</span></div>
+                            <span className="rp-club-sub">体育 · 已点名 5 场</span>
+                          </div>
+                          <span className="rp-club-rate">60<em>%</em></span>
+                        </div>
+                        <div className="rp-bar"><i style={{ width: '60%' }} /></div>
+                        <div className="rp-nums">
+                          <span className="is-p">出勤 <em>3</em> 场</span>
+                          <span className="is-a">缺勤 <em>1</em> 场</span>
+                          <span className="is-l">请假 <em>1</em> 场</span>
+                        </div>
+                      </article>
+                      <article className="rp-club">
+                        <div className="rp-club-head">
+                          <div>
+                            <div className="rp-club-title">光影戏剧社</div>
+                            <span className="rp-club-sub">艺术 · 已点名 4 场</span>
+                          </div>
+                          <span className="rp-club-rate">75<em>%</em></span>
+                        </div>
+                        <div className="rp-bar"><i style={{ width: '75%' }} /></div>
+                        <div className="rp-nums">
+                          <span className="is-p">出勤 <em>3</em> 场</span>
+                          <span className="is-a">缺勤 <em>0</em> 场</span>
+                          <span className="is-l">请假 <em>1</em> 场</span>
+                        </div>
+                      </article>
+                    </div>
+                    <p className="rp-note">出勤率＝正常出勤场次 / 已点名场次；请假与缺勤不计入出勤。</p>
+                  </section>
+
+                  {/* 04 活动分享 */}
+                  <section className="rp-sec">
+                    <div className="rp-sec-head"><span className="rp-sec-no">04</span><h2>活动分享</h2></div>
+                    <div className="rp-share-grid">
+                      <div className="rp-share-stat"><span>我的分享</span><strong>4<em>条</em></strong></div>
+                      <div className="rp-share-stat"><span>收到点赞</span><strong>62<em>次</em></strong></div>
+                      <div className="rp-share-stat"><span>收到评论</span><strong>14<em>条</em></strong></div>
+                      <div className="rp-share-stat is-feat"><span>被设为精选</span><strong>2<em>条</em></strong></div>
+                    </div>
+
+                    <div className="rp-wall">
+                      <article className="rp-polaroid">
+                        <span className="rp-tape" aria-hidden="true" />
+                        <div className="rp-photo"><img src="assets/work-football-2.jpg" alt="校园足球联赛首轮的活动瞬间" /></div>
+                        <div className="rp-p-body">
+                          <div className="rp-p-top">
+                            <strong>校园足球联赛首轮</strong>
+                            <span className="rp-star">
+                              <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.6 6 6.4.5-4.9 4.2 1.5 6.3L12 16.3 6.4 19.6l1.5-6.3L3 9.1l6.4-.5z" /></svg>
+                              精选
+                            </span>
+                          </div>
+                          <p className="rp-p-text">联赛首轮首发，开场那次边路回追把对方的直塞断下来了，赛后队长专门在更衣室提了一句。</p>
+                          <div className="rp-p-meta">
+                            <span className="rp-p-club">足球联盟</span>
+                            <span>9 月 12 日 19:20</span>
+                            <span>14 赞</span>
+                            <span>3 评论</span>
+                          </div>
+                        </div>
+                      </article>
+
+                      <article className="rp-polaroid">
+                        <span className="rp-tape" aria-hidden="true" />
+                        <div className="rp-photo"><img src="assets/work-football-3.jpg" alt="校园友谊赛的活动瞬间" /></div>
+                        <div className="rp-p-body">
+                          <div className="rp-p-top">
+                            <strong>校园友谊赛</strong>
+                            <span className="rp-star">
+                              <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.6l2.6 6 6.4.5-4.9 4.2 1.5 6.3L12 16.3 6.4 19.6l1.5-6.3L3 9.1l6.4-.5z" /></svg>
+                              精选
+                            </span>
+                          </div>
+                          <p className="rp-p-text">和摄影社联队的友谊赛，他们帮我们拍了好多照片，这张是我最喜欢的一张。</p>
+                          <div className="rp-p-meta">
+                            <span className="rp-p-club">足球联盟</span>
+                            <span>10 月 23 日 18:20</span>
+                            <span>21 赞</span>
+                            <span>5 评论</span>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+
+                    <p className="rp-note">仅展示被社长设为精选的活动分享；点赞与评论为社团成员的互动数据。</p>
+                  </section>
+
+                  {/* 05 学分结果 */}
+                  <section className="rp-sec">
+                    <div className="rp-sec-head"><span className="rp-sec-no">05</span><h2>学分结果</h2></div>
+                    <div className="rp-cert">
+                      <div className="rp-cert-paper">
+                        <span className="rp-cert-eyebrow">2026—2027 学年 · 上学期</span>
+                        <h3>社团学时证书</h3>
+                        <p className="rp-cert-name">赵子易</p>
+                        <div className="rp-cert-roles">
+                          <div className="rp-cert-role is-leader">
+                            <span className="rp-cert-role-bar" aria-hidden="true" />
+                            <div className="rp-cert-role-items">
+                              <div><strong>16<em>人</em></strong><span>管理成员</span></div>
+                              <div><strong>13<em>场</em></strong><span>组织活动</span></div>
+                              <div><strong>13<em>学时</em></strong><span>已核定</span></div>
+                              <div><strong>6<em>学分</em></strong><span>认定学分</span></div>
+                            </div>
+                          </div>
+                          <div className="rp-cert-role is-member">
+                            <span className="rp-cert-role-bar" aria-hidden="true" />
+                            <div className="rp-cert-role-items">
+                              <div><strong>2<em>个</em></strong><span>参与社团</span></div>
+                              <div><strong>6<em>场</em></strong><span>活动出勤</span></div>
+                              <div><strong>4<em>条</em></strong><span>活动分享</span></div>
+                              <div><strong>12<em>学时</em></strong><span>已核定</span></div>
+                              <div><strong>6<em>学分</em></strong><span>认定学分</span></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="rp-cert-stub">
+                        <div className="rp-cert-stub-main">
+                          <span className="rp-cert-stub-label">本学期已核定</span>
+                          <strong>25<em>学时</em></strong>
+                          <span className="rp-cert-credit">认定 12 学分</span>
+                        </div>
+                        <div className="rp-seal rp-seal-stamp" aria-hidden="true">
+                          <span>社团</span>
+                          <strong>学时</strong>
+                          <em>专用章</em>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* 收尾 */}
+                  <section className="rp-closing">
+                    <div className="rp-closing-seal" aria-hidden="true">
+                      <span>2026</span>
+                      <strong>秋</strong>
+                      <em>分析报告</em>
+                    </div>
+                    <div className="rp-closing-text">
+                      <h2>这一学期，留下你的社团痕迹</h2>
+                      <p>从签到到精选，下学期等你回来。</p>
+                    </div>
+                  </section>
+                </>
+              ) : (
               /* 新生/未入团空态引导 */
               <div className="empty-guide-card">
                 <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#eff6ff', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#2563eb' }}>
@@ -1629,7 +1667,70 @@ export default function App() {
                 </button>
               </div>
             )}
-          </div>
+            </div>
+            {/* AI 解读悬浮按钮（与学生手机端 analysis.html 一致） */}
+            <button type="button" className="rp-ai-fab" onClick={() => setReportAiOpen(true)}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.4l1.9 5.4 5.4 1.9-5.4 1.9L12 17l-1.9-5.4L4.7 9.7l5.4-1.9z" /></svg>
+              <span>AI 解读</span>
+            </button>
+
+            {/* AI 解读弹层 */}
+            <div
+              className={`mp-sheet-mask${reportAiOpen ? ' show' : ''}`}
+              onClick={(e) => { if (e.target === e.currentTarget) setReportAiOpen(false); }}
+            >
+              <div className="mp-sheet">
+                <div className="mp-sheet-handle" />
+                <div className="mp-sheet-head">
+                  <span className="mp-sheet-title">AI 解读 · 我的学期报告</span>
+                  <button
+                    type="button"
+                    className="mp-sheet-close"
+                    aria-label="关闭"
+                    onClick={() => setReportAiOpen(false)}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round"><path d="M6 6l12 12M18 6 6 18" /></svg>
+                  </button>
+                </div>
+                <div className="mp-sheet-body rp-ai-body">
+                  <p className="rp-ai-scope">2 个社团 · 9 场活动 · 4 条分享 · 数据截至 2026-10-26</p>
+
+                  <div className="rp-ai-hero">
+                    <strong>这学期你在 2 个社团里到场 6 次、分享 4 条，稳稳的常驻选手。</strong>
+                    <div className="rp-ai-tags">
+                      <span className="tone-blue">到场小达人</span>
+                      <span className="tone-violet">分享常客</span>
+                      <span className="tone-amber">精选常客</span>
+                    </div>
+                  </div>
+
+                  <section className="rp-ai-block">
+                    <h4>我的高光</h4>
+                    <p>「校园足球联赛首轮」的分享被社长设为精选，社团成员都能在活动瞬间里看到。</p>
+                  </section>
+                  <section className="rp-ai-block">
+                    <h4>需要关注</h4>
+                    <ul>
+                      <li className="warn">「足球联盟」出勤率 60%，是你几个社团里最低的，下次别错过签到。</li>
+                      <li className="warn">距离满勤还差 6 学时，再参加 3 场活动就能补上。</li>
+                      <li className="good">你有 2 条精选分享，可以在活动瞬间里回看。</li>
+                    </ul>
+                  </section>
+                  <section className="rp-ai-block">
+                    <h4>别忘记</h4>
+                    <ul>
+                      <li className="normal">3 场活动的出勤还没点名，结果稍后更新。</li>
+                    </ul>
+                  </section>
+                  <section className="rp-ai-block">
+                    <h4>下学期小目标</h4>
+                    <p>下学期多参加 2 场活动，把出勤率守在 90% 以上，再冲 2 条精选。</p>
+                  </section>
+                  <p className="rp-ai-foot">AI 生成内容仅供参考</p>
+                </div>
+              </div>
+            </div>
+          </>
         )}
 
         {/* 底部双 Tab 导航栏：仅在主页时展示 */}
@@ -1647,181 +1748,182 @@ export default function App() {
             onClick={() => setActiveTab('report')}
           >
             <ChartLineUp size={22} weight={activeTab === 'report' ? 'fill' : 'regular'} />
-            <span className="tab-btn-text">社团报告</span>
+            <span className="tab-btn-text">分析报告</span>
           </button>
         </div>
       </>
     )}
 
     {/* ========================================================= */}
-    {/* 视图 2：【社团申报专区】（完全对齐学生桌面端截图 1）         */}
+    {/* 视图 2：【社团申报专区】（完全对齐学生手机端）               */}
     {/* ========================================================= */}
     {currentView === 'proposeCenter' && (
       <div className="propose-page-wrapper">
-        <div className="propose-scroll-content">
-          {/* 1. 顶部规则提示条（对齐桌面端提示：开放时间与每人限额） */}
-          <div className="propose-rule-banner">
-            <div className="rule-banner-left">
-              <span className="rule-icon">📖</span>
-              <span className="rule-text">本学期申报开放中：9月1日 — 9月20日，每人最多创建 1 个社团</span>
+        <div className="propose-scroll-content decl-scroll">
+          {/* 1. 顶部提示行：申报开放信息 + 申报说明入口（对齐学生手机端） */}
+          <section className="guide-panel">
+            <div className="guide-head">
+              <span className="guide-icon">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 5.5A2 2 0 0 1 6 3.5h5v16H6a2 2 0 0 0-2 2v-16Z" />
+                  <path d="M20 5.5a2 2 0 0 0-2-2h-5v16h5a2 2 0 0 1 2 2v-16Z" />
+                </svg>
+              </span>
+              <div className="guide-copy">
+                <strong>本学期社团申报开放中</strong>
+                <span>9 月 1 日—9 月 20 日 · 最多申报 1 个社团</span>
+              </div>
             </div>
-            <span
-              className="rule-link"
-              onClick={() => alert('申报说明：\n1. 凡本校正式学籍学生均可申报自主社团；\n2. 需指定1名学生社长与至少1名指导教师；\n3. 申报需包含完整的学期活动规划与场地需求；\n4. 经学校教务部门审核通过后正式成立并进入广场招新。')}
+            <div className="guide-actions">
+              <button type="button" className="guide-action" onClick={() => setIsGuideOpen(true)}>
+                申报说明
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m9 6 6 6-6 6" />
+                </svg>
+              </button>
+            </div>
+          </section>
+
+          {/* 2. 学期筛选 + 申报条数 + 我的草稿入口（对齐学生手机端工具栏） */}
+          <div className="list-toolbar">
+            <select
+              value={selectedProposalTerm}
+              onChange={(e) => setSelectedProposalTerm(e.target.value)}
+              aria-label="选择学期"
             >
-              申报说明 &gt;
-            </span>
+              {ENROLL_TERM_OPTIONS.map(term => (
+                <option key={term} value={term}>{term}</option>
+              ))}
+            </select>
+            <div className="list-toolbar-right">
+              <span className="list-count">共 {visibleProposalRecords.length} 条申报</span>
+              <button
+                type="button"
+                className="drafts-entry-pill"
+                onClick={() => setIsDraftsModalOpen(true)}
+              >
+                我的草稿<span className="drafts-count-badge">({draftRecords.length})</span>
+              </button>
+            </div>
           </div>
 
-          {/* 2. 学期统计与草稿箱入口（对齐桌面端截图 1 右上角“我的草稿”） */}
-          <div className="propose-stat-row">
-            <div className="stat-term-group">
-              <span className="stat-term">2026-2027 学年上学期</span>
-              <span className="stat-count">共 {proposalRecords.length} 条申报</span>
-            </div>
-            <button
-              className="drafts-entry-pill"
-              onClick={() => setIsDraftsModalOpen(true)}
-            >
-              <span>我的草稿</span>
-              <span className="drafts-count-badge">({draftRecords.length})</span>
-            </button>
-          </div>
+          {/* 3. 申报记录卡片列表（状态、教师意见、操作按钮对齐学生手机端） */}
+          <div>
+            {visibleProposalRecords.map(record => {
+              const statusCls =
+                record.status === 'approved' ? 'passed' : record.status === 'withdrawn' ? 'neutral' : record.status;
+              const isVenueDemand = Boolean(record.venueDesc) && !record.venue;
+              const venueLabel = isVenueDemand ? '场地说明' : '拟用场地';
+              const venueText = isVenueDemand
+                ? record.venueDesc
+                : `${record.venue || '学校统筹安排'}${record.venueDesc ? ` · 场地说明：${record.venueDesc}` : ''}`;
 
-          {/* 3. 申报记录卡片列表（完全承接桌面端：待审核、已通过、未通过及教师意见） */}
-          <div className="proposal-card-list">
-            {proposalRecords.map(record => (
-              <div key={record.id} className="proposal-record-card">
-                {/* 卡片头部与主体：左图右文 */}
-                <div className="proposal-card-body">
-                  <div className="proposal-card-cover-wrap">
-                    <img src={record.cover} alt={record.name} className="proposal-card-cover-img" />
-                    <span className="proposal-card-category">{record.category}</span>
-                  </div>
-
-                  <div className="proposal-card-info">
-                    <div className="proposal-card-title-row">
-                      <span className="proposal-club-name">{record.name}</span>
-                      <span className={`proposal-status-badge ${record.status}`}>
-                        {record.statusText}
-                      </span>
-                    </div>
-
-                    <div className="proposal-meta-line">
-                      <span>申报社长：{record.captain}</span>
-                      <span>计划人数：{record.capacity} 人</span>
-                    </div>
-                    <div className="proposal-meta-line muted">
-                      <span>提交时间：{record.submittedAt}</span>
-                    </div>
-                    <div className="proposal-venue-line">
-                      <span className="venue-label-text">
-                        {record.venueDesc && !record.venue ? '场地需求：' : '拟用场地：'}
-                      </span>
-                      <span className="venue-val-wrap">
-                        {record.venueDesc && !record.venue ? (
-                          <>
-                            <span className="venue-note-badge">需求说明</span>
-                            <span className="venue-text">{record.venueDesc}</span>
-                          </>
-                        ) : (
-                          <>
-                            <span className="venue-text">{record.venue || '学校统筹安排'}</span>
-                            {record.venueDesc && (
-                              <span className="venue-sub-note"> · 场地说明：{record.venueDesc}</span>
-                            )}
-                          </>
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 核心：已撤回记录展示撤回提示框（完全对齐学生桌面端截图） */}
-                {record.status === 'withdrawn' && (
-                  <div className="withdrawn-feedback-box">
-                    <div className="feedback-header">
-                      <strong>社团申报已撤回</strong>
-                      {record.withdrawnAt && <span className="feedback-time">({record.withdrawnAt})</span>}
-                    </div>
-                    <p className="feedback-content">申报已撤回，可修改后重新提交；若不再需要可直接删除。</p>
-                  </div>
-                )}
-
-                {/* 核心：未通过记录高亮展示教师审核意见（对齐学生桌面端截图 1） */}
-                {record.status === 'rejected' && record.teacherFeedback && (
-                  <div className="teacher-feedback-box">
-                    <div className="feedback-header">
-                      <strong>教师审核意见</strong>
-                      <span className="feedback-meta">
-                        审核教师：{record.teacherFeedback.teacher} · {record.teacherFeedback.time}
-                      </span>
-                    </div>
-                    <p className="feedback-content">{record.teacherFeedback.reason}</p>
-                  </div>
-                )}
-
-                {/* 卡片底栏操作（完全对齐桌面端：去掉多余文案，操作按钮纯粹右对齐） */}
-                <div className="proposal-card-actions">
-                  <button
-                    className="prop-btn text"
-                    onClick={() => setViewingDetailRecord(record)}
-                  >
-                    查看
-                  </button>
-                  {record.status === 'pending' && (
-                    <button
-                      className="prop-btn text"
-                      onClick={() => handleWithdraw(record)}
-                    >
-                      撤回
-                    </button>
-                  )}
-                  {record.status === 'withdrawn' && (
-                    <>
+              return (
+                <article key={record.id} className="card decl-card">
+                  <div className="decl-head">
+                    <div className="decl-head-left">
                       <button
-                        className="prop-btn text"
-                        onClick={() => handleDeleteProposal(record)}
+                        type="button"
+                        className="decl-title"
+                        onClick={() => setViewingDetailRecord(record)}
                       >
-                        删除
+                        {record.name}
                       </button>
+                      <span className="tag tag-cat">{record.category}</span>
+                    </div>
+                    <span className={`status-badge ${statusCls}`}>
+                      <i />
+                      {record.statusText}
+                    </span>
+                  </div>
+
+                  <div className="decl-main">
+                    <div className="decl-cover" style={{ backgroundImage: `url(${record.cover})` }} />
+                    <div className="decl-body">
+                      <div className="decl-meta">
+                        <span>申报社长：<b>{record.captain}</b></span>
+                        <span>计划人数：<b>{record.capacity} 人</b></span>
+                      </div>
+                      <div className="decl-meta">
+                        <span>提交时间：<b>{record.submittedAt}</b></span>
+                      </div>
+                      <div className="decl-venue">
+                        <b>{venueLabel}：</b>{venueText}
+                      </div>
+                    </div>
+                  </div>
+
+                  {record.status === 'rejected' && record.teacherFeedback && (
+                    <div className="decl-feedback">
+                      <div className="fb-head">
+                        <strong>教师审核意见</strong>
+                        <span>审核教师：{record.teacherFeedback.teacher}</span>
+                        <span>（{record.teacherFeedback.time}）</span>
+                      </div>
+                      <p>{record.teacherFeedback.reason}</p>
+                    </div>
+                  )}
+
+                  <div className="decl-actions">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setViewingDetailRecord(record)}
+                    >
+                      查看
+                    </button>
+                    {record.status === 'pending' && (
                       <button
-                        className="prop-btn primary"
+                        type="button"
+                        className="btn btn-danger-text"
+                        onClick={() => handleWithdraw(record)}
+                      >
+                        撤回
+                      </button>
+                    )}
+                    {(record.status === 'rejected' || record.status === 'withdrawn') && (
+                      <button
+                        type="button"
+                        className="btn btn-primary"
                         onClick={() => handleOpenForm(record)}
                       >
                         修改
                       </button>
-                    </>
-                  )}
-                  {record.status === 'approved' && (
-                    <button
-                      className="prop-btn primary"
-                      onClick={() => alert(`进入【${record.name}】社长管理后台`)}
-                    >
-                      进入管理
-                    </button>
-                  )}
-                  {record.status === 'rejected' && (
-                    <button
-                      className="prop-btn primary"
-                      onClick={() => handleOpenForm(record)}
-                    >
-                      修改
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+                    )}
+                    {record.status === 'approved' && (
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => alert(`进入【${record.name}】社长管理后台`)}
+                      >
+                        进入管理
+                      </button>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
           </div>
+
+          {visibleProposalRecords.length === 0 && (
+            <div className="empty-state">
+              <strong>暂无该学期的申报记录</strong>
+              <span>当前学期尚未提交社团申报，可点击底部【代孩子申报新社团】发起新社团。</span>
+            </div>
+          )}
         </div>
 
-        {/* 4. 底部固定吸底主按钮 */}
-        <div className="propose-fixed-bottom-bar">
+        {/* 4. 底部常驻主按钮（保持家长端文案不变） */}
+        <div className="action-bar">
           <button
-            className="propose-submit-btn"
+            type="button"
+            className="btn btn-primary"
             onClick={() => handleOpenForm(null)}
           >
-            + 代孩子申报新社团
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            代孩子申报新社团
           </button>
         </div>
       </div>
@@ -1908,15 +2010,15 @@ export default function App() {
               <label className="form-label required">社团封面</label>
               <div className="form-cover-picker">
                 <div className="cover-thumb active">
-                  <img src="/assets/poster-football.jpg" alt="封面" />
+                  <img src="assets/poster-football.jpg" alt="封面" />
                   <span className="cover-tag">经典体育</span>
                 </div>
                 <div className="cover-thumb">
-                  <img src="/assets/poster-reading.jpg" alt="封面" />
+                  <img src="assets/poster-reading.jpg" alt="封面" />
                   <span className="cover-tag">人文书香</span>
                 </div>
                 <div className="cover-thumb">
-                  <img src="/assets/poster-drama.jpg" alt="封面" />
+                  <img src="assets/poster-drama.jpg" alt="封面" />
                   <span className="cover-tag">戏剧艺术</span>
                 </div>
                 <div className="cover-thumb upload-btn">
@@ -2028,43 +2130,94 @@ export default function App() {
     )}
 
     {/* ========================================================= */}
-    {/* 弹窗：【我的草稿箱】（对齐桌面端“我的草稿”）               */}
+    {/* 弹窗：【申报说明】（对齐学生手机端）                        */}
+    {/* ========================================================= */}
+    {isGuideOpen && (
+      <div className="modal-mask" onClick={() => setIsGuideOpen(false)}>
+        <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-dialog-header">
+            <span className="modal-dialog-title">社团申报说明</span>
+            <button className="modal-dialog-close" onClick={() => setIsGuideOpen(false)}>
+              <X size={16} />
+            </button>
+          </div>
+          <div className="modal-dialog-body">
+            <p className="sheet-lead">
+              本学期学生社团由学生自主发起。准备申报社团的同学，请在提交前阅读以下说明。
+            </p>
+
+            <section className="guide-block">
+              <h4><span>一</span>申报要求</h4>
+              <ul>
+                <li>请在学校开放的申报时间内提交；社团应有明确的共同兴趣、活动目标和本学期计划。</li>
+                <li>请准确选择社团类别，并合理填写计划人数、联系方式和场地需求。</li>
+                <li>场地需求不等于实际预约，具体活动场地仍在发布活动时分别填写。</li>
+              </ul>
+            </section>
+
+            <section className="guide-block">
+              <h4><span>二</span>填写与审核</h4>
+              <ul>
+                <li>请按表单要求补充招新海报、活动计划及其他所需材料。</li>
+                <li>教师将依据申报内容审核；被退回后，可根据意见修改原申报并重新提交。</li>
+              </ul>
+            </section>
+
+            <section className="guide-block">
+              <h4><span>三</span>通过后的责任</h4>
+              <p>社团成立后，社长应公平组织招新，持续发布活动并如实沉淀参与记录。</p>
+            </section>
+
+            <div className="attach-card">
+              <span className="attach-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" />
+                  <path d="M14 3v5h5" />
+                </svg>
+              </span>
+              <div className="attach-main">
+                <strong>社团申报材料参考模板.pdf</strong>
+                <span>申报材料填写参考</span>
+              </div>
+              <button type="button" className="attach-action" onClick={() => alert('文件下载能力建设中')}>
+                下载
+              </button>
+            </div>
+
+            <p className="sheet-contact">申报咨询：学生发展中心（知行楼 302 室）· 李老师</p>
+          </div>
+          <div className="modal-dialog-foot">
+            <button className="btn btn-primary" onClick={() => setIsGuideOpen(false)}>我知道了</button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* ========================================================= */}
+    {/* 弹窗：【我的草稿】（对齐学生手机端）                        */}
     {/* ========================================================= */}
     {isDraftsModalOpen && (
       <div className="modal-mask" onClick={() => setIsDraftsModalOpen(false)}>
         <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
           <div className="modal-dialog-header">
-            <span className="modal-dialog-title">我的草稿箱 ({draftRecords.length})</span>
+            <span className="modal-dialog-title">我的草稿 ({draftRecords.length})</span>
             <button className="modal-dialog-close" onClick={() => setIsDraftsModalOpen(false)}>
               <X size={16} />
             </button>
           </div>
           <div className="modal-dialog-body">
             {draftRecords.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '30px 0', color: '#94a3b8', fontSize: '13px' }}>
-                草稿箱空空如也，暂无保存的草稿
-              </div>
+              <div className="drafts-empty">草稿箱空空如也，暂无保存的草稿</div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div style={{ fontSize: '12px', color: '#64748b' }}>
-                  草稿仅保存在本地设备，可随时继续完善并正式提交教师审核。
-                </div>
+              <>
                 {draftRecords.map(draft => (
-                  <div key={draft.id} className="draft-record-card">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div>
-                        <strong style={{ fontSize: '14px', color: '#0f172a' }}>{draft.name}</strong>
-                        <div style={{ fontSize: '11px', color: '#64748b', marginTop: '3px' }}>
-                          类别：{draft.category} · 计划人数：{draft.capacity}人
-                        </div>
-                        <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '2px' }}>
-                          保存时间：{draft.updatedAt}
-                        </div>
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px', borderTop: '1px solid #f1f5f9', paddingTop: '8px' }}>
+                  <article key={draft.id} className="draft-record-card">
+                    <strong className="draft-name">{draft.name}</strong>
+                    <div className="draft-meta">类别：{draft.category}</div>
+                    <div className="draft-time">保存时间：{draft.updatedAt}</div>
+                    <div className="draft-actions">
                       <button
-                        className="prop-btn text"
+                        className="btn btn-secondary"
                         onClick={() => {
                           if (confirm(`确认删除草稿【${draft.name}】吗？`)) {
                             setDraftRecords(prev => prev.filter(d => d.id !== draft.id));
@@ -2074,7 +2227,7 @@ export default function App() {
                         删除
                       </button>
                       <button
-                        className="prop-btn primary"
+                        className="btn btn-primary"
                         onClick={() => {
                           setIsDraftsModalOpen(false);
                           handleOpenForm(draft);
@@ -2083,9 +2236,9 @@ export default function App() {
                         继续编辑
                       </button>
                     </div>
-                  </div>
+                  </article>
                 ))}
-              </div>
+              </>
             )}
           </div>
         </div>
@@ -2167,28 +2320,16 @@ export default function App() {
               </button>
             )}
             {viewingDetailRecord.status === 'withdrawn' && (
-              <>
-                <button
-                  className="prop-btn text"
-                  onClick={() => {
-                    const target = viewingDetailRecord;
-                    setViewingDetailRecord(null);
-                    handleDeleteProposal(target);
-                  }}
-                >
-                  删除
-                </button>
-                <button
-                  className="prop-btn primary"
-                  onClick={() => {
-                    const target = viewingDetailRecord;
-                    setViewingDetailRecord(null);
-                    handleOpenForm(target);
-                  }}
-                >
-                  修改
-                </button>
-              </>
+              <button
+                className="prop-btn primary"
+                onClick={() => {
+                  const target = viewingDetailRecord;
+                  setViewingDetailRecord(null);
+                  handleOpenForm(target);
+                }}
+              >
+                修改
+              </button>
             )}
             {viewingDetailRecord.status === 'rejected' && (
               <button
@@ -2279,17 +2420,6 @@ export default function App() {
                     {isPendingExpanded && (
                       <div className="pending-expanded-drawer">
                         {pendingList.map(record => {
-                          const plazaClub = PLAZA_CLUBS.find(c => c.name === record.clubName || record.clubName.includes(c.name)) || {
-                            name: record.clubName,
-                            category: record.category,
-                            captain: record.captain,
-                            contact: record.contact,
-                            cover: record.cover,
-                            short: '面向全校成员开展自主实践与活动交流。',
-                            recruitment: '欢迎感兴趣的同学加入。',
-                            members: 12,
-                            capacity: 20
-                          };
                           return (
                             <div key={record.id} className="pending-compact-item">
                               <img src={record.cover} alt="" className="pending-item-cover" />
@@ -2303,18 +2433,6 @@ export default function App() {
                                 </div>
                               </div>
                               <div className="pending-item-actions">
-                                <button
-                                  type="button"
-                                  className="pending-item-detail-btn"
-                                  onClick={() => {
-                                    setViewingClubDetail(plazaClub);
-                                    setDetailTab('info');
-                                    setNavHistory('myApplications');
-                                    setCurrentView('clubDetail');
-                                  }}
-                                >
-                                  社团详情
-                                </button>
                                 <button
                                   type="button"
                                   className="pending-item-cancel-btn"
@@ -2366,9 +2484,13 @@ export default function App() {
                           const clubKey = record.clubId === 'football' ? 'football' : (record.clubId === 'drama' ? 'drama' : 'football');
                           const showcase = CLUB_SHOWCASE_DATA[clubKey] || CLUB_SHOWCASE_DATA.football;
                           const momentsObj = CLUB_MOMENTS_DATA[clubKey] || CLUB_MOMENTS_DATA.football;
-                          const thumb1 = momentsObj.moments[0]?.photo || '/assets/moment-team-1.jpg';
-                          const thumb2 = momentsObj.moments[1]?.photo || '/assets/moment-team-2.jpg';
-                          const thumb3 = momentsObj.moments[2]?.photo || '/assets/moment-team-3.jpg';
+                          const thumb1 = momentsObj.moments[0]?.photo || 'assets/moment-team-1.jpg';
+                          const thumb2 = momentsObj.moments[1]?.photo || 'assets/moment-team-2.jpg';
+                          const thumb3 = momentsObj.moments[2]?.photo || 'assets/moment-team-3.jpg';
+                          // 按钮内联展示的数量：活动瞬间份数、作品集锦与荣誉时刻条目数
+                          const momentsTotal = hasData ? (momentsObj.summary?.total || 14) : 0;
+                          const worksCount = hasData ? (showcase.works?.length || 5) : 0;
+                          const honorsCount = hasData ? (showcase.honors?.length || 3) : 0;
                           const matchedPlazaClub = PLAZA_CLUBS.find(c => c.name === record.clubName || record.clubName.includes(c.name)) || {
                             id: record.clubId || 'football',
                             name: record.clubName,
@@ -2421,17 +2543,14 @@ export default function App() {
                               </div>
 
                               {/* 社团风采与活动瞬间沉淀区 */}
-                              <div className="enroll-joined-features-box" style={{ margin: 0 }}>
+                              <div
+                                className="enroll-joined-features-box"
+                                style={hasData
+                                  ? { margin: 0 }
+                                  : { margin: 0, background: 'transparent', border: 'none', padding: 0 }}
+                              >
                                 {hasData ? (
                                   <>
-                                    <div className="enroll-feature-metric-row moments">
-                                      <Camera size={13} weight="fill" color="#2563eb" />
-                                      <span>活动瞬间：已开展 <strong>{momentsObj.summary?.covered || 6}</strong> 场活动 · 沉淀 <strong>{momentsObj.summary?.total || 14}</strong> 份精彩瞬间</span>
-                                    </div>
-                                    <div className="enroll-feature-metric-row showcase">
-                                      <Trophy size={13} weight="fill" color="#ea580c" />
-                                      <span>社团风采：作品集锦 <strong>{showcase.works?.length || 5}</strong> · 荣誉时刻 <strong>{showcase.honors?.length || 3}</strong></span>
-                                    </div>
                                     {/* 3张缩略图横排，点击直达相册 */}
                                     <div
                                       className="enroll-thumbs-strip"
@@ -2455,25 +2574,14 @@ export default function App() {
                                     </div>
                                   </>
                                 ) : (
-                                  <>
-                                    <div className="enroll-feature-metric-row moments" style={{ color: '#64748b' }}>
-                                      <Camera size={13} weight="regular" color="#94a3b8" />
-                                      <span>活动瞬间：已开展 <strong>0</strong> 场活动 · 沉淀 <strong>0</strong> 份精彩瞬间</span>
-                                    </div>
-                                    <div className="enroll-feature-metric-row showcase" style={{ color: '#64748b' }}>
-                                      <Trophy size={13} weight="regular" color="#94a3b8" />
-                                      <span>社团风采：作品集锦 <strong>0</strong> · 荣誉时刻 <strong>0</strong></span>
-                                    </div>
-                                    {/* 空状态占位提示 */}
-                                    <div className="enroll-empty-thumbs-placeholder">
-                                      <Camera size={13} color="#94a3b8" />
-                                      <span>暂无活动抓拍，活动开展后由成员上传精彩瞬间</span>
-                                    </div>
-                                  </>
+                                  <div className="enroll-empty-thumbs-placeholder">
+                                    <Camera size={13} color="#94a3b8" />
+                                    <span>暂无活动记录</span>
+                                  </div>
                                 )}
                               </div>
 
-                              {/* 底栏双主操作按钮：50:50 等宽排列，纯入口不带冗余数字，无数据置灰 */}
+                              {/* 底栏双主操作按钮：50:50 等宽排列，按钮内联展示数量，无数据置灰 */}
                               <div className="joined-card-actions-row">
                                 <button
                                   type="button"
@@ -2491,7 +2599,10 @@ export default function App() {
                                   }}
                                 >
                                   <Trophy size={13} weight={hasData ? 'fill' : 'regular'} />
-                                  <span>社团风采</span>
+                                  <span className="joined-action-copy">
+                                    社团风采
+                                    <em>作品 {worksCount} 荣誉 {honorsCount}</em>
+                                  </span>
                                 </button>
                                 <button
                                   type="button"
@@ -2509,7 +2620,7 @@ export default function App() {
                                   }}
                                 >
                                   <Camera size={13} weight={hasData ? 'fill' : 'regular'} />
-                                  <span>全部活动瞬间</span>
+                                  <span>活动瞬间 {momentsTotal}</span>
                                 </button>
                               </div>
                             </div>
@@ -2576,162 +2687,174 @@ export default function App() {
           const seats = (club.capacity || 30) - (club.members || 18);
           // 判断孩子是否已经是该社团成员
           const isJoined = enrollApplications.some(app => (app.clubId === club.id || club.name.includes(app.clubName)) && app.status === 'passed');
+          const events = club.events || [];
+          const showcaseItems = showcaseSubTab === 'works' ? (showcase.works || []) : (showcase.honors || []);
+          const openPoster = () => openGallery([{ type: 'image', src: club.cover }], 0, club.name, '招新海报');
+          const openShowcase = (item) => {
+            const media = [item.cover, ...(item.photos || [])].map(src => ({ type: 'image', src }));
+            openGallery(media, 0, item.title, showcaseSubTab === 'works' ? '作品集锦' : '荣誉时刻');
+          };
 
           return (
             <div className="club-detail-page-wrapper">
               <div className="club-detail-scroll-content">
-                {/* 1. 顶部社团 Hero 概况卡片 */}
-                <div className="detail-hero-card">
-                  <div className="detail-hero-cover-wrap">
-                    <img src={club.cover || '/assets/poster-football.jpg'} alt={club.name} className="detail-hero-cover-img" />
-                    {!club.applyEnded && (
-                      <span className="detail-hero-countdown-tag">
-                        <Clock size={11} weight="bold" />
-                        <span>距报名截止：3天 8小时</span>
-                      </span>
-                    )}
-                  </div>
+                {/* 1. 顶部社团 Hero（封面 + 渐变遮罩 + 底部信息） */}
+                <div className="detail-hero">
+                  <div className="detail-hero-img" style={{ backgroundImage: `url('${club.cover || 'assets/poster-football.jpg'}')` }} />
                   <div className="detail-hero-body">
-                    <div className="detail-hero-title-row">
-                      <span className="detail-hero-title">{club.name}</span>
-                      <span className="detail-hero-category">{club.category}类</span>
+                    <div className="detail-hero-tags">
+                      <span className="tag tag-cat light">{club.category}</span>
                     </div>
-                    <div className="detail-meta-pill-bar">
-                      <span className="detail-meta-item">
-                        <User size={12} weight="bold" />
-                        <span>社长：{club.captain}</span>
-                        {club.contact && <small>（{club.contact}）</small>}
-                      </span>
-                      <span className="detail-meta-item">
-                        <Users size={12} weight="bold" />
-                        <span>成员：{club.members || 18} / {club.capacity || 30} 人</span>
-                      </span>
-                      <span className="detail-meta-item" style={{ color: seats > 0 ? '#166534' : '#991b1b', background: seats > 0 ? '#f0fdf4' : '#fef2f2' }}>
-                        {seats > 0 ? `剩余名额 ${seats} 人` : '名额已满'}
-                      </span>
+                    <h1>{club.name}</h1>
+                    <div className="detail-hero-meta">
+                      <div className="meta-row">
+                        <span>社长 {club.captain}</span>
+                        {club.contact && (
+                          <span className="meta-phone">
+                            <Phone size={10} weight="bold" />
+                            {club.contact}
+                          </span>
+                        )}
+                      </div>
+                      <div className="meta-row">
+                        <span>成员 {club.members || 18} / {club.capacity || 30} 人</span>
+                        {seats > 0
+                          ? <span>剩余名额 {seats}</span>
+                          : <span className="meta-seat full">名额已满</span>}
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* 2. 一级主 Tab 切换栏（社团详情 vs 社团风采，对齐图1） */}
-                <div className="detail-nav-tabs">
+                {/* 2. 一级主 Tab 切换栏（社团详情 vs 社团风采） */}
+                <nav className="detail-tabs">
                   <button
                     type="button"
-                    className={`detail-nav-tab-btn ${detailTab === 'info' ? 'active' : ''}`}
+                    className={detailTab === 'info' ? 'active' : ''}
                     onClick={() => setDetailTab('info')}
                   >
-                    <ClipboardText size={14} weight="bold" />
-                    <span>社团详情</span>
+                    社团详情
                   </button>
                   <button
                     type="button"
-                    className={`detail-nav-tab-btn showcase ${detailTab === 'showcase' ? 'active' : ''}`}
+                    className={detailTab === 'showcase' ? 'active' : ''}
                     onClick={() => setDetailTab('showcase')}
                   >
-                    <Trophy size={14} weight="fill" />
-                    <span>社团风采</span>
+                    社团风采
                   </button>
-                </div>
+                </nav>
 
                 {/* 3. Tab 1 内容：社团详情 */}
                 {detailTab === 'info' && (
-                  <div className="detail-info-block">
-                    <div>
-                      <div className="detail-section-title">社团宗旨与简介</div>
-                      <p className="detail-text-p" style={{ marginTop: '6px' }}>{club.short}</p>
-                    </div>
-                    <div>
-                      <div className="detail-section-title">招募对象与入团要求</div>
-                      <p className="detail-text-p" style={{ marginTop: '6px' }}>{club.recruitment}</p>
-                    </div>
-                    <div>
-                      <div className="detail-section-title">活动安排与日常场地</div>
-                      <p className="detail-text-p" style={{ marginTop: '6px' }}>
-                        固定活动时间为每周三或周五下午社团课；学校安排日常场地为体育场及配套活动教室。每场活动的具体签到与考勤由学生社长发布。
-                      </p>
-                    </div>
+                  <div className="detail-pane">
+                    <section className="detail-text-block">
+                      <h2>社团简介</h2>
+                      <p>{club.intro || club.short}</p>
+                    </section>
+                    <section className="detail-text-block">
+                      <h2>招新说明</h2>
+                      <p>{club.recruitment}</p>
+                    </section>
+
+                    <section className="detail-card detail-materials-card">
+                      <div className="material-block">
+                        <div className="detail-card-head">
+                          <h2>招新海报</h2>
+                          <button type="button" className="poster-hint" onClick={openPoster}>点击查看大图</button>
+                        </div>
+                        <figure className="recruit-poster" role="button" tabIndex={0} aria-label="查看招新海报大图" onClick={openPoster}>
+                          <img src={club.cover} alt={`${club.name}招新海报`} />
+                        </figure>
+                      </div>
+
+                      <div className="material-block">
+                        <h2>活动计划</h2>
+                        <p>{club.plan || '暂无活动计划'}</p>
+                      </div>
+
+                      <div className="material-block">
+                        <div className="detail-card-head">
+                          <h2>近期活动</h2>
+                          <span>共 {events.length} 场</span>
+                        </div>
+                        <ol className="event-timeline">
+                          {events.map((event, index) => (
+                            <li key={`${event.md}-${event.title}`} className={index === 0 ? 'next' : ''}>
+                              <span className="event-node">
+                                <strong>{event.md}</strong>
+                                <span>{event.wd}</span>
+                              </span>
+                              <div className="event-info">
+                                <h3>
+                                  {event.title}
+                                  {index === 0 && <span className="event-next-badge">下一场</span>}
+                                </h3>
+                                <p className="event-info-meta"><span>{event.time} · {event.venue}</span></p>
+                              </div>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    </section>
                   </div>
                 )}
 
-                {/* 4. Tab 2 内容：社团风采（对齐图1，支持作品集锦与荣誉时刻） */}
+                {/* 4. Tab 2 内容：社团风采（作品集锦 / 荣誉时刻） */}
                 {detailTab === 'showcase' && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    {/* 风采二级胶囊切换栏 */}
-                    <div className="showcase-sub-bar">
-                      <div className="showcase-sub-tabs">
-                        <button
-                          type="button"
-                          className={`showcase-pill-btn ${showcaseSubTab === 'works' ? 'active' : ''}`}
-                          onClick={() => setShowcaseSubTab('works')}
-                        >
-                          <Camera size={12} weight="bold" />
-                          <span>作品集锦 ({showcase.works?.length || 0})</span>
-                        </button>
-                        <button
-                          type="button"
-                          className={`showcase-pill-btn ${showcaseSubTab === 'honors' ? 'active' : ''}`}
-                          onClick={() => setShowcaseSubTab('honors')}
-                        >
-                          <Medal size={12} weight="fill" />
-                          <span>荣誉时刻 ({showcase.honors?.length || 0})</span>
-                        </button>
-                      </div>
-                      <span className="showcase-uploader-hint">作品与荣誉由社长上传</span>
+                  <div className="detail-pane">
+                    <div className="sc-tabs">
+                      <button
+                        type="button"
+                        className={`sc-tab ${showcaseSubTab === 'works' ? 'active' : ''}`}
+                        onClick={() => setShowcaseSubTab('works')}
+                      >
+                        <Camera size={13} weight="bold" />
+                        作品集锦 ({showcase.works?.length || 0})
+                      </button>
+                      <button
+                        type="button"
+                        className={`sc-tab ${showcaseSubTab === 'honors' ? 'active' : ''}`}
+                        onClick={() => setShowcaseSubTab('honors')}
+                      >
+                        <Medal size={13} weight="fill" />
+                        荣誉时刻 ({showcase.honors?.length || 0})
+                      </button>
                     </div>
 
-                    {/* 作品集锦列表 (对齐图1作品卡片) */}
-                    {showcaseSubTab === 'works' && (
-                      <div className="showcase-works-list">
-                        {(showcase.works || []).map(work => (
-                          <div
-                            key={work.id}
-                            className="work-card-item"
-                            onClick={() => setPreviewShowcaseItem({ type: 'work', ...work })}
-                          >
-                            <div className="work-card-cover-wrap">
-                              <img src={work.cover} alt={work.title} className="work-card-cover-img" />
+                    <div className="sc-list">
+                      {showcaseItems.map((item, index) => {
+                        const photos = [item.cover, ...(item.photos || [])];
+                        return (
+                          <article className="sc-card" key={item.id}>
+                            <div
+                              className="sc-thumb"
+                              role="button"
+                              tabIndex={0}
+                              aria-label={`查看${item.title}`}
+                              onClick={() => openShowcase(item)}
+                            >
+                              <img src={item.cover} alt={item.title} />
+                              <span className="sc-badge">
+                                {photos.length > 1 ? `${photos.length} 张` : <Eye size={10} weight="bold" />}
+                              </span>
                             </div>
-                            <div className="work-card-content">
-                              <span className="work-card-title">{work.title}</span>
-                              <span className="work-card-creator">创作者：{work.creator}</span>
-                              <p className="work-card-desc">{work.desc}</p>
-                              <div className="work-card-footer">
-                                <span>{work.uploader || '学生社长上传'}</span>
-                                <span>{work.date}</span>
-                              </div>
+                            <div className="sc-body">
+                              <h3>
+                                {showcaseSubTab === 'honors' && <Trophy size={13} weight="fill" />}
+                                <span>{item.title}</span>
+                              </h3>
+                              {showcaseSubTab === 'works' ? (
+                                <p className="sc-field is-work"><span>创作者：</span><b>{item.creator}</b></p>
+                              ) : (
+                                <p className="sc-field is-honor"><span>获奖时间：</span><b>{item.date}</b></p>
+                              )}
+                              {item.desc && <p className="sc-desc">{item.desc}</p>}
+                              <p className="sc-foot">{showcaseUploader(item.uploader)} · {showcaseUploadTime(item.date, index)}</p>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* 荣誉时刻列表 (对齐图1荣誉时刻证书卡片) */}
-                    {showcaseSubTab === 'honors' && (
-                      <div className="showcase-honors-list">
-                        {(showcase.honors || []).map(honor => (
-                          <div
-                            key={honor.id}
-                            className="honor-card-item"
-                            onClick={() => setPreviewShowcaseItem({ type: 'honor', ...honor })}
-                          >
-                            <div className="honor-cert-thumb-wrap">
-                              <img src={honor.cover} alt={honor.title} className="honor-cert-thumb-img" />
-                            </div>
-                            <div className="honor-card-main">
-                              <div className="honor-card-title">
-                                <Trophy size={14} weight="fill" color="#ea580c" />
-                                <span>{honor.title}</span>
-                              </div>
-                              <span className="honor-card-time">获奖时间：{honor.time}</span>
-                              <p className="honor-card-desc">{honor.desc}</p>
-                              <div className="honor-card-footer">
-                                <span>{honor.uploader || '学生社长上传'} · {honor.date}</span>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                          </article>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </div>
@@ -2836,51 +2959,6 @@ export default function App() {
             </div>
           );
         })()}
-
-        {/* ========================================================= */}
-        {/* 弹窗：作品/荣誉详情与大图预览 (对齐图1点击预览)               */}
-        {/* ========================================================= */}
-        {previewShowcaseItem && (
-          <div className="modal-mask" onClick={() => setPreviewShowcaseItem(null)}>
-            <div className="modal-dialog" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '340px' }}>
-              <div className="modal-dialog-header">
-                <span className="modal-dialog-title">
-                  {previewShowcaseItem.type === 'work' ? '作品详情' : '荣誉证明'}
-                </span>
-                <button className="modal-dialog-close" onClick={() => setPreviewShowcaseItem(null)}>
-                  <X size={16} />
-                </button>
-              </div>
-              <div className="modal-dialog-body" style={{ padding: '12px' }}>
-                <div style={{ width: '100%', borderRadius: '8px', overflow: 'hidden', background: '#0f172a', maxHeight: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <img src={previewShowcaseItem.cover} alt={previewShowcaseItem.title} style={{ width: '100%', height: 'auto', objectFit: 'contain' }} />
-                </div>
-                <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                  <span style={{ fontSize: '15px', fontWeight: 700, color: '#0f172a' }}>{previewShowcaseItem.title}</span>
-                  {previewShowcaseItem.creator && (
-                    <span style={{ fontSize: '12px', color: '#2563eb', fontWeight: 500 }}>
-                      创作者：{previewShowcaseItem.creator}
-                    </span>
-                  )}
-                  {previewShowcaseItem.time && (
-                    <span style={{ fontSize: '12px', color: '#ea580c', fontWeight: 500 }}>
-                      获奖时间：{previewShowcaseItem.time}
-                    </span>
-                  )}
-                  <p style={{ fontSize: '12px', color: '#475569', lineHeight: 1.5, margin: '4px 0' }}>
-                    {previewShowcaseItem.desc}
-                  </p>
-                  <span style={{ fontSize: '10.5px', color: '#94a3b8' }}>
-                    {previewShowcaseItem.uploader || '学生社长上传'} · {previewShowcaseItem.date}
-                  </span>
-                </div>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '10px 14px', borderTop: '1px solid #f1f5f9' }}>
-                <button className="prop-btn text" onClick={() => setPreviewShowcaseItem(null)}>关闭</button>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* ========================================================= */}
         {/* 弹窗：活动精彩瞬间大图查看 (对齐图2点击放大)                 */}
@@ -3014,20 +3092,60 @@ export default function App() {
         )}
 
         {/* ========================================================= */}
-        {/* Modal 4：招新海报全屏预览                                  */}
+        {/* 全屏图片预览：招新海报 / 作品集锦 / 荣誉时刻（支持多图切换）  */}
         {/* ========================================================= */}
-        {modalType === 'posterModal' && previewPosterClub && (
-          <div className="poster-preview-mask" onClick={() => setModalType(null)}>
-            <div className="poster-preview-card" onClick={(e) => e.stopPropagation()}>
-              <div className="poster-preview-header">
-                <span className="poster-preview-title">{previewPosterClub.name} · 招新海报</span>
-                <button className="poster-preview-close" onClick={() => setModalType(null)}>
-                  <X size={16} />
+        {gallery && (
+          <div className="gallery-mask" onClick={() => setGallery(null)}>
+            <div className="gallery-head" onClick={(e) => e.stopPropagation()}>
+              <div className="gallery-head-text">
+                <strong>{gallery.title}</strong>
+                {gallery.sub && <span>{gallery.sub}</span>}
+              </div>
+              <button type="button" className="gallery-close" aria-label="关闭预览" onClick={() => setGallery(null)}>
+                <X size={14} />
+              </button>
+            </div>
+
+            <div
+              className="gallery-stage"
+              onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => { galleryDragX.current = e.clientX; }}
+              onPointerUp={(e) => {
+                const dx = e.clientX - galleryDragX.current;
+                if (Math.abs(dx) > 45) stepGallery(dx < 0 ? 1 : -1);
+                galleryDragX.current = 0;
+              }}
+            >
+              <img src={gallery.media[gallery.index].src} alt={gallery.title} draggable={false} />
+              {gallery.media.length > 1 && gallery.index > 0 && (
+                <button type="button" className="gallery-nav prev" aria-label="上一张" onClick={() => stepGallery(-1)}>
+                  <CaretLeft size={16} weight="bold" />
                 </button>
-              </div>
-              <div className="poster-preview-img-wrap">
-                <img src={previewPosterClub.cover} alt={previewPosterClub.name} className="poster-full-img" />
-              </div>
+              )}
+              {gallery.media.length > 1 && gallery.index < gallery.media.length - 1 && (
+                <button type="button" className="gallery-nav next" aria-label="下一张" onClick={() => stepGallery(1)}>
+                  <CaretRight size={16} weight="bold" />
+                </button>
+              )}
+            </div>
+
+            <div className="gallery-foot" onClick={(e) => e.stopPropagation()}>
+              {gallery.media.length > 1 && (
+                <div className="gallery-dots">
+                  {gallery.media.map((media, index) => (
+                    <button
+                      key={`${media.src}-${index}`}
+                      type="button"
+                      className={`gallery-dot ${index === gallery.index ? 'on' : ''}`}
+                      aria-label={`查看第 ${index + 1} 张`}
+                      onClick={() => setGallery((prev) => ({ ...prev, index }))}
+                    />
+                  ))}
+                </div>
+              )}
+              <span className="gallery-count">
+                {gallery.media.length > 1 ? `${gallery.index + 1} / ${gallery.media.length}` : ''}
+              </span>
             </div>
           </div>
         )}
