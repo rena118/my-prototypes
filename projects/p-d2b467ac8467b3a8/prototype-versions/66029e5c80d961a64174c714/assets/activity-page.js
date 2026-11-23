@@ -55,12 +55,12 @@
     var ops = [];
     var archived = ctx.isArchived ? ctx.isArchived() : false;
     if (!archived) {
-      ops.push(opRow('activity:edit', '编辑活动', EDIT));
+      ops.push(opRow('activity:edit', '编辑活动', EDIT, ' is-primary'));
       if (isUpcoming) {
         ops.push(opRow('activity:delete', '删除活动', TRASH, ' is-danger'));
       } else if (aDone) {
-        ops.push(opRow('activity:attendance', '修改考勤', CHECK));
-        if (rDone) ops.push(opRow('activity:record', '修改记录', DOC));
+        ops.push(opRow('activity:attendance', '修改考勤', CHECK, ' is-soft'));
+        if (rDone) ops.push(opRow('activity:record', '修改记录', DOC, ' is-soft'));
       }
     }
 

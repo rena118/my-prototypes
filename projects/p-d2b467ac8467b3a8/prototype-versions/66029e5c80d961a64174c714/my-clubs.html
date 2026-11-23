@@ -642,7 +642,7 @@
   /* ---------- 我报名的 ---------- */
   function creditButton(club) {
     if (club.credit === 'approved') {
-      return '<button type="button" class="mini-btn primary" data-act="credit:view" data-id="' + club.id + '">查看学分</button>';
+      return '<button type="button" class="mini-btn outline" data-act="credit:view" data-id="' + club.id + '">查看学分</button>';
     }
     if (club.credit === 'pending') {
       return '<button type="button" class="mini-btn primary" data-act="credit:viewApply" data-id="' + club.id + '">查看学分申请</button>' +

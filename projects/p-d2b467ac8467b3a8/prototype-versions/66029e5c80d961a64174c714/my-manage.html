@@ -607,12 +607,13 @@
   function isArchived() { return state.manageTerm !== CURRENT_TERM; }
 
   /* ---------- 底部弹层 ---------- */
-  function openSheet(title, body, foot, tall) {
+  function openSheet(title, body, foot, tall, count) {
     sheetBox.classList.toggle('mp-sheet-tall', Boolean(tall));
     sheetBox.innerHTML =
       '<div class="mp-sheet-handle"></div>' +
       '<div class="mp-sheet-head">' +
         '<span class="mp-sheet-title">' + title + '</span>' +
+        (count ? '<span class="mp-sheet-count">' + count + '</span>' : '') +
         '<button type="button" class="mp-sheet-close" data-act="sheet:close" aria-label="关闭">' +
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>' +
         '</button>' +
@@ -695,7 +696,7 @@
   /* ---------- 我报名的 ---------- */
   function creditButton(club) {
     if (club.credit === 'approved') {
-      return '<button type="button" class="mini-btn primary" data-act="credit:view" data-id="' + club.id + '">查看学分</button>';
+      return '<button type="button" class="mini-btn outline" data-act="credit:view" data-id="' + club.id + '">查看学分</button>';
     }
     if (club.credit === 'pending') {
       return '<button type="button" class="mini-btn primary" data-act="credit:viewApply" data-id="' + club.id + '">查看学分申请</button>' +
@@ -868,13 +869,7 @@
   }
 
   function membersTab(club) {
-    return '<div class="applicant-banner">' +
-        '<div><span class="banner-badge">新入团申请</span>' +
-          '<p>有 <strong>' + club.applicants.length + '</strong> 位同学申请加入社团，待你审核</p>' +
-        '</div>' +
-        '<button type="button" data-act="applicant:review" data-index="0">去审核（' + club.applicants.length + '）›</button>' +
-      '</div>' +
-      '<label class="mp-search member-search">' +
+    return '<label class="mp-search member-search">' +
         '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.4 4.4"/></svg>' +
         '<input type="text" id="memberSearch" placeholder="请输入姓名/班级" value="' + state.memberKeyword + '" autocomplete="off" />' +
       '</label>' +
@@ -1004,6 +999,15 @@
     return !!credit && (credit.status === '待初审' || credit.status === '待社长重审');
   }
 
+  // 当前社团里真正「待我审核」的学分申请索引（只算出现在名册里的成员）
+  function pendingCreditIndices(club) {
+    var out = [];
+    creditRows(club).forEach(function (row) {
+      if (isPendingCredit(row.credit)) out.push(club.credits.indexOf(row.credit));
+    });
+    return out;
+  }
+
   function creditRows(club) {
     return club.members.map(function (member) {
       var credit = club.credits.filter(function (item) { return item.name === member.name; })[0];
@@ -1096,11 +1100,13 @@
 
   function managedHtml() {
     var club = currentManage();
+    var pendingApplicants = club.applicants.length;
+    var pendingCredits = pendingCreditIndices(club).length;
     var tabs = [
-      { key: 'members', label: '成员名册' },
+      { key: 'members', label: '成员名册', dot: pendingApplicants > 0 },
       { key: 'activities', label: '社团活动' },
       { key: 'showcase', label: '成果荣誉' },
-      { key: 'credits', label: '社团学分' }
+      { key: 'credits', label: '社团学分', dot: pendingCredits > 0 }
     ];
     var tabContent = '';
     if (state.manageTab === 'members') tabContent = membersTab(club);
@@ -1118,7 +1124,9 @@
       '</div>' +
       (isArchived() ? '<div class="archive-note">该学期已归档，内容仅可查看。</div>' : '') +
       '<div class="manage-tabs">' + tabs.map(function (tab) {
-        return '<button type="button" class="' + (state.manageTab === tab.key ? 'active' : '') + '" data-act="manage:tab" data-tab="' + tab.key + '">' + tab.label + '</button>';
+        return '<button type="button" class="' + (state.manageTab === tab.key ? 'active' : '') + '" data-act="manage:tab" data-tab="' + tab.key + '">' +
+          '<span class="tab-label">' + tab.label + (tab.dot ? '<span class="tab-dot" aria-hidden="true"></span>' : '') + '</span>' +
+        '</button>';
       }).join('') + '</div>' +
       '<div class="manage-tab-content">' + tabContent + '</div>';
   }
@@ -1128,10 +1136,15 @@
     syncFab();
   }
 
+  var FAB_ICON_ADD = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+  var FAB_ICON_CHECK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.6 4.4 4.4L19 7.2"/></svg>';
+
   function syncFab() {
     var fab = document.getElementById('manageFab');
+    var club = currentManage();
     var act = '';
     var label = '';
+    var icon = FAB_ICON_ADD;
     if (state.tab === 'managed' && !isArchived()) {
       if (state.manageTab === 'activities') {
         act = 'activity:publish';
@@ -1139,13 +1152,31 @@
       } else if (state.manageTab === 'showcase') {
         act = 'showcase:add';
         label = state.showcaseTab === 'works' ? '上传作品' : '登记荣誉';
+      } else if (state.manageTab === 'members') {
+        // 入团申请审核：入口常驻底部，有待审核时才出现
+        if (club.applicants.length) {
+          act = 'applicant:review';
+          label = '去审核（' + club.applicants.length + '）';
+          icon = FAB_ICON_CHECK;
+        }
+      } else if (state.manageTab === 'credits') {
+        var pendingCredits = pendingCreditIndices(club).length;
+        if (pendingCredits) {
+          act = 'credit:reviewNext';
+          label = '去审核（' + pendingCredits + '）';
+          icon = FAB_ICON_CHECK;
+        }
       }
     }
     fab.hidden = !act;
     if (act) {
       fab.setAttribute('data-act', act);
-      fab.querySelector('span').textContent = label;
+      fab.innerHTML = icon + '<span>' + label + '</span>';
     }
+    // 审核入口用底部常驻通栏按钮，其余主操作保持悬浮胶囊
+    var wide = act === 'applicant:review' || act === 'credit:reviewNext';
+    fab.classList.toggle('fab-wide', wide);
+    contentEl.classList.toggle('has-fab-wide', wide);
     contentEl.classList.toggle('has-fab', !!act);
   }
 
@@ -1204,6 +1235,7 @@
     var club = currentManage();
     var applicant = club.applicants[index];
     if (!applicant) return;
+    var total = club.applicants.length;
     var body =
       '<div class="applicant-head"><span class="member-avatar">' + applicant.name.charAt(0) + '</span>' +
         '<div><h3>' + applicant.name + '<em>' + applicant.gender + '</em></h3>' +
@@ -1215,7 +1247,7 @@
       '<div class="sheet-foot-actions">' +
         '<button type="button" class="btn btn-secondary" data-act="applicant:reject" data-index="' + index + '">不通过</button>' +
         '<button type="button" class="btn btn-primary" data-act="applicant:approve" data-index="' + index + '">通过</button>' +
-      '</div>', false);
+      '</div>', false, (index + 1) + '/' + total);
   }
 
   function openPublishActivity() {
@@ -1324,6 +1356,10 @@
     var club = currentManage();
     var credit = club.credits[index];
     if (!credit) return;
+    var pendingIndices = pendingCreditIndices(club);
+    var total = pendingIndices.length || 1;
+    var seq = pendingIndices.indexOf(index) + 1;
+    if (seq < 1) seq = 1;
     var body =
       '<div class="applicant-head"><span class="member-avatar">' + credit.name.charAt(0) + '</span>' +
         '<div><h3>' + credit.name + '<em>' + credit.role + '</em></h3><p>' + credit.cls + '</p></div>' +
@@ -1339,7 +1375,7 @@
       '<div class="sheet-foot-actions">' +
         '<button type="button" class="btn btn-secondary" data-act="credit:return" data-index="' + index + '">退回修改</button>' +
         '<button type="button" class="btn btn-primary" data-act="credit:approve" data-index="' + index + '">通过</button>' +
-      '</div>', true);
+      '</div>', true, seq + '/' + total);
   }
 
   function openCreditDetail(index) {
@@ -1548,7 +1584,10 @@
       render();
       return;
     }
-    if (act === 'applicant:review') return openApplicantReview(Number(el.getAttribute('data-index')));
+    if (act === 'applicant:review') {
+      var reviewRaw = el.getAttribute('data-index');
+      return openApplicantReview(reviewRaw === null ? 0 : Number(reviewRaw));
+    }
     if (act === 'applicant:approve') {
       var approveClub = currentManage();
       var approveIndex = Number(el.getAttribute('data-index'));
@@ -1556,8 +1595,13 @@
       if (!approved) return;
       approveClub.applicants.splice(approveIndex, 1);
       approveClub.members.push({ name: approved.name, role: '成员', cls: approved.cls, join: '2026-09-18', count: 0, phone: approved.phone });
-      closeSheet();
       render();
+      // 审核完自动切到下一位待审核的同学；全部处理完才收起弹层
+      if (approveClub.applicants.length) {
+        openApplicantReview(Math.min(approveIndex, approveClub.applicants.length - 1));
+      } else {
+        closeSheet();
+      }
       toast('已通过「' + approved.name + '」的入团申请');
       return;
     }
@@ -1567,8 +1611,12 @@
       var rejected = rejectClub.applicants[rejectIndex];
       if (!rejected) return;
       rejectClub.applicants.splice(rejectIndex, 1);
-      closeSheet();
       render();
+      if (rejectClub.applicants.length) {
+        openApplicantReview(Math.min(rejectIndex, rejectClub.applicants.length - 1));
+      } else {
+        closeSheet();
+      }
       toast('已退回「' + rejected.name + '」的入团申请');
       return;
     }
@@ -1827,7 +1875,17 @@
       toast('学分申请已提交，等待教师审核');
       return;
     }
-    if (act === 'credit:review') return openCreditReview(Number(el.getAttribute('data-index')));
+    if (act === 'credit:review') {
+      var creditRaw = el.getAttribute('data-index');
+      if (creditRaw !== null) return openCreditReview(Number(creditRaw));
+      var firstPending = pendingCreditIndices(currentManage())[0];
+      return firstPending == null ? undefined : openCreditReview(firstPending);
+    }
+    if (act === 'credit:reviewNext') {
+      var nextCreditIndices = pendingCreditIndices(currentManage());
+      if (!nextCreditIndices.length) return;
+      return openCreditReview(nextCreditIndices[0]);
+    }
     if (act === 'credit:detail') return openCreditDetail(Number(el.getAttribute('data-index')));
     if (act === 'credit:approve' || act === 'credit:return') {
       var creditClub = currentManage();
@@ -1847,8 +1905,14 @@
         credit.status = '已退回';
         credit.note = note;
       }
-      closeSheet();
       render();
+      // 审核完自动切到下一条待处理申请；全部处理完才收起弹层
+      var remainingCredits = pendingCreditIndices(creditClub);
+      if (remainingCredits.length) {
+        openCreditReview(remainingCredits[0]);
+      } else {
+        closeSheet();
+      }
       toast(act === 'credit:approve' ? '已通过「' + credit.name + '」的学分申请' : '已退回「' + credit.name + '」的学分申请');
       return;
     }
