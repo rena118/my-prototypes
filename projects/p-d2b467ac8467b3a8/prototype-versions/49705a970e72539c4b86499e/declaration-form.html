@@ -581,6 +581,7 @@
 <script>
 (function () {
   var isResubmit = new URLSearchParams(location.search).get('mode') === 'resubmit';
+  var isDraft = new URLSearchParams(location.search).get('mode') === 'draft';
   if (isResubmit) {
     document.getElementById('navTitle').textContent = '修改社团申报';
     document.getElementById('rejectAlert').classList.remove('hidden');
@@ -590,6 +591,14 @@
     document.getElementById('clubCategory').value = '人文';
     document.getElementById('clubSummary').value = '品味古典诗词之美，组织朗诵与创作交流，体验古风雅韵。';
     document.querySelector('[data-cover="reading"]').classList.add('selected');
+    if (window.protoSyncPickers) window.protoSyncPickers();
+  } else if (isDraft) {
+    document.getElementById('navTitle').textContent = '继续编辑草稿';
+    document.getElementById('clubName').value = '深空天文观测社';
+    document.getElementById('clubCategory').value = '科技';
+    document.getElementById('clubSummary').value = '利用课余时间开展夜间星空观测与天文摄影研讨。';
+    document.getElementById('clubPlan').value = '每周四晚常规观测，每月组织一次深空天体摄影展。';
+    document.querySelector('[data-cover="robot"]').classList.add('selected');
     if (window.protoSyncPickers) window.protoSyncPickers();
   } else {
     document.querySelector('[data-cover="reading"]').classList.add('selected');

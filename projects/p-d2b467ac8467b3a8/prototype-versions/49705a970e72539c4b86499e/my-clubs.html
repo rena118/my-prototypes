@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>学生手机端 · 我的社团</title>
+<title>学生手机端 · 社团</title>
 <link rel="stylesheet" href="assets/style.css" />
 <script data-prototype-owned data-proto-hotspot-bootstrap data-proto-review="hotspots">
 /* 点击空白时短暂提示本次需求范围内的真实交互；未声明范围时不扫描整页。 */
@@ -320,12 +320,40 @@
     <div class="status-bar" data-status-bar></div>
 
     <header class="nav-bar">
-      <span class="nav-title">我的社团</span>
+      <span class="nav-title">社团</span>
     </header>
+
+    <div class="top-switch">
+      <div class="seg-control">
+        <button type="button" onclick="location.href='plaza.html'">社团广场</button>
+        <button type="button" class="active">我报名的</button>
+      </div>
+    </div>
 
     <div class="app-content" id="content"></div>
 
-    <nav class="tab-bar" data-tabbar="myclubs"></nav>
+    <section class="page-layer" id="activityPage" hidden>
+      <header class="nav-bar">
+        <button type="button" class="nav-back" data-ap="back" aria-label="返回">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg>
+        </button>
+        <span class="nav-title">活动详情</span>
+      </header>
+      <div class="app-content" id="activityPageContent"></div>
+      <div class="action-bar" id="activityPageBar" hidden></div>
+    </section>
+
+    <section class="page-layer" id="allActPage" hidden>
+      <header class="nav-bar">
+        <button type="button" class="nav-back" data-act="allact:back" aria-label="返回">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg>
+        </button>
+        <span class="nav-title">全部活动</span>
+      </header>
+      <div class="app-content" id="allActContent"></div>
+    </section>
+
+    <nav class="tab-bar" data-tabbar="clubs"></nav>
 
     <div class="mp-sheet-mask" id="sheetMask">
       <div class="mp-sheet" id="sheetBox"></div>
@@ -339,6 +367,8 @@
 </div>
 
 <script src="assets/app.js"></script>
+<script src="assets/moments.js"></script>
+<script src="assets/activity-page.js"></script>
 <script>
 (function () {
   var CURRENT_TERM = '2026-2027 学年上学期';
@@ -350,14 +380,29 @@
     robot: 'assets/poster-robot.jpg'
   };
 
-  var MOMENT_PHOTOS = ['assets/poster-drama.jpg', 'assets/poster-reading.jpg', 'assets/poster-football.jpg'];
-
   var MINE = {
     pending: {
       name: '机器人探索社', category: '科技', cover: PHOTOS.robot,
       submittedAt: '2026-09-12 16:20',
       reason: '希望参与结构搭建与编程挑战，持续完成学期作品。'
     },
+    rejected: [
+      {
+        id: 'basketball', name: '校园篮球社', category: '体育',
+        term: CURRENT_TERM, state: 'rejected', recordAt: '2026-09-21 10:12',
+        desc: '社长审核未通过：本学期名额已满，建议下学期优先报名。'
+      },
+      {
+        id: 'drama', name: '光影戏剧社', category: '艺术',
+        term: CURRENT_TERM, state: 'expired', recordAt: '2026-09-15 18:00',
+        desc: '提交于 2026-09-08，社长超时未审核，申请已自动失效。'
+      },
+      {
+        id: 'photography', name: '校园摄影社', category: '艺术',
+        term: '2025-2026 学年下学期', state: 'rejected', recordAt: '2026-03-06 16:30',
+        desc: '社长审核未通过：本学期社团名额已满，建议下学期重新申请。'
+      }
+    ],
     joined: [
       {
         id: 'documentary', name: '校园纪录片社', category: '艺术', cover: PHOTOS.doc,
@@ -365,7 +410,7 @@
         hasGallery: true, works: 2, honors: 2, credit: 'approved', creditHours: 6,
         stats: { joined: 3, hours: '6.0', shares: 15, featured: 4 },
         activities: [
-          { id: 'doc-next', day: '10.25', week: '周五', title: '校园人物微纪录片初剪沟通会', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '待开展', attendance: '', shares: 2, desc: '各创作小组带好初剪素材，集中讨论叙事节奏、镜头衔接与后续补拍安排。' },
+          { id: 'doc-next', day: '10.25', week: '周五', title: '校园人物微纪录片初剪沟通会', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '进行中', attendance: '', shares: 2, desc: '各创作小组带好初剪素材，集中讨论叙事节奏、镜头衔接与后续补拍安排。' },
           { id: 'doc-next-2', day: '10.30', week: '周三', title: '校园微纪录片补拍分工会', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '待开展', attendance: '', shares: 3, desc: '确认补拍场景、采访对象与器材使用安排，完成外拍前的分工准备。' },
           { id: 'doc-done', day: '10.18', week: '周五', title: '影视摄影构图与手持云台实操训练', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '已结束', attendance: '已出勤', shares: 4, desc: '完成三轴稳定器校准、平移与低角度跟拍实训，并采集首期拍摄素材。' },
           { id: 'doc-done-2', day: '10.11', week: '周五', title: '纪录片选题与采访提纲工作坊', time: '15:30 - 17:00', venue: '影媒工作间 204', status: '已结束', attendance: '已出勤', shares: 6, desc: '完成选题聚焦与采访提纲初稿，并确定各组的第一位采访对象。' },
@@ -475,16 +520,6 @@
     }
   };
 
-  var MOMENTS = {
-    'doc-next': [
-      { author: '赵子易', role: '成员', time: '10-23 18:20', text: '训练结束后大家一起完成了战术复盘，配合越来越默契。', photo: MOMENT_PHOTOS[0], likes: 12, liked: false, comments: [{ author: '林知夏', text: '很有现场感！' }] },
-      { author: '林知夏', role: '成员', time: '10-23 18:42', text: '今天边路配合很顺，记录下这个精彩瞬间。', photo: MOMENT_PHOTOS[1], likes: 8, liked: false, comments: [] }
-    ],
-    'reading-next': [
-      { author: '周予安', role: '社长', time: '10-27 13:05', text: '本周共读的异兽插画已经贴在活动室，大家记得来看。', photo: MOMENT_PHOTOS[1], likes: 6, liked: false, comments: [] }
-    ]
-  };
-
   var state = {
     tab: 'joined',
     mineTerm: CURRENT_TERM,
@@ -495,7 +530,6 @@
     manageTerm: CURRENT_TERM,
     manageTab: 'members',
     memberKeyword: '',
-    activityFilter: 'all',
     showcaseTab: 'works',
     creditFilter: 'all',
     creditKeyword: ''
@@ -507,7 +541,6 @@
   var confirmMask = document.getElementById('confirmMask');
   var confirmBox = document.getElementById('confirmBox');
   var confirmCallback = null;
-  var composerPhoto = null;
 
   function toast(message) { window.protoToast(message); }
 
@@ -537,17 +570,16 @@
 
   function closeSheet() {
     sheetMask.classList.remove('show');
-    composerPhoto = null;
   }
 
-  function openConfirm(title, desc, onConfirm) {
+  function openConfirm(title, desc, onConfirm, confirmLabel) {
     confirmCallback = onConfirm;
     confirmBox.innerHTML =
       '<h3 class="confirm-title">' + title + '</h3>' +
       '<p class="confirm-desc">' + desc + '</p>' +
       '<div class="confirm-actions">' +
         '<button type="button" class="btn btn-secondary" data-act="confirm:no">再想想</button>' +
-        '<button type="button" class="btn btn-primary danger" data-act="confirm:yes">确认</button>' +
+        '<button type="button" class="btn btn-primary danger" data-act="confirm:yes">' + (confirmLabel || '确认') + '</button>' +
       '</div>';
     confirmMask.classList.add('show');
   }
@@ -589,7 +621,6 @@
       apply: function (value) {
         state.manageClub = value;
         state.memberKeyword = '';
-        state.activityFilter = 'all';
         state.showcaseTab = 'works';
         state.creditFilter = 'all';
         state.creditKeyword = '';
@@ -611,7 +642,7 @@
   /* ---------- 我报名的 ---------- */
   function creditButton(club) {
     if (club.credit === 'approved') {
-      return '<button type="button" class="mini-btn primary" data-act="credit:view" data-id="' + club.id + '">查看学分</button>';
+      return '<button type="button" class="mini-btn outline" data-act="credit:view" data-id="' + club.id + '">查看学分</button>';
     }
     if (club.credit === 'pending') {
       return '<button type="button" class="mini-btn primary" data-act="credit:viewApply" data-id="' + club.id + '">查看学分申请</button>' +
@@ -620,63 +651,128 @@
     return '<button type="button" class="mini-btn primary" data-act="credit:apply" data-id="' + club.id + '">申请学分</button>';
   }
 
-  function joinedCard(club) {
-    var next = club.activities.filter(function (item) { return item.status === '待开展'; })[0];
-    var open = state.expanded === club.id;
-    var activityHtml = open ? '<div class="mine-activities">' + club.activities.map(function (activity, index) {
-      return '<article class="mine-activity">' +
+  function activityStateClass(status) {
+    return status === '待开展' ? 'upcoming' : status === '进行中' ? 'ongoing' : 'ended';
+  }
+
+  function activityCardHtml(activity) {
+    return '<article class="mine-activity">' +
+      '<div class="mine-activity-side">' +
         '<span class="date-chip"><strong>' + activity.day + '</strong><span>' + activity.week + '</span></span>' +
-        '<div class="mine-activity-main">' +
-          '<h4>' + activity.title +
-            '<em class="state-em ' + (activity.status === '待开展' ? 'upcoming' : 'ended') + '">' + activity.status + '</em>' +
-            (activity.attendance ? '<em class="state-em attendance">' + activity.attendance + '</em>' : '') +
-          '</h4>' +
-          '<p>' + activity.time + ' · ' + activity.venue + '</p>' +
-          '<span>' + activity.desc + '</span>' +
-          '<button type="button" class="moment-btn" data-act="moment:open" data-id="' + club.id + '" data-index="' + index + '">' +
-            '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.4h3l1.5-2h7L17 8.4h3v10H4v-10Z"/><circle cx="12" cy="13" r="3.2"/></svg>' +
-            '分享活动瞬间<b>已有 ' + activity.shares + ' 份分享</b>' +
-          '</button>' +
+        '<div class="activity-tags">' +
+          '<em class="state-em ' + activityStateClass(activity.status) + '">' + activity.status + '</em>' +
+          (activity.attendance ? '<em class="state-em attendance">' + activity.attendance + '</em>' : '') +
         '</div>' +
-      '</article>';
-    }).join('') + '</div>' : '';
+      '</div>' +
+      '<div class="mine-activity-main">' +
+        '<h4>' + activity.title + '</h4>' +
+        '<p>' + activity.time + ' · ' + activity.venue + '</p>' +
+        '<span>' + activity.desc + '</span>' +
+      '</div>' +
+      '<button type="button" class="moment-entry" data-act="moment:open" data-id="' + activity.id + '" aria-label="查看' + activity.title + '的活动瞬间，共 ' + activity.shares + ' 份分享">' +
+        '<span class="moment-entry-orb">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.4h3l1.5-2h7L17 8.4h3v10H4v-10Z"/><circle cx="12" cy="13" r="3.2"/></svg>' +
+          '<em>' + activity.shares + '</em>' +
+          '<span class="moment-entry-spark" aria-hidden="true">✦</span>' +
+        '</span>' +
+        '<span class="moment-entry-label">活动瞬间</span>' +
+      '</button>' +
+    '</article>';
+  }
+
+  function openAllActivities(clubId) {
+    var club = findJoined(clubId);
+    if (!club) return;
+    var page = document.getElementById('allActPage');
+    var content = document.getElementById('allActContent');
+    content.innerHTML =
+      '<div class="all-act-lead"><strong>' + club.name + '</strong><span>共 ' + club.activities.length + ' 场活动</span></div>' +
+      '<div class="joined-card all-act-card">' +
+        club.activities.map(activityCardHtml).join('') +
+      '</div>';
+    content.scrollTop = 0;
+    page.hidden = false;
+    requestAnimationFrame(function () { page.classList.add('show'); });
+  }
+
+  function closeAllActivities() {
+    var page = document.getElementById('allActPage');
+    if (!page || page.hidden) return;
+    page.classList.remove('show');
+    window.setTimeout(function () {
+      if (page.classList.contains('show')) return;
+      page.hidden = true;
+      document.getElementById('allActContent').innerHTML = '';
+    }, 260);
+  }
+
+  function joinedCard(club) {
+    var open = state.expanded === club.id;
+    var nextActivity = club.activities.filter(function (activity) {
+      return activity.status !== '已结束';
+    })[0];
+    var hasMoreActivities = club.activities.length > 2;
+    var endedActivities = club.activities.filter(function (activity) {
+      return activity.status === '已结束';
+    });
+    var recentActivities = endedActivities.slice(0, 2);
+
+    var nextHtml = nextActivity
+      ? '<div class="joined-next">' +
+          '<div class="jn-body" data-act="club:view" data-id="' + club.id + '" role="button" tabindex="0" aria-label="查看' + club.name + '的下一场活动">' +
+            '<div class="joined-next-head">' +
+              '<span class="jn-tag">下一场</span>' +
+              '<em class="state-em ' + (nextActivity.status === '待开展' ? 'upcoming' : 'ongoing') + '">' + nextActivity.status + '</em>' +
+            '</div>' +
+            '<span class="jn-title">' + nextActivity.title + '</span>' +
+            '<span class="jn-sub">' + nextActivity.day + ' ' + nextActivity.week + ' · ' + nextActivity.time + ' · ' + nextActivity.venue + '</span>' +
+          '</div>' +
+          '<button type="button" class="moment-entry jn-moment" data-act="moment:open" data-id="' + nextActivity.id + '" aria-label="查看' + nextActivity.title + '的活动瞬间，共 ' + nextActivity.shares + ' 份分享">' +
+            '<span class="moment-entry-orb">' +
+              '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.4h3l1.5-2h7L17 8.4h3v10H4v-10Z"/><circle cx="12" cy="13" r="3.2"/></svg>' +
+              '<em>' + nextActivity.shares + '</em>' +
+              '<span class="moment-entry-spark" aria-hidden="true">✦</span>' +
+            '</span>' +
+            '<span class="moment-entry-label">活动瞬间</span>' +
+          '</button>' +
+        '</div>'
+      : '<div class="joined-next is-empty"><span class="jn-sub">暂无待开展的活动</span></div>';
+
+    var activityHtml = open
+      ? '<div class="mine-activities">' +
+          '<div class="recent-head">近期活动<span>' + (hasMoreActivities ? '近 2 场' : '共 ' + recentActivities.length + ' 场') + '</span></div>' +
+          recentActivities.map(activityCardHtml).join('') +
+          (hasMoreActivities
+            ? '<button type="button" class="recent-all" data-act="club:allActivities" data-id="' + club.id + '">' +
+                '查看全部 ' + club.activities.length + ' 场活动' +
+                '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>' +
+              '</button>'
+            : '') +
+        '</div>'
+      : '';
 
     return '<article class="joined-card">' +
-      '<div class="joined-head">' +
+      '<div class="joined-head" data-act="club:view" data-id="' + club.id + '" role="button" tabindex="0" aria-label="查看' + club.name + '社团详情">' +
         '<span class="joined-cover" style="background-image:url(\'' + club.cover + '\')"></span>' +
         '<div class="joined-summary">' +
           '<h3>' + club.name + '<span class="tag tag-cat">' + club.category + '</span></h3>' +
           '<div class="joined-meta">' +
-            '<span>社长：' + club.leader + '</span>' +
-            '<span>加入于 ' + club.joinedAt + '</span>' +
             '<span>出勤 ' + club.attendance + '</span>' +
             '<span>累计 ' + club.hours + '</span>' +
           '</div>' +
-          '<div class="joined-next">' +
-            '<strong>下一场活动</strong>' +
-            (next
-              ? '<span>' + next.title + '</span><span>' + next.day + ' ' + next.week + ' · ' + next.time + ' · ' + next.venue + '</span>'
-              : '<span>暂未发布</span>') +
-          '</div>' +
         '</div>' +
+        '<span class="joined-arrow" aria-hidden="true">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>' +
+        '</span>' +
       '</div>' +
+      nextHtml +
       '<div class="joined-actions">' +
-        creditButton(club) +
-        '<button type="button" class="mini-btn ghost" data-act="club:view" data-id="' + club.id + '">查看社团</button>' +
-        '<button type="button" class="mini-btn ghost" data-act="club:expand" data-id="' + club.id + '">' + (open ? '收起' : '展开') + '</button>' +
+        '<div class="ja-main">' + creditButton(club) + '</div>' +
+        '<button type="button" class="ja-expand' + (open ? ' is-open' : '') + '" data-act="club:expand" data-id="' + club.id + '">' +
+          (open ? '收起' : '近期活动') +
+          '<svg class="chev" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+        '</button>' +
       '</div>' +
-      '<button type="button" class="showcase-entry ' + (club.hasGallery ? 'has-content' : 'is-empty') + '" data-act="club:showcase" data-id="' + club.id + '">' +
-        '<span class="showcase-entry-icon">' +
-          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4.6h8v3.2a4 4 0 0 1-8 0V4.6Z"/><path d="M8 6H5.4v1.6A3 3 0 0 0 8.4 10.6"/><path d="M16 6h2.6v1.6a3 3 0 0 1-3 3"/><path d="M12 11.8v3.4"/><path d="M9 19.4h6"/><path d="M10.4 15.2h3.2v4.2h-3.2z"/></svg>' +
-        '</span>' +
-        '<span class="showcase-entry-main">' +
-          '<strong>社团成果荣誉</strong>' +
-          '<small>' + (club.hasGallery ? club.works + ' 件作品 ｜ ' + club.honors + ' 项荣誉' : '社长还未上传作品与荣誉') + '</small>' +
-        '</span>' +
-        '<em>查看' +
-          '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>' +
-        '</em>' +
-      '</button>' +
       activityHtml +
     '</article>';
   }
@@ -710,16 +806,47 @@
       }
     }
 
-    return '<div class="seg-control">' +
-        '<button type="button" class="active" data-act="tab:joined">我报名的</button>' +
-        '<button type="button" data-act="tab:managed">我管理的</button>' +
+    var rejectedCount = MINE.rejected.filter(function (item) {
+      return item.term === state.mineTerm;
+    }).length;
+
+    return '<div class="mine-filter-row">' +
+        '<button type="button" class="mine-term" data-act="pick" data-kind="mineTerm">' + state.mineTerm +
+          '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
+        '</button>' +
+        '<button type="button" class="rejected-entry" data-act="rejected:open">未通过记录' +
+          (rejectedCount ? '<em>' + rejectedCount + '</em>' : '') +
+        '</button>' +
       '</div>' +
-      '<button type="button" class="mine-term" data-act="pick" data-kind="mineTerm">' + state.mineTerm +
-        '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
-      '</button>' +
       noticeHtml +
       '<div class="section-title"><h2>已加入的社团</h2><span>' + MINE.joined.length + ' 个</span></div>' +
       MINE.joined.map(joinedCard).join('');
+  }
+
+  function rejectedCard(item) {
+    var expired = item.state === 'expired';
+    return '<article class="rejected-card">' +
+      '<div class="rejected-head">' +
+        '<h4>' + item.name + '</h4>' +
+        '<span class="tag tag-cat">' + item.category + '</span>' +
+        '<span class="rejected-state ' + (expired ? 'is-expired' : 'is-rejected') + '">' + (expired ? '已失效' : '未通过') + '</span>' +
+      '</div>' +
+      '<p class="rejected-desc">' + item.desc + '</p>' +
+      '<div class="rejected-foot">' +
+        '<span>记录时间：' + item.recordAt + '</span>' +
+        (expired ? '' : '<button type="button" class="mini-btn primary" data-act="rejected:reapply" data-id="' + item.id + '"' + (item.reapplied ? ' disabled' : '') + '>重新报名</button>') +
+      '</div>' +
+    '</article>';
+  }
+
+  function openRejectedSheet() {
+    var list = MINE.rejected.filter(function (item) {
+      return item.term === state.mineTerm;
+    });
+    var body = list.length
+      ? list.map(rejectedCard).join('')
+      : '<div class="empty-mini"><strong>该学期没有未通过的报名记录</strong></div>';
+    openSheet('未通过记录', body, '<button type="button" class="btn btn-secondary" data-act="sheet:close">关闭</button>', false);
   }
 
   /* ---------- 我管理的 ---------- */
@@ -755,7 +882,7 @@
       '</div>' +
       '<label class="mp-search member-search">' +
         '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.8" cy="10.8" r="6.6"/><path d="m16 16 4.4 4.4"/></svg>' +
-        '<input type="text" id="memberSearch" placeholder="搜索成员姓名、班级或联系电话" value="' + state.memberKeyword + '" autocomplete="off" />' +
+        '<input type="text" id="memberSearch" placeholder="请输入姓名/班级" value="' + state.memberKeyword + '" autocomplete="off" />' +
       '</label>' +
       '<div class="member-toolbar">' +
         '<span class="members-count">当前成员 <strong>' + club.members.length + '</strong> / ' + club.capacity + ' 人</span>' +
@@ -784,54 +911,43 @@
   }
 
   function activitiesTab(club) {
-    var filters = [
-      { key: 'all', label: '全部', count: club.activities.length },
-      { key: '进行中', label: '进行中', count: club.activities.filter(function (a) { return a.state === '进行中'; }).length },
-      { key: '待开展', label: '待开展', count: club.activities.filter(function (a) { return a.state === '待开展'; }).length },
-      { key: '已结束', label: '已结束', count: club.activities.filter(function (a) { return a.state === '已结束'; }).length }
-    ];
-    var list = state.activityFilter === 'all' ? club.activities : club.activities.filter(function (a) { return a.state === state.activityFilter; });
-    var listHtml = list.map(function (activity, index) {
+    var list = club.activities.slice().sort(function (a, b) {
+      var av = a.day.split('.'), bv = b.day.split('.');
+      return (Number(bv[0]) * 100 + Number(bv[1])) - (Number(av[0]) * 100 + Number(av[1]));
+    });
+    var listHtml = list.map(function (activity) {
       var realIndex = club.activities.indexOf(activity);
-      var isUpcoming = activity.state === '待开展';
-      var needAttendance = !isUpcoming && !attendanceDone(activity);
-      var needRecord = !isUpcoming && attendanceDone(activity) && !recordDone(activity);
-      var primaryAction = '';
-      if (needAttendance) {
-        primaryAction = '<button type="button" class="mini-btn primary" data-act="activity:attendance" data-index="' + realIndex + '">考勤点名</button>';
-      } else if (needRecord) {
-        primaryAction = '<button type="button" class="mini-btn primary" data-act="activity:record" data-index="' + realIndex + '">填写活动记录</button>';
-      }
-      return '<article class="m-activity">' +
-        '<div class="m-activity-head">' +
-          '<span class="date-chip"><strong>' + activity.day + '</strong><span>' + activity.week + '</span></span>' +
-          '<div class="m-activity-title">' +
+      return '<article class="m-activity" data-act="activity:detail" data-index="' + realIndex + '" role="button" tabindex="0" aria-label="查看' + activity.title + '详情">' +
+        '<span class="date-chip"><strong>' + activity.day + '</strong><span>' + activity.week + '</span></span>' +
+        '<div class="m-activity-main">' +
+          '<div class="m-activity-top">' +
             '<h4>' + activity.title + '</h4>' +
-            '<p>' + activity.time + ' · ' + activity.venue + '</p>' +
+            '<em class="state-em ' + activityStateClass(activity.state) + '">' + activity.state + '</em>' +
           '</div>' +
-          '<em class="state-em ' + activityStateClass(activity.state) + '">' + activity.state + '</em>' +
+          '<p>' + activity.time + ' · ' + activity.venue + '</p>' +
         '</div>' +
-        '<p class="m-activity-desc">' + activity.desc + '</p>' +
-        '<div class="m-activity-meta">' +
-          '<span>' + activity.attendance + '</span>' +
-          '<span class="' + (activity.record === '未填活动记录' ? 'warn' : '') + '">' + activity.record + '</span>' +
-        '</div>' +
-        (activity.attachment ? '<div class="m-activity-file"><span>PDF</span><small>' + activity.attachment + '</small></div>' : '') +
-        '<div class="m-activity-ops">' +
-          primaryAction +
-          '<button type="button" class="mini-btn ghost" data-act="activity:detail" data-index="' + realIndex + '">查看详情</button>' +
-          '<button type="button" class="mini-btn ghost" data-act="activity:more" data-index="' + realIndex + '">更多</button>' +
-        '</div>' +
+        '<span class="m-activity-chevron" aria-hidden="true">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>' +
+        '</span>' +
       '</article>';
     }).join('');
-    if (!listHtml) listHtml = '<div class="empty-mini"><strong>该状态下暂无活动</strong></div>';
+    if (!listHtml) listHtml = '<div class="empty-mini"><strong>暂无活动记录</strong></div>';
 
-    return '<div class="filter-pills">' + filters.map(function (item) {
-        return '<button type="button" class="' + (state.activityFilter === item.key ? 'active' : '') + '" data-act="activity:filter" data-filter="' + item.key + '">' + item.label + '（' + item.count + '）</button>';
-      }).join('') +
-      '<button type="button" class="pills-link" data-act="activity:allMoments">全部瞬间</button>' +
-    '</div>' +
-    '<div class="m-activity-list">' + listHtml + '</div>';
+    var totalShares = club.activities.reduce(function (sum, activity) {
+      return sum + window.StudentMoments.posts(activity.id).length;
+    }, 0);
+
+    return '<button type="button" class="moments-entry" data-act="activity:allMoments">' +
+        '<span class="me-icon">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.4" y="3.4" width="7.2" height="7.2" rx="1.8"/><rect x="13.4" y="3.4" width="7.2" height="7.2" rx="1.8"/><rect x="3.4" y="13.4" width="7.2" height="7.2" rx="1.8"/><rect x="13.4" y="13.4" width="7.2" height="7.2" rx="1.8"/></svg>' +
+        '</span>' +
+        '<span class="me-main"><strong>全部瞬间</strong><small>汇总 ' + club.activities.length + ' 场活动的成员分享</small></span>' +
+        '<span class="me-count">' + totalShares + '</span>' +
+        '<span class="me-chevron">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>' +
+        '</span>' +
+      '</button>' +
+      '<div class="m-activity-list">' + listHtml + '</div>';
   }
 
   function showcaseTab(club) {
@@ -860,14 +976,6 @@
       }).join('') + '</div>';
   }
 
-  function creditTone(status) {
-    if (status === '已认定') return 'approved';
-    if (status === '已退回') return 'returned';
-    if (status === '待教师审核') return 'wait';
-    if (status === '未申请') return 'idle';
-    return 'pending';
-  }
-
   function creditGroup(status) {
     if (status === '待初审' || status === '待社长重审') return 'pending';
     if (status === '待教师审核') return 'submitted';
@@ -880,6 +988,19 @@
       var credit = club.credits.filter(function (item) { return item.name === member.name; })[0];
       return { member: member, credit: credit };
     });
+  }
+
+  function creditResultView(credit) {
+    if (!credit) return { tone: 'gray', text: '未申请' };
+    if (credit.status === '已认定') {
+      var credits = credit.credits != null ? credit.credits : Math.round(credit.declared / 2 * 10) / 10;
+      return { tone: 'approved', text: credits + ' 学分' };
+    }
+    if (credit.status === '待初审') return { tone: 'blue', text: '待我初审' };
+    if (credit.status === '待社长重审') return { tone: 'blue', text: '待我重审' };
+    if (credit.status === '待教师审核') return { tone: 'gray', text: '待教师审核' };
+    if (credit.status === '已退回') return { tone: 'orange', text: '社长退回修改' };
+    return { tone: 'gray', text: credit.status };
   }
 
   function creditRowsHtml(club) {
@@ -897,14 +1018,7 @@
       var credit = row.credit;
       var status = credit ? credit.status : '未申请';
       var actionable = status === '待初审' || status === '待社长重审';
-      var detail;
-      if (!credit || status === '未申请') {
-        detail = member.cls + ' · 本学期尚未提交学分申请';
-      } else if (credit.self) {
-        detail = '社长 · 组织 ' + club.activities.length + ' 场 · 系统记录 ' + credit.system + ' 小时 · 申报 ' + credit.declared + ' 学时';
-      } else {
-        detail = member.cls + ' · 申报 ' + credit.declared + ' 学时 · 系统记录 ' + credit.system + ' 小时';
-      }
+      var result = creditResultView(credit);
       var action = '';
       if (credit) {
         var realIndex = club.credits.indexOf(credit);
@@ -918,22 +1032,22 @@
             action = '<button type="button" class="mini-btn primary" data-act="credit:selfApply" data-index="' + realIndex + '">立即申请</button>';
           }
         } else {
-          action = '<button type="button" class="mini-btn ghost" data-act="' + (actionable ? 'credit:review' : 'credit:detail') +
+          action = '<button type="button" class="mini-btn ' + (actionable ? 'primary' : 'ghost') + '" data-act="' + (actionable ? 'credit:review' : 'credit:detail') +
             '" data-index="' + realIndex + '">' + (actionable ? '审核' : '查看') + '</button>';
         }
       }
       return '<div class="credit-row">' +
         '<span class="member-avatar">' + member.name.charAt(0) + '</span>' +
         '<div class="credit-main">' +
-          '<h4>' + member.name + '<span class="role-pill ' + (member.role === '社长' ? 'leader' : '') + '">' + member.role + '</span></h4>' +
-          '<p>' + detail + '</p>' +
+          '<h4>' + member.name + '</h4>' +
+          '<p>' + (credit ? '申请 ' + credit.declared + ' 学时' : '尚未提交申请') + '</p>' +
         '</div>' +
-        '<span class="credit-status ' + creditTone(status) + '">' + status + '</span>' +
+        '<span class="credit-result ' + result.tone + '">' + result.text + '</span>' +
         action +
       '</div>';
     }).join('');
     return (listHtml || '<div class="empty-mini"><strong>该条件下暂无成员</strong></div>') +
-      '<p class="credit-foot">共 ' + rowsAll.length + ' 位社团成员（含社长）· 当前显示 ' + rows.length + ' 位</p>';
+      '<p class="credit-foot">共 ' + rowsAll.length + ' 位社团成员（含社长）</p>';
   }
 
   function creditsTab(club) {
@@ -989,11 +1103,7 @@
     if (state.manageTab === 'showcase') tabContent = showcaseTab(club);
     if (state.manageTab === 'credits') tabContent = creditsTab(club);
 
-    return '<div class="seg-control">' +
-        '<button type="button" data-act="tab:joined">我报名的</button>' +
-        '<button type="button" class="active" data-act="tab:managed">我管理的</button>' +
-      '</div>' +
-      '<div class="manage-bar">' +
+    return '<div class="manage-bar">' +
         '<button type="button" class="mine-term" data-act="pick" data-kind="manageClub">' + club.name +
           '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>' +
         '</button>' +
@@ -1077,61 +1187,6 @@
       '</div>', false);
   }
 
-  /* ---------- 活动瞬间弹层 ---------- */
-  function getPosts(activityId) {
-    if (!MOMENTS[activityId]) {
-      MOMENTS[activityId] = [
-        { author: '赵子易', role: '成员', time: '10-23 18:20', text: '活动顺利结束，记录一下今天的现场。', photo: MOMENT_PHOTOS[0], likes: 5, liked: false, comments: [] }
-      ];
-    }
-    return MOMENTS[activityId];
-  }
-
-  var momentCtx = null;
-
-  function renderMomentSheet() {
-    if (!momentCtx) return;
-    var club = findJoined(momentCtx.clubId);
-    var activity = club.activities[momentCtx.index];
-    var posts = getPosts(activity.id);
-    var body =
-      '<div class="moment-head">' +
-        '<span class="tag tag-cat">' + club.name + '</span>' +
-        '<h3>' + activity.title + '</h3>' +
-        '<p>' + activity.day + ' ' + activity.week + ' · ' + activity.time + ' · ' + activity.venue + '</p>' +
-        '<span class="moment-count">已有 ' + posts.length + ' 份分享</span>' +
-      '</div>' +
-      '<div class="moment-composer">' +
-        '<textarea id="momentText" placeholder="说一句当时的心情（选填）"></textarea>' +
-        '<div class="moment-composer-row">' +
-          '<input type="file" accept="image/*" id="momentFile" hidden />' +
-          '<button type="button" class="moment-add" data-act="moment:pick">＋ 添加照片</button>' +
-          '<span id="momentPickTip">' + (composerPhoto ? '已选择 1 张照片' : '最多 3 张照片') + '</span>' +
-          '<button type="button" class="mini-btn primary" data-act="moment:publish">发布</button>' +
-        '</div>' +
-      '</div>' +
-      '<div class="moment-list">' + posts.map(function (post, index) {
-        return '<article class="moment-post">' +
-          '<div class="moment-post-head"><span class="member-avatar small">' + post.author.charAt(0) + '</span>' +
-            '<div><strong>' + post.author + '<em>' + post.role + '</em></strong><span>' + post.time + '</span></div>' +
-          '</div>' +
-          (post.text ? '<p>' + post.text + '</p>' : '') +
-          (post.photo ? '<span class="moment-photo" style="background-image:url(\'' + post.photo + '\')"></span>' : '') +
-          '<div class="moment-post-foot">' +
-            '<button type="button" class="' + (post.liked ? 'liked' : '') + '" data-act="moment:like" data-index="' + index + '">' +
-              '<svg width="12" height="12" viewBox="0 0 24 24" fill="' + (post.liked ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.2 4.6 13a4.4 4.4 0 0 1 6.2-6.2l1.2 1.2 1.2-1.2A4.4 4.4 0 0 1 19.4 13L12 20.2Z"/></svg>' +
-              post.likes +
-            '</button>' +
-            '<span>评论 ' + post.comments.length + '</span>' +
-          '</div>' +
-          (post.comments.length ? '<div class="moment-comments">' + post.comments.map(function (comment) {
-            return '<p><b>' + comment.author + '：</b>' + comment.text + '</p>';
-          }).join('') + '</div>' : '') +
-        '</article>';
-      }).join('') + '</div>';
-    openSheet('活动瞬间', body, '', true);
-  }
-
   /* ---------- 我管理的：弹层 ---------- */
   function openApplicantReview(index) {
     var club = currentManage();
@@ -1211,20 +1266,9 @@
 
   function openActivityDetail(index) {
     var club = currentManage();
-    var activity = club.activities[index];
-    if (!activity) return;
-    var body =
-      '<div class="status-banner ' + (activity.state === '已结束' ? 'neutral' : 'pending') + '"><strong>' + activity.state + '</strong>' + activity.title + '</div>' +
-      '<div class="kv-list">' +
-        '<div><span>活动时间</span><b>' + activity.day + ' ' + activity.week + ' · ' + activity.time + '</b></div>' +
-        '<div><span>活动场地</span><b>' + activity.venue + '</b></div>' +
-        '<div><span>考勤情况</span><b>' + activity.attendance + '</b></div>' +
-        '<div><span>活动记录</span><b>' + activity.record + '</b></div>' +
-      '</div>' +
-      '<div class="sheet-block"><h4>活动说明</h4><p>' + activity.desc + '</p></div>' +
-      (activity.attachment ? '<div class="attach-card"><span class="attach-icon">PDF</span><div class="attach-main"><strong>' + activity.attachment + '</strong><span>活动附件</span></div></div>' : '');
-    openSheet('活动详情', body,
-      '<button type="button" class="btn btn-primary" data-act="activity:moments" data-index="' + index + '">查看活动瞬间（' + activity.shares + '）</button>', true);
+    if (!club.activities[index]) return;
+    moreIndex = index;
+    window.ActivityPage.open(index);
   }
 
   var attendanceCtx = null;
@@ -1254,7 +1298,7 @@
           }).join('') + '</div>' +
         '</div>';
       }).join('') + '</div>';
-    openSheet('考勤点名', body, '<button type="button" class="btn btn-primary" data-act="attendance:submit">保存考勤</button>', true);
+    openSheet('考勤点名', body, '<button type="button" class="btn btn-primary" data-act="attendance:submit">保存</button>', true);
   }
 
   function openRecord(index) {
@@ -1274,7 +1318,7 @@
       '<div class="field"><label class="field-label">过程材料</label>' +
         '<input type="text" id="recordFile" value="' + (activity.attachment || '') + '" placeholder="如：训练记录与现场照片.pdf" />' +
       '</div>';
-    openSheet('填写活动记录', body, '<button type="button" class="btn btn-primary" data-act="record:submit">保存记录</button>', true);
+    openSheet('填写活动记录', body, '<button type="button" class="btn btn-primary" data-act="record:submit">保存</button>', true);
   }
 
   function openEditActivity(index) {
@@ -1300,40 +1344,9 @@
     openSheet('编辑活动信息', body, '<button type="button" class="btn btn-primary" data-act="activity:saveEdit">保存修改</button>', true);
   }
 
-  function openActivityMore(index) {
-    var club = currentManage();
-    var activity = club.activities[index];
-    if (!activity) return;
-    moreIndex = index;
-    var items = ['<button type="button" class="mp-picker-option" data-act="activity:edit">编辑活动信息</button>'];
-    if (attendanceDone(activity)) {
-      items.push('<button type="button" class="mp-picker-option" data-act="activity:attendance">修改考勤记录</button>');
-    }
-    if (recordDone(activity)) {
-      items.push('<button type="button" class="mp-picker-option" data-act="activity:record">修改活动记录</button>');
-    }
-    items.push('<button type="button" class="mp-picker-option is-danger" data-act="activity:delete">删除本场活动</button>');
-    openSheet('更多操作', '<div class="mp-picker-inline">' + items.join('') + '</div>', '', false);
-  }
-
   function openAllMoments() {
     var club = currentManage();
-    var body = club.activities.map(function (activity) {
-      var posts = getPosts(activity.id);
-      var postsHtml = posts.map(function (post) {
-        return '<article class="moment-post"><div class="moment-post-head">' +
-          '<span class="member-avatar small">' + post.author.charAt(0) + '</span>' +
-          '<div><strong>' + post.author + '<em>' + post.role + '</em></strong><span>' + post.time + '</span></div></div>' +
-          (post.text ? '<p>' + post.text + '</p>' : '') +
-          (post.photo ? '<span class="moment-photo" style="background-image:url(\'' + post.photo + '\')"></span>' : '') +
-          '<div class="moment-post-foot"><span>点赞 ' + post.likes + '</span><span>评论 ' + post.comments.length + '</span></div>' +
-        '</article>';
-      }).join('');
-      return '<div class="sheet-block"><h4>' + activity.title + ' · ' + posts.length + ' 份</h4>' +
-        '<p>' + activity.day + ' ' + activity.week + ' · ' + activity.venue + '</p>' +
-        '<div class="moment-list">' + postsHtml + '</div></div>';
-    }).join('');
-    openSheet('全部活动瞬间', body, '', true);
+    location.href = 'activity-moments.html?club=' + encodeURIComponent(club.name) + '&from=clubs';
   }
 
   function openCreditReview(index) {
@@ -1431,6 +1444,21 @@
   }
 
   /* ---------- 事件 ---------- */
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    var head = event.target.closest('[data-act="club:view"]');
+    if (head) {
+      event.preventDefault();
+      location.href = 'club-detail.html?id=' + head.getAttribute('data-id') + '&joined=1';
+      return;
+    }
+    var activityRow = event.target.closest('[data-act="activity:detail"]');
+    if (activityRow) {
+      event.preventDefault();
+      openActivityDetail(Number(activityRow.getAttribute('data-index')));
+    }
+  });
+
   document.addEventListener('click', function (event) {
     var el = event.target.closest('[data-act]');
     if (!el) {
@@ -1449,9 +1477,6 @@
       return;
     }
 
-    if (act === 'tab:joined') { state.tab = 'joined'; render(); return; }
-    if (act === 'tab:managed') { state.tab = 'managed'; render(); return; }
-
     if (act === 'pick') return openPicker(el.getAttribute('data-kind'));
     if (act === 'pick:choose') {
       var kind = el.getAttribute('data-kind');
@@ -1459,6 +1484,21 @@
       if (PICKERS[kind]) PICKERS[kind].apply(value);
       closeSheet();
       render();
+      return;
+    }
+
+    if (act === 'rejected:open') {
+      openRejectedSheet();
+      return;
+    }
+    if (act === 'rejected:reapply') {
+      var rejectedId = el.getAttribute('data-id');
+      var record = MINE.rejected.filter(function (item) { return item.id === rejectedId; })[0];
+      if (!record || record.reapplied) return;
+      record.reapplied = true;
+      openRejectedSheet();
+      render();
+      toast('已重新提交「' + record.name + '」的报名申请，等待社长审核');
       return;
     }
 
@@ -1487,11 +1527,8 @@
       location.href = 'club-detail.html?id=' + el.getAttribute('data-id') + '&joined=1';
       return;
     }
-    if (act === 'club:showcase') {
-      location.href = 'club-detail.html?id=' + el.getAttribute('data-id') + '&joined=1&tab=showcase';
-      return;
-    }
-
+    if (act === 'club:allActivities') return openAllActivities(el.getAttribute('data-id'));
+    if (act === 'allact:back') return closeAllActivities();
     if (act === 'credit:apply') {
       var applyClub = findJoined(el.getAttribute('data-id'));
       if (applyClub) openCreditApply(applyClub);
@@ -1535,46 +1572,7 @@
     }
 
     if (act === 'moment:open') {
-      momentCtx = { clubId: el.getAttribute('data-id'), index: Number(el.getAttribute('data-index')) };
-      composerPhoto = null;
-      renderMomentSheet();
-      return;
-    }
-    if (act === 'moment:like') {
-      if (!momentCtx) return;
-      var likeClub = findJoined(momentCtx.clubId);
-      var likeActivity = likeClub.activities[momentCtx.index];
-      var posts = getPosts(likeActivity.id);
-      var post = posts[Number(el.getAttribute('data-index'))];
-      if (post) {
-        post.liked = !post.liked;
-        post.likes += post.liked ? 1 : -1;
-      }
-      renderMomentSheet();
-      return;
-    }
-    if (act === 'moment:pick') {
-      var fileInput = document.getElementById('momentFile');
-      if (fileInput) fileInput.click();
-      return;
-    }
-    if (act === 'moment:publish') {
-      if (!momentCtx) return;
-      var publishClub = findJoined(momentCtx.clubId);
-      var publishActivity = publishClub.activities[momentCtx.index];
-      var textInput = document.getElementById('momentText');
-      var text = textInput ? textInput.value.trim() : '';
-      if (!text && !composerPhoto) { toast('请填写心情或添加照片'); return; }
-      var posts = getPosts(publishActivity.id);
-      posts.unshift({
-        author: '赵子易', role: '成员', time: '刚刚', text: text,
-        photo: composerPhoto || '', likes: 0, liked: false, comments: []
-      });
-      publishActivity.shares += 1;
-      composerPhoto = null;
-      render();
-      renderMomentSheet();
-      toast('精彩瞬间已发布，仅本社团成员可见');
+      location.href = 'activity-moments.html?id=' + encodeURIComponent(el.getAttribute('data-id'));
       return;
     }
 
@@ -1619,11 +1617,6 @@
       return;
     }
 
-    if (act === 'activity:filter') {
-      state.activityFilter = el.getAttribute('data-filter');
-      render();
-      return;
-    }
     if (act === 'activity:attendance') {
       var attendanceRaw = el.getAttribute('data-index');
       var attendanceIndex = attendanceRaw === null ? moreIndex : Number(attendanceRaw);
@@ -1665,6 +1658,7 @@
       attendanceCtx = null;
       closeSheet();
       render();
+      window.ActivityPage.refresh();
       toast('考勤已保存');
       return;
     }
@@ -1687,21 +1681,24 @@
       recordActivity.attachment = recordFileEl ? recordFileEl.value.trim() : recordActivity.attachment;
       closeSheet();
       render();
+      window.ActivityPage.refresh();
       toast('活动记录已保存');
       return;
     }
-    if (act === 'activity:more') return openActivityMore(Number(el.getAttribute('data-index')));
     if (act === 'activity:edit') return openEditActivity(moreIndex);
     if (act === 'activity:delete') {
+      var delRaw = el.getAttribute('data-index');
+      var delIndex = delRaw === null ? moreIndex : Number(delRaw);
       var deleteClub = currentManage();
-      var deleteActivity = deleteClub.activities[moreIndex];
+      var deleteActivity = deleteClub.activities[delIndex];
       if (!deleteActivity) return;
-      openConfirm('删除这场活动？', '删除后，这场活动将从社团活动安排中完全移除。', function () {
-        deleteClub.activities.splice(moreIndex, 1);
+      openConfirm('删除活动', '确定删除活动【' + deleteActivity.title + '】？删除后无法恢复。', function () {
+        deleteClub.activities.splice(delIndex, 1);
         closeSheet();
+        window.ActivityPage.close();
         render();
         toast('已删除「' + deleteActivity.title + '」');
-      });
+      }, '确认删除');
       return;
     }
     if (act === 'activity:saveEdit') {
@@ -1726,6 +1723,7 @@
       }
       closeSheet();
       render();
+      window.ActivityPage.refresh();
       toast('活动信息已更新');
       return;
     }
@@ -1735,22 +1733,7 @@
       var activityIndex = Number(el.getAttribute('data-index'));
       var activity = activityClub.activities[activityIndex];
       if (!activity) return;
-      momentCtx = null;
-      var posts = getPosts(activity.id);
-      var body =
-        '<div class="moment-head"><span class="tag tag-cat">' + activityClub.name + '</span>' +
-          '<h3>' + activity.title + '</h3><p>' + activity.day + ' ' + activity.week + ' · ' + activity.time + ' · ' + activity.venue + '</p>' +
-          '<span class="moment-count">已有 ' + posts.length + ' 份分享</span></div>' +
-        '<div class="moment-list">' + posts.map(function (post) {
-          return '<article class="moment-post"><div class="moment-post-head">' +
-            '<span class="member-avatar small">' + post.author.charAt(0) + '</span>' +
-            '<div><strong>' + post.author + '<em>' + post.role + '</em></strong><span>' + post.time + '</span></div></div>' +
-            (post.text ? '<p>' + post.text + '</p>' : '') +
-            (post.photo ? '<span class="moment-photo" style="background-image:url(\'' + post.photo + '\')"></span>' : '') +
-            '<div class="moment-post-foot"><span>点赞 ' + post.likes + '</span><span>评论 ' + post.comments.length + '</span></div>' +
-          '</article>';
-        }).join('') + '</div>';
-      openSheet('活动瞬间', body, '', true);
+      location.href = 'activity-moments.html?id=' + encodeURIComponent(activity.id) + '&from=clubs';
       return;
     }
     if (act === 'activity:publish') return openPublishActivity();
@@ -1944,14 +1927,6 @@
       if (list) list.innerHTML = membersHtml(currentManage());
       return;
     }
-    if (event.target.id === 'momentFile') {
-      var file = event.target.files && event.target.files[0];
-      if (!file) return;
-      composerPhoto = URL.createObjectURL(file);
-      var tip = document.getElementById('momentPickTip');
-      if (tip) tip.textContent = '已选择 1 张照片';
-      return;
-    }
   });
 
   document.addEventListener('input', function (event) {
@@ -1966,6 +1941,8 @@
       if (creditList) creditList.innerHTML = creditRowsHtml(currentManage());
     }
   });
+
+  window.ActivityPage.init({ getClub: currentManage, from: 'clubs' });
 
   render();
 })();

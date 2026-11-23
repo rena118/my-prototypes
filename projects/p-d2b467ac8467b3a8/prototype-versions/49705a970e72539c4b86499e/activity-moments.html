@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>学生手机端 · 首页</title>
+<title>学生手机端 · 活动瞬间</title>
 <link rel="stylesheet" href="assets/style.css" />
 <script data-prototype-owned data-proto-hotspot-bootstrap data-proto-review="hotspots">
 /* 点击空白时短暂提示本次需求范围内的真实交互；未声明范围时不扫描整页。 */
@@ -320,249 +320,492 @@
     <div class="status-bar" data-status-bar></div>
 
     <header class="nav-bar">
-      <span class="nav-title">学生社团</span>
+      <a class="nav-back" href="my-clubs.html" aria-label="返回我报名的">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg>
+      </a>
+      <span class="nav-title">活动瞬间</span>
     </header>
 
-    <div class="app-content">
+    <div class="app-content" id="momentContent"></div>
 
-      <div class="notice-bar declaration">
-        <div class="notice-head">
-          <span class="notice-tag">社团申报中</span>
-          <button type="button" class="notice-action" onclick="location.href='declarations.html'">
-            去申报
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
-          </button>
-        </div>
-        <p class="notice-desc"><strong>2026-2027 学年上学期</strong> · 自主申报开放至 <strong>9 月 15 日 18:00</strong>，还剩 4 天</p>
-      </div>
-
-      <article class="card">
-        <div class="profile-head">
-          <div class="avatar">子易</div>
-          <div style="flex:1;min-width:0">
-            <div class="profile-name">赵子易</div>
-            <div class="profile-meta">
-              <span class="profile-class">初二 3 班</span>
-              <span class="tag tag-leader">社长</span>
-              <span class="tag tag-member">成员</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="term-row">
-          <select class="term-select" id="termSelect" data-mp-picker data-picker-title="选择学期" aria-label="选择学期">
-            <option value="2026-2027 学年上学期">2026-2027 学年上学期</option>
-            <option value="2025-2026 学年下学期">2025-2026 学年下学期</option>
-            <option value="2025-2026 学年上学期">2025-2026 学年上学期</option>
-          </select>
-        </div>
-
-        <div class="kpi-grid">
-          <div class="kpi-cell">
-            <span class="kpi-label">我的社团</span>
-            <div class="kpi-value"><strong id="kpiJoined">2</strong><span>个</span></div>
-            <span class="kpi-sub" id="kpiJoinedSub">我管理 1 个 · 我加入 1 个</span>
-          </div>
-          <div class="kpi-cell">
-            <span class="kpi-label">活动出勤</span>
-            <div class="kpi-value"><strong id="kpiAttendance">6</strong><span>次</span></div>
-            <span class="kpi-sub" id="kpiAttendanceSub">全勤</span>
-          </div>
-          <div class="kpi-cell">
-            <span class="kpi-label">实践时长</span>
-            <div class="kpi-value"><strong id="kpiHours">14.0</strong><span>小时</span></div>
-            <span class="kpi-sub">学期日常活动累计</span>
-          </div>
-          <div class="kpi-cell">
-            <span class="kpi-label">已获学分</span>
-            <div class="kpi-value"><strong id="kpiCredits">1.5</strong><span>分</span></div>
-            <span class="kpi-sub">经学时申请与审核认定</span>
-          </div>
-        </div>
-
-        <div class="todo-bar">
-          <span class="todo-dot"></span>
-          <span class="todo-text">有 <strong>2 名同学</strong> 申请加入你管理的社团，请在招新期内处理。</span>
-          <button type="button" class="todo-action" data-toast="成员审核页面建设中">前往审核 →</button>
-        </div>
-      </article>
-
-      <div class="section-title">
-        <h3>我参与的社团与近期活动</h3>
-        <span class="count">2 个</span>
-      </div>
-
-      <article class="card" style="padding:0">
-        <div class="club-item">
-          <div class="club-top">
-            <div class="club-cover" style="background-image:url('assets/poster-football.jpg')"></div>
-            <div class="club-info">
-              <div class="club-name-row">
-                <span class="club-name">足球联盟</span>
-                <span class="tag tag-cat">体育</span>
-                <span class="tag tag-leader">社长</span>
-                <span class="pending-badge">2 人待入团审核</span>
-              </div>
-              <div class="club-activity">
-                <span class="club-activity-tag">活动</span>
-                <span class="club-activity-name">校园秋季友谊对抗赛</span>
-              </div>
-              <div class="club-event">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2.4"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
-                <span>10 月 23 日（周三）16:20</span>
-              </div>
-              <div class="club-event">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6.5-6 6.5-10.5a6.5 6.5 0 1 0-13 0C5.5 15 12 21 12 21Z"/><circle cx="12" cy="10.4" r="2.4"/></svg>
-                <span>西操场 1 号场地</span>
-              </div>
-            </div>
-          </div>
-          <div class="club-bottom">
-            <span class="club-facts">成员 16 / 30 人</span>
-            <div class="club-actions">
-              <button type="button" class="club-moment-btn" data-toast="活动瞬间页面建设中">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5h3l1.6-2.2h7.8l1.6 2.2h3v10h-17Z"/><circle cx="12" cy="13" r="3.2"/></svg>
-                活动瞬间 6
-              </button>
-              <button type="button" class="btn btn-primary" data-toast="社团管理页面建设中">管理社团</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="club-item">
-          <div class="club-top">
-            <div class="club-cover" style="background-image:url('assets/poster-drama.jpg')"></div>
-            <div class="club-info">
-              <div class="club-name-row">
-                <span class="club-name">校园纪录片社</span>
-                <span class="tag tag-cat">艺术</span>
-                <span class="tag tag-member">成员</span>
-              </div>
-              <div class="club-activity">
-                <span class="club-activity-tag">活动</span>
-                <span class="club-activity-name">校园人物微纪录片初剪沟通会</span>
-              </div>
-              <div class="club-event">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="2.4"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>
-                <span>10 月 25 日（周五）15:30</span>
-              </div>
-              <div class="club-event">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6.5-6 6.5-10.5a6.5 6.5 0 1 0-13 0C5.5 15 12 21 12 21Z"/><circle cx="12" cy="10.4" r="2.4"/></svg>
-                <span>影媒工作间 204</span>
-              </div>
-            </div>
-          </div>
-          <div class="club-bottom">
-            <span class="club-facts">成员 12 / 20 人</span>
-            <div class="club-actions">
-              <button type="button" class="club-moment-btn" data-toast="活动瞬间页面建设中">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5h3l1.6-2.2h7.8l1.6 2.2h3v10h-17Z"/><circle cx="12" cy="13" r="3.2"/></svg>
-                活动瞬间 6
-              </button>
-              <button type="button" class="btn btn-secondary" data-toast="社团详情页面建设中">进入社团</button>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <div class="section-title">
-        <h3>社团广场</h3>
-        <span class="count">18 个社团</span>
-      </div>
-
-      <article class="card" style="padding:4px 14px 12px">
-        <div class="plaza-row">
-          <div class="plaza-thumb" style="background-image:url('assets/poster-football.jpg')"></div>
-          <div class="plaza-main">
-            <div class="plaza-name-row">
-              <span class="plaza-name">足球联盟</span>
-              <span class="tag tag-cat">体育</span>
-            </div>
-            <div class="plaza-status">
-              <span class="status-dot open"></span><span>可申请</span><span>18/30 人</span>
-            </div>
-          </div>
-          <button type="button" class="btn-plaza apply" data-toast="报名申请页面建设中">申请</button>
-        </div>
-
-        <div class="plaza-row">
-          <div class="plaza-thumb" style="background-image:url('assets/poster-robot.jpg')"></div>
-          <div class="plaza-main">
-            <div class="plaza-name-row">
-              <span class="plaza-name">机器人探索社</span>
-              <span class="tag tag-cat">科技</span>
-            </div>
-            <div class="plaza-status">
-              <span class="status-dot open"></span><span>可申请</span><span>12/20 人</span>
-            </div>
-          </div>
-          <button type="button" class="btn-plaza apply" data-toast="报名申请页面建设中">申请</button>
-        </div>
-
-        <div class="plaza-row">
-          <div class="plaza-thumb" style="background-image:url('assets/poster-drama.jpg')"></div>
-          <div class="plaza-main">
-            <div class="plaza-name-row">
-              <span class="plaza-name">光影戏剧社</span>
-              <span class="tag tag-cat">艺术</span>
-            </div>
-            <div class="plaza-status">
-              <span class="status-dot full"></span><span>名额已满</span><span>24/24 人</span>
-            </div>
-          </div>
-          <button type="button" class="btn-plaza view" onclick="location.href='club-detail.html?id=drama'">查看</button>
-        </div>
-
-        <div class="plaza-row">
-          <div class="plaza-thumb" style="background-image:url('assets/poster-reading.jpg')"></div>
-          <div class="plaza-main">
-            <div class="plaza-name-row">
-              <span class="plaza-name">山海阅读会</span>
-              <span class="tag tag-cat">人文</span>
-            </div>
-            <div class="plaza-status">
-              <span class="status-dot closed"></span><span>报名截止</span><span>21/36 人</span>
-            </div>
-          </div>
-          <button type="button" class="btn-plaza view" onclick="location.href='club-detail.html?id=reading'">查看</button>
-        </div>
-
-        <button type="button" class="browse-all" onclick="location.href='plaza.html'">浏览完整社团广场（4）→</button>
-      </article>
-
-      <article class="card create-card" id="createCard">
-        <button type="button" class="create-icon" onclick="location.href='declaration-form.html'" aria-label="申报新社团">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
-        <h4>自主创办新社团</h4>
-        <p>提交创办方案，经教师审批通过后即可成为社长开展招新。</p>
-      </article>
-
+    <div class="action-bar" id="shareBar">
+      <button type="button" class="btn btn-primary" data-act="share">分享这一刻</button>
     </div>
 
-    <nav class="tab-bar" data-tabbar="home"></nav>
+    <div class="moment-detail" id="detailLayer" hidden></div>
+
+    <div class="share-mask" id="shareMask" hidden>
+      <div class="share-sheet">
+        <div class="share-head">
+          <strong>分享这一刻</strong>
+          <button type="button" class="share-close" data-act="share-close" aria-label="关闭">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+        <button type="button" class="share-upload" id="shareUpload" data-act="pick">
+          <span class="share-upload-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V5.4"/><path d="m7.8 9.6 4.2-4.2 4.2 4.2"/><path d="M5 15v3.4A1.6 1.6 0 0 0 6.6 20h10.8a1.6 1.6 0 0 0 1.6-1.6V15"/></svg>
+          </span>
+          <strong>上传照片或视频</strong>
+          <small>最多 3 张照片，或 1 段视频，二者不能同时发布</small>
+        </button>
+        <div class="share-picked" id="sharePicked" hidden></div>
+        <div class="share-row">
+          <input type="text" id="shareText" maxlength="60" placeholder="说一句当时的心情（选填）" />
+          <button type="button" class="share-send is-disabled" id="sharePublish" data-act="publish">发布</button>
+        </div>
+      </div>
+    </div>
+
+    <input type="file" id="momentFile" accept="image/*,video/*" multiple hidden />
+
   </div>
 </div>
 
 <script src="assets/app.js"></script>
+<script src="assets/moments.js"></script>
 <script>
 (function () {
-  var TERM_STATS = {
-    '2026-2027 学年上学期': { joined: 2, sub: '我管理 1 个 · 我加入 1 个', attendance: 6, attendanceSub: '全勤', hours: '14.0', credits: '1.5' },
-    '2025-2026 学年下学期': { joined: 1, sub: '我管理 1 个 · 我加入 0 个', attendance: 12, attendanceSub: '出勤 12/13 场', hours: '24.0', credits: '2.0' },
-    '2025-2026 学年上学期': { joined: 1, sub: '我管理 1 个 · 我加入 0 个', attendance: 12, attendanceSub: '出勤 12/13 场', hours: '24.0', credits: '2.0' }
-  };
+  var params = new URLSearchParams(location.search);
+  var activityId = params.get('id') || 'doc-next';
+  var clubName = params.get('club') || '';
+  var fromPage = params.get('from') || '';
+  var isAll = Boolean(clubName);
+  var meta = isAll
+    ? { club: clubName, title: '全部活动瞬间', when: '' }
+    : (window.StudentMoments.find(activityId) || { club: '', title: '活动瞬间', when: '' });
+  var entries = [];
 
-  document.getElementById('termSelect').addEventListener('change', function (event) {
-    var stats = TERM_STATS[event.target.value];
-    document.getElementById('kpiJoined').textContent = stats.joined;
-    document.getElementById('kpiJoinedSub').textContent = stats.sub;
-    document.getElementById('kpiAttendance').textContent = stats.attendance;
-    document.getElementById('kpiAttendanceSub').textContent = stats.attendanceSub;
-    document.getElementById('kpiHours').textContent = stats.hours;
-    document.getElementById('kpiCredits').textContent = stats.credits;
-    window.protoToast('已切换学期：' + event.target.value);
+  var contentEl = document.getElementById('momentContent');
+  var detailLayer = document.getElementById('detailLayer');
+  var shareMask = document.getElementById('shareMask');
+  var sharePickedEl = document.getElementById('sharePicked');
+  var shareTextEl = document.getElementById('shareText');
+  var sharePublishEl = document.getElementById('sharePublish');
+  var fileInput = document.getElementById('momentFile');
+
+  contentEl.addEventListener('change', function (event) {
+    if (event.target && event.target.id === 'momentFilter') {
+      filterAct = event.target.value || 'all';
+      render();
+    }
   });
+
+  var backEl = document.querySelector('.nav-bar .nav-back');
+  if (backEl && fromPage) {
+    backEl.setAttribute('href', fromPage === 'manage' ? 'my-manage.html?tab=activities' : 'my-clubs.html');
+  }
+  if (isAll) {
+    document.getElementById('shareBar').hidden = true;
+    document.querySelector('.nav-title').textContent = '全部瞬间';
+  }
+
+  var HEART = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.2 4.6 13a4.4 4.4 0 0 1 6.2-6.2l1.2 1.2 1.2-1.2A4.4 4.4 0 0 1 19.4 13L12 20.2Z"/></svg>';
+  var PLAY = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M8.4 5.2v13.6L18.6 12z"/></svg>';
+  var COMMENT = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.4 11.6a7.9 7.9 0 0 1-8.4 7.9 8.9 8.9 0 0 1-3.3-.7L4.2 20l1.2-4.1a7.8 7.8 0 0 1-.9-3.7 7.9 7.9 0 0 1 8.4-7.9 7.9 7.9 0 0 1 7.5 7.3Z"/></svg>';
+
+  var picked = [];
+  var detailIndex = -1;
+  var mediaIndex = 0;
+  var detailTimer = null;
+  var pressStart = 0;
+  var filterAct = 'all';
+
+  function posts() {
+    return window.StudentMoments.posts(activityId);
+  }
+
+  function buildEntries() {
+    if (!isAll) {
+      entries = posts().map(function (post, index) {
+        return { activityId: activityId, index: index, post: post, meta: meta };
+      });
+      return;
+    }
+    var list = [];
+    window.StudentMoments.activities(clubName).forEach(function (act) {
+      window.StudentMoments.posts(act.id).forEach(function (post, index) {
+        list.push({ activityId: act.id, index: index, post: post, meta: act });
+      });
+    });
+    list.sort(function (a, b) {
+      return a.post.time < b.post.time ? 1 : -1;
+    });
+    entries = list;
+  }
+
+  function activityCount() {
+    return isAll ? window.StudentMoments.activities(clubName).length : 1;
+  }
+
+  function esc(value) {
+    return String(value == null ? '' : value).replace(/[&<>"]/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch];
+    });
+  }
+
+  function fmtDur(sec) {
+    var s = Math.max(1, Math.round(sec || 0));
+    return '00:' + (s < 10 ? '0' + s : s);
+  }
+
+  function fmtNow() {
+    var d = new Date();
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    return pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+
+  function mediaOf(post) {
+    if (post.video) {
+      return [{ type: 'video', src: post.video.poster || '', duration: post.video.duration }];
+    }
+    return (post.photos || []).map(function (src) {
+      return { type: 'image', src: src };
+    });
+  }
+
+  function coverOf(post) {
+    if (post.video) return post.video.poster || '';
+    return (post.photos && post.photos[0]) || '';
+  }
+
+  function cardHtml(entry, index) {
+    var post = entry.post;
+    var cover = coverOf(post);
+    var badge = '';
+    if (post.video) {
+      badge = '<span class="mc-badge is-video">' + PLAY + fmtDur(post.video.duration) + '</span>';
+    } else if ((post.photos || []).length > 1) {
+      badge = '<span class="mc-badge">' + post.photos.length + ' 张</span>';
+    }
+    return '<article class="moment-card" data-act="open" data-index="' + index + '">' +
+      '<div class="moment-card-media' + (post.video ? ' is-video' : '') + '"' +
+        (cover ? ' style="background-image:url(\'' + cover + '\')"' : '') + '>' +
+        badge +
+        (post.video ? '<span class="mc-play">' + PLAY + '</span>' : '') +
+        (isAll && entry.meta ? '<span class="mc-act">' + esc(entry.meta.title) + '</span>' : '') +
+      '</div>' +
+      (post.text ? '<p class="moment-card-text">' + esc(post.text) + '</p>' : '') +
+      '<div class="moment-card-foot">' +
+        '<span class="member-avatar tiny">' + post.author.charAt(0) + '</span>' +
+        '<strong>' + post.author + '</strong>' +
+        (post.role === '社长' ? '<em class="mc-role">社长</em>' : '') +
+        '<span class="mc-meta">' +
+          '<span class="mc-like">' + HEART + post.likes + '</span>' +
+          '<span class="mc-like">' + COMMENT + post.comments.length + '</span>' +
+        '</span>' +
+      '</div>' +
+    '</article>';
+  }
+
+  function visibleEntries() {
+    if (!isAll || filterAct === 'all') return entries;
+    return entries.filter(function (entry) {
+      return entry.meta && entry.meta.title === filterAct;
+    });
+  }
+
+  function gridHtml() {
+    var list = visibleEntries();
+    if (!list.length) {
+      var emptyTitle = filterAct === 'all' || !isAll
+        ? (isAll ? '还没有成员分享活动瞬间' : '还没有成员分享这场活动的瞬间')
+        : '该活动还没有成员分享瞬间';
+      return '<div class="moment-empty"><strong>' + emptyTitle + '</strong><span>' +
+        (isAll ? '成员在活动瞬间页发布后，会汇总到这里' : '点击下方「分享这一刻」，记录你的现场') + '</span></div>';
+    }
+    return list.map(function (entry) {
+      return cardHtml(entry, entries.indexOf(entry));
+    }).join('');
+  }
+
+  function statusClass(value) {
+    if (value === '待开展') return 'upcoming';
+    if (value === '进行中') return 'ongoing';
+    return 'ended';
+  }
+
+  function render() {
+    buildEntries();
+    var activities = isAll ? window.StudentMoments.activities(clubName) : [];
+    var filterHtml = isAll
+      ? '<div class="moment-filter">' +
+          '<select class="moment-filter-select" id="momentFilter" data-mp-picker data-picker-title="按活动名称筛选">' +
+            '<option value="all"' + (filterAct === 'all' ? ' selected' : '') + '>全部活动</option>' +
+            activities.map(function (act) {
+              return '<option value="' + esc(act.title) + '"' + (filterAct === act.title ? ' selected' : '') + '>' + esc(act.title) + '</option>';
+            }).join('') +
+          '</select>' +
+        '</div>'
+      : '';
+    contentEl.innerHTML =
+      '<section class="moment-page">' +
+        '<div class="moment-hero">' +
+          '<div class="moment-hero-top">' +
+            (meta.club ? '<span class="tag tag-cat">' + meta.club + '</span>' : '') +
+            '<span class="moment-hero-count">已有 ' + visibleEntries().length + ' 份分享</span>' +
+          '</div>' +
+          '<div class="moment-hero-title">' +
+            '<h3>' + (isAll ? '全部活动瞬间' : meta.title) + '</h3>' +
+            (isAll ? '' :
+              '<span class="moment-hero-tags">' +
+                (meta.status ? '<em class="state-em ' + statusClass(meta.status) + '">' + meta.status + '</em>' : '') +
+                (meta.attend ? '<em class="state-em attendance">' + meta.attend + '</em>' : '') +
+              '</span>') +
+          '</div>' +
+          (isAll
+            ? '<p>共 ' + activityCount() + ' 场活动 · 按发布时间倒序</p>'
+            : (meta.when ? '<p>' + meta.when + '</p>' : '')) +
+          filterHtml +
+        '</div>' +
+        '<div class="moment-grid" id="momentGrid">' + gridHtml() + '</div>' +
+      '</section>';
+  }
+
+  function renderGrid() {
+    buildEntries();
+    var grid = document.getElementById('momentGrid');
+    if (grid) grid.innerHTML = gridHtml();
+  }
+
+  /* ---------- 分享抽屉 ---------- */
+
+  function openShare() {
+    shareMask.hidden = false;
+    requestAnimationFrame(function () {
+      shareMask.classList.add('show');
+    });
+  }
+
+  function closeShare() {
+    shareMask.classList.remove('show');
+    window.setTimeout(function () {
+      shareMask.hidden = true;
+      picked = [];
+      shareTextEl.value = '';
+      renderPicked();
+    }, 220);
+  }
+
+  function renderPicked() {
+    if (!picked.length) {
+      sharePickedEl.hidden = true;
+      sharePickedEl.innerHTML = '';
+      sharePublishEl.classList.add('is-disabled');
+      return;
+    }
+    sharePickedEl.hidden = false;
+    sharePickedEl.innerHTML = picked.map(function (item, index) {
+      if (item.type === 'video') {
+        return '<span class="picked-item is-video">' + PLAY +
+          '<button type="button" class="picked-remove" data-act="remove" data-i="' + index + '">×</button>' +
+        '</span>';
+      }
+      return '<span class="picked-item" style="background-image:url(\'' + item.url + '\')">' +
+        '<button type="button" class="picked-remove" data-act="remove" data-i="' + index + '">×</button>' +
+      '</span>';
+    }).join('');
+    sharePublishEl.classList.remove('is-disabled');
+  }
+
+  function publish() {
+    if (!picked.length) {
+      window.protoToast('请先上传照片或视频');
+      return;
+    }
+    var post = {
+      author: '赵子易', role: '', time: '刚刚',
+      text: shareTextEl.value.trim(),
+      photos: [], video: null,
+      likes: 0, liked: false, comments: []
+    };
+    if (picked[0].type === 'video') {
+      post.video = { poster: '', duration: 8 };
+    } else {
+      post.photos = picked.map(function (item) { return item.url; });
+    }
+    window.StudentMoments.add(activityId, post);
+    closeShare();
+    render();
+    window.protoToast('已发布，仅本社团成员可见');
+  }
+
+  /* ---------- 详情 ---------- */
+
+  function openDetail(index) {
+    detailIndex = index;
+    mediaIndex = 0;
+    detailLayer.hidden = false;
+    renderDetail();
+    requestAnimationFrame(function () {
+      detailLayer.classList.add('show');
+    });
+  }
+
+  function closeDetail() {
+    detailLayer.classList.remove('show');
+    window.clearTimeout(detailTimer);
+    window.setTimeout(function () {
+      detailLayer.hidden = true;
+      detailLayer.innerHTML = '';
+    }, 220);
+    renderGrid();
+  }
+
+  function renderDetail() {
+    var entry = entries[detailIndex];
+    if (!entry) return;
+    var post = entry.post;
+    var draft = document.getElementById('mdInput') ? document.getElementById('mdInput').value : '';
+    var media = mediaOf(post);
+    var cur = media[mediaIndex] || media[0] || { type: 'image', src: '' };
+    var multi = media.length > 1;
+
+    detailLayer.innerHTML =
+      '<div class="md-top">' +
+        '<button type="button" class="md-back" data-act="close-detail" aria-label="返回">' +
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg>' +
+        '</button>' +
+        '<span>活动瞬间</span>' +
+      '</div>' +
+      '<div class="md-scroll">' +
+        '<div class="md-stage' + (cur.type === 'video' ? ' is-video' : '') + '" id="mdStage">' +
+          (cur.src ? '<img src="' + cur.src + '" alt="" />' : '') +
+          (cur.type === 'video' ? '<button type="button" class="md-play" data-act="play">' + PLAY + '</button>' : '') +
+          (multi ? '<span class="md-counter">' + (mediaIndex + 1) + ' / ' + media.length + '</span>' : '') +
+          (cur.type === 'video' ? '<div class="md-progress"><i id="mdFill"></i></div><span class="md-duration">' + fmtDur(cur.duration) + '</span>' : '') +
+        '</div>' +
+        '<div class="md-body">' +
+          '<div class="md-author">' +
+            '<span class="member-avatar small">' + post.author.charAt(0) + '</span>' +
+            '<div><strong>' + post.author + (post.role === '社长' ? '<em class="mc-role">社长</em>' : '') + '</strong><span>' + post.time + '</span></div>' +
+          '</div>' +
+          (isAll && entry.meta ? '<span class="md-act">' + entry.meta.title + '</span>' : '') +
+          (post.text ? '<p class="md-text">' + esc(post.text) + '</p>' : '') +
+          '<div class="md-actions">' +
+            '<button type="button" class="' + (post.liked ? 'liked' : '') + '" data-act="like-detail">' + HEART + post.likes + '</button>' +
+            '<span class="md-comment-count">' + COMMENT + post.comments.length + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="md-comments">' +
+          '<h4>评论 ' + post.comments.length + '</h4>' +
+          (post.comments.length
+            ? post.comments.map(function (comment) {
+                return '<div class="md-comment"><span class="member-avatar tiny">' + esc(comment.author.charAt(0)) + '</span>' +
+                  '<div class="md-comment-main">' +
+                    '<div class="md-comment-head"><strong>' + esc(comment.author) + '</strong>' +
+                      (comment.time ? '<time>' + esc(comment.time) + '</time>' : '') +
+                    '</div>' +
+                    '<p>' + esc(comment.text) + '</p>' +
+                  '</div></div>';
+              }).join('')
+            : '<p class="md-comment-empty">还没有评论，来说第一句吧</p>') +
+        '</div>' +
+      '</div>' +
+      '<div class="md-input">' +
+        '<input type="text" id="mdInput" maxlength="60" placeholder="说点什么…" value="' + esc(draft) + '" />' +
+        '<button type="button" data-act="send">发送</button>' +
+      '</div>';
+  }
+
+  function stepMedia(step) {
+    var media = mediaOf(entries[detailIndex].post);
+    var next = mediaIndex + step;
+    if (next < 0 || next >= media.length) return;
+    mediaIndex = next;
+    window.clearTimeout(detailTimer);
+    renderDetail();
+  }
+
+  function playStatic() {
+    var fill = document.getElementById('mdFill');
+    var playBtn = detailLayer.querySelector('.md-play');
+    if (!fill) return;
+    var dur = (entries[detailIndex].post.video || {}).duration || 8;
+    if (playBtn) playBtn.style.display = 'none';
+    fill.style.transition = 'none';
+    fill.style.width = '0%';
+    void fill.offsetWidth;
+    fill.style.transition = 'width ' + dur + 's linear';
+    fill.style.width = '100%';
+    window.clearTimeout(detailTimer);
+    detailTimer = window.setTimeout(function () {
+      if (playBtn) playBtn.style.display = '';
+      if (fill) {
+        fill.style.transition = 'none';
+        fill.style.width = '0%';
+      }
+    }, dur * 1000);
+  }
+
+  document.addEventListener('click', function (event) {
+    if (event.target === shareMask) { closeShare(); return; }
+    var btn = event.target.closest('[data-act]');
+    if (!btn) return;
+    var act = btn.getAttribute('data-act');
+
+    if (act === 'share') { openShare(); return; }
+    if (act === 'share-close') { closeShare(); return; }
+    if (act === 'pick') { fileInput.click(); return; }
+    if (act === 'publish') { publish(); return; }
+    if (act === 'remove') {
+      picked.splice(Number(btn.getAttribute('data-i')), 1);
+      renderPicked();
+      return;
+    }
+    if (act === 'open') { openDetail(Number(btn.getAttribute('data-index'))); return; }
+    if (act === 'close-detail') { closeDetail(); return; }
+    if (act === 'play') { playStatic(); return; }
+    if (act === 'like-detail') {
+      var likeEntry = entries[detailIndex];
+      if (!likeEntry) return;
+      window.StudentMoments.toggleLike(likeEntry.activityId, likeEntry.index);
+      renderDetail();
+      return;
+    }
+    if (act === 'send') {
+      var input = document.getElementById('mdInput');
+      var text = input ? input.value.trim() : '';
+      if (!text) {
+        window.protoToast('请输入评论内容');
+        return;
+      }
+      var commentEntry = entries[detailIndex];
+      if (!commentEntry) return;
+      window.StudentMoments.addComment(commentEntry.activityId, commentEntry.index, { author: '我', text: text, time: fmtNow() });
+      renderDetail();
+    }
+  });
+
+  detailLayer.addEventListener('pointerdown', function (event) {
+    pressStart = event.clientX;
+  });
+  detailLayer.addEventListener('pointerup', function (event) {
+    if (!event.target.closest('#mdStage')) return;
+    var dx = event.clientX - pressStart;
+    if (Math.abs(dx) < 45) return;
+    stepMedia(dx < 0 ? 1 : -1);
+  });
+
+  fileInput.addEventListener('change', function () {
+    var files = Array.prototype.slice.call(fileInput.files || []);
+    fileInput.value = '';
+    if (!files.length) return;
+
+    var videoFile = files.filter(function (file) { return file.type.indexOf('video') === 0; })[0];
+    if (videoFile) {
+      picked = [{ type: 'video', url: URL.createObjectURL(videoFile) }];
+      if (files.length > 1) window.protoToast('照片与视频不能同时发布，已保留视频');
+    } else {
+      picked = files.slice(0, 3).map(function (file) {
+        return { type: 'image', url: URL.createObjectURL(file) };
+      });
+      if (files.length > 3) window.protoToast('最多上传 3 张照片，已保留前 3 张');
+    }
+    renderPicked();
+  });
+
+  render();
 })();
 </script>
 <!-- proto-review-bundle -->

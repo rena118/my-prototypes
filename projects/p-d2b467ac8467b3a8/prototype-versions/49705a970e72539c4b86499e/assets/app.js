@@ -1,18 +1,14 @@
 (function () {
   var ICONS = {
-    home: '<path d="M3.5 10.4 12 3.5l8.5 6.9"/><path d="M5.6 9.6V19a1.4 1.4 0 0 0 1.4 1.4h3.1v-5.2h3.8v5.2H17a1.4 1.4 0 0 0 1.4-1.4V9.6"/>',
-    plaza: '<circle cx="12" cy="12" r="8.5"/><path d="m15.2 8.8-1.9 4.4-4.5 2 1.9-4.4 4.5-2Z"/>',
-    joined: '<path d="M4.5 8.4h15v9.9a1.7 1.7 0 0 1-1.7 1.7H6.2a1.7 1.7 0 0 1-1.7-1.7V8.4Z"/><path d="M8.2 8.4V6.6a3.8 3.8 0 0 1 7.6 0v1.8"/>',
-    manage: '<rect x="3.6" y="7.6" width="16.8" height="12" rx="2"/><path d="M8.6 7.6V5.4a1.6 1.6 0 0 1 1.6-1.6h3.6a1.6 1.6 0 0 1 1.6 1.6v2.2"/><path d="M3.6 12.6h16.8"/>',
     clubs: '<circle cx="9.2" cy="8.6" r="3.1"/><path d="M3.6 19.4a5.6 5.6 0 0 1 11.2 0"/><path d="M16.4 6.3a2.9 2.9 0 0 1 0 5.8"/><path d="M17.6 13.8a4.4 4.4 0 0 1 2.8 4.1"/>',
+    manage: '<rect x="3.6" y="7.6" width="16.8" height="12" rx="2"/><path d="M8.6 7.6V5.4a1.6 1.6 0 0 1 1.6-1.6h3.6a1.6 1.6 0 0 1 1.6 1.6v2.2"/><path d="M3.6 12.6h16.8"/>',
     report: '<path d="M4.2 20V4.6"/><path d="M4.2 19.9h15.6"/><rect x="7" y="12.4" width="3.2" height="5.6" rx="0.8"/><rect x="12.4" y="8.6" width="3.2" height="9.4" rx="0.8"/><rect x="17.6" y="5.6" width="2.2" height="12.4" rx="0.8"/>'
   };
 
   var TABS = [
-    { key: 'home', label: '首页', href: 'index.html', icon: ICONS.home },
-    { key: 'plaza', label: '社团广场', href: 'plaza.html', icon: ICONS.plaza },
-    { key: 'myclubs', label: '我的社团', href: 'my-clubs.html', icon: ICONS.clubs },
-    { key: 'report', label: '社团报告', icon: ICONS.report, toast: '社团报告页面建设中' }
+    { key: 'clubs', label: '社团', href: 'plaza.html', icon: ICONS.clubs },
+    { key: 'manage', label: '我管理的', href: 'my-manage.html', icon: ICONS.manage },
+    { key: 'report', label: '分析报告', href: 'analysis.html', icon: ICONS.report }
   ];
 
   var STATUS_BAR =
@@ -145,6 +141,16 @@
   }
 
   document.querySelectorAll('select[data-mp-picker]').forEach(upgradeSelect);
+
+  new MutationObserver(function (records) {
+    records.forEach(function (record) {
+      Array.prototype.forEach.call(record.addedNodes, function (node) {
+        if (!node || node.nodeType !== 1) return;
+        if (node.matches && node.matches('select[data-mp-picker]')) upgradeSelect(node);
+        if (node.querySelectorAll) node.querySelectorAll('select[data-mp-picker]').forEach(upgradeSelect);
+      });
+    });
+  }).observe(document.body, { childList: true, subtree: true });
 
   window.protoSyncPickers = function () {
     document.querySelectorAll('select[data-mp-picker]').forEach(function (select) {
