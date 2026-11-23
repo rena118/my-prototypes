@@ -468,8 +468,16 @@
         +'<svg width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path d="M8 9.6a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2zM3.6 7.2a6.2 6.2 0 0 1 8.8 0" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round"/><path d="M1 4.2a10 10 0 0 1 14 0" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round"/></svg>'
         +'<svg width="27" height="12" viewBox="0 0 27 12" aria-hidden="true"><rect x="0" y=".5" width="23" height="11" rx="2.5" fill="none" stroke="#000"/><rect x="24" y="3.5" width="2.5" height="4" rx="1" fill="#000" opacity=".4"/><rect x="1.5" y="2" width="20" height="8" rx="1.5" fill="#000"/></svg>'
         +'</span>';
+    /* 首次套壳后 frame.parentElement 会变成 .ppn-phone-screen；切页会再次调用 applyPreview，
+       必须按最近的 .ppn-phone 复用外壳，否则每次切页都会再套一层手机壳。 */
+    function previewCanvas(frame) {
+        const phone=frame.closest('.ppn-phone');
+        return phone?.parentElement || frame.parentElement;
+    }
     /* 手机预览复用工作台真机外壳的 DOM 结构，只在 ppn-shell 下显示，其余类型 display:contents 透传 */
     function ensurePhoneShell(frame) {
+        const existing=frame.closest('.ppn-phone');
+        if(existing)return existing;
         const canvas=frame.parentElement;
         let phone=canvas.querySelector(':scope > .ppn-phone');
         if(phone)return phone;
@@ -486,7 +494,7 @@
     }
     function applyPreview(frame, type, shell=true) {
         previewDevices.get(frame)?.destroy();previewDevices.delete(frame);
-        const canvas=frame.parentElement;
+        const canvas=previewCanvas(frame);
         const phone=ensurePhoneShell(frame);
         canvas.classList.add('ppn-canvas');canvas.classList.toggle('ppn-mobile',type==='mobile');canvas.classList.toggle('ppn-pad',type==='pad');canvas.classList.toggle('ppn-shell',['mobile','pad'].includes(type) && shell);
         if(type==='mobile' && shell)previewDevices.set(frame,fitDevice(phone,canvas,402,868));
