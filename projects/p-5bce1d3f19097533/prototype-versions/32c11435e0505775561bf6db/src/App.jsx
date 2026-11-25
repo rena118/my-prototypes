@@ -28,7 +28,6 @@ import {
   Clock,
   Coins,
   Compass,
-  CopySimple,
   Crown,
   DownloadSimple,
   DotsThree,
@@ -46,6 +45,7 @@ import {
   Paperclip,
   PaperPlaneTilt,
   Phone,
+  Microphone,
   PuzzlePiece,
   Sparkle,
   Star,
@@ -672,93 +672,71 @@ function App() {
   const [filters, setFilters] = useState({ term: currentTerm, continued: "all", ended: "all" });
   const [myJoin, setMyJoin] = useState({ football: "joined" });
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [discussionActivity, setDiscussionActivity] = useState(null);
-  const [momentWall, setMomentWall] = useState(() => (bootParams.get("page") || window.__PROTO_PAGE__) === "moment-wall" ? {
-    id: "doc-done",
-    clubName: "校园纪录片社",
-    title: "影视摄影构图与手持云台实操训练",
-    day: "10.18",
-    week: "周五",
-    time: "15:30 - 17:00",
-    venue: "影视工作间 204",
-    status: "已结束",
-    attendance: "已出勤",
-    from: "mine",
-  } : null);
-  const [applyingCreditClub, setApplyingCreditClub] = useState(null);
-  const [manageMomentActivity, setManageMomentActivity] = useState(null);
-  // 学分申请状态机（学生端按钮：申请学分 → 撤回申请(未初审) → 初审中 → 终审中 → 查看学分）。
-  // 状态由社长初审、教师终审推进；学生端仅在「未初审」阶段可撤回。
-  // 原型以两条已加入社团预置「未初审」「终审通过」两种状态，便于核对撤回与查看结果。
-  const [creditStates, setCreditStates] = useState({ "documentary-member": "pending", "reading-member": "approved" });
-  // 学分申报内容留档：提交时写入，撤回后仍保留，供「查看申请」只读回看
-  const [creditApplications, setCreditApplications] = useState({
-    "documentary-member": {
-      hours: "6.0",
-      summary: "本学期参与了 3 次校园人物采访和 2 次剪辑工作，独立完成一段 2 分钟的采访片段粗剪，跟着社长学会了收音和三脚架布光。",
-      file: "校园采访签到与剪辑记录.pdf",
-      submittedAt: "2026-10-20 18:30",
-    },
-    "reading-member": {
-      hours: "3.0",
-      summary: "完成本学期两次主题共读，负责其中一次的书单整理与现场主持，并写了 3 篇读书笔记。",
-      file: "共读签到与读书笔记.pdf",
-      submittedAt: "2026-10-18 20:15",
-    },
-  });
-  const [creditDetailClub, setCreditDetailClub] = useState(null);
-  const [creditResultClub, setCreditResultClub] = useState(null);
+  const [momentWall, setMomentWall] = useState(null); // 活动瞬间二级页：{ ...activity, from }
+  const [discussionActivity, setDiscussionActivity] = useState(null); // 活动讨论抽屉
   const [cancelClub, setCancelClub] = useState(null);
-  const [mineFrom, setMineFrom] = useState("home"); // 记录「我报名的」来源页，用于返回
+  const [mineFrom, setMineFrom] = useState("home"); // 进入「我报名的社团」的来源页
+  const [manageMomentActivity, setManageMomentActivity] = useState(null);
+  // 学分申请：按社团 id 记录申请状态与申请内容
+  const [creditStates, setCreditStates] = useState({});
+  const [creditApplications, setCreditApplications] = useState({});
+  const [applyingCreditClub, setApplyingCreditClub] = useState(null);
+  const [creditResultClub, setCreditResultClub] = useState(null);
+  const [creditDetailClub, setCreditDetailClub] = useState(null);
 
-  const isAllTerms = filters.term === "全部学期";
-  const activeTerm = filters.term && !isAllTerms ? filters.term : currentTerm;
-  const activeFilterCount = [filters.term !== "" && filters.term !== currentTerm && !isAllTerms].filter(Boolean).length;
-  const scopeText = isAllTerms ? "全部学期" : filters.term && filters.term !== currentTerm ? filters.term : "本学期";
-  const joinedCount = Object.values(myJoin).filter((v) => v === "joined").length;
-  const pendingCount = 1; // 机器人探索社申请审核中（静态示意）
-  const openCount = clubs.filter((c) => c.state === "open" && myJoin[c.id] !== "joined").length;
-
-  const visibleClubs = useMemo(() => clubs.filter((club) => {
-    const keywordMatch = `${club.name}${club.captain}${club.short}`.includes(keyword.trim());
-    const categoryMatch = !category || category === "全部" || club.category === category;
-    const termMatch = isAllTerms || club.term === activeTerm;
-    const continuedMatch = !filters.continued || filters.continued === "all" || (filters.continued === "yes") === Boolean(club.continued);
-    const endedMatch = !filters.ended || filters.ended === "all" || (filters.ended === "yes") === Boolean(club.ended);
-    const joinableMatch = !onlyJoinable || club.state === "open";
-    return keywordMatch && categoryMatch && termMatch && continuedMatch && endedMatch && joinableMatch;
-  }), [keyword, category, onlyJoinable, activeTerm, isAllTerms, filters]);
-
+  const toastTimer = useRef(null);
+  // 轻提示：顶部 Toast，2.4 秒后自动消失
   const notify = (message) => {
+    if (!message) return;
     setToast(message);
-    window.setTimeout(() => setToast(""), 2400);
+    if (toastTimer.current) window.clearTimeout(toastTimer.current);
+    toastTimer.current = window.setTimeout(() => setToast(""), 2400);
   };
 
+  const navigate = (next) => setPage(next);
+
+  // 看板快捷定位：跳到「我报名的社团」并滚动到指定社团（或学分入口）
+  const locateMyClub = (club) => {
+    setMineFrom("home");
+    setMyClubFocus({ id: club?.id, name: club?.name, target: "card" });
+    setPage("mine");
+  };
+
+  const locateCredit = () => {
+    setMineFrom("home");
+    setMyClubFocus({ id: "documentary-member", target: "credit" });
+    setPage("mine");
+  };
+
+  // 下一学期资料更新提交
   const submitRenewalRequest = (request) => {
+    const clubName = request?.club?.name || currentManagedClub.name;
     setRenewalRequest(null);
     setPage("manage");
-    notify(`「${request.club.name}」延续到下学期（${request.targetTerm}）申请已提交，等待教师确认。`);
+    notify(`「${clubName}」下一学期资料已提交，等待教师确认。`);
   };
 
-  const navigate = (nextPage) => {
-    setPage(nextPage);
-    setSelectedClub(null);
-    if (nextPage === "home") setHomeVariant("dashboard");
-    if (nextPage !== "mine") setMyClubFocus(null);
-  };
+  const scopeTerm = filters.term || currentTerm;
+  const visibleClubs = useMemo(() => {
+    const key = keyword.trim();
+    return clubs.filter((club) => {
+      if (scopeTerm && club.term !== scopeTerm) return false;
+      if (key && !club.name.includes(key)) return false;
+      if (category && category !== "全部" && club.category !== category) return false;
+      if (onlyJoinable && club.state !== "open") return false;
+      return true;
+    });
+  }, [keyword, category, onlyJoinable, scopeTerm]);
 
-  // 从看板跳到「我报名的」并定位到某个社团卡片：target="credit" 时直接滚到该社团的学分按钮
-  const locateMyClub = (club, target = "card") => {
-    if (!club) return;
-    setMyClubFocus({ id: club.id, name: club.name, target, at: Date.now() });
-    navigate("mine");
-  };
-
-  // 顶部「学分认定中」通报条：定位到演示学分申请的社团卡片
-  const locateCredit = () => {
-    setMyClubFocus({ id: "documentary-member", target: "credit", at: Date.now() });
-    navigate("mine");
-  };
+  const activeFilterCount =
+    (keyword.trim() ? 1 : 0) +
+    (category && category !== "全部" ? 1 : 0) +
+    (onlyJoinable ? 1 : 0) +
+    (scopeTerm !== currentTerm ? 1 : 0);
+  const scopeText = scopeTerm === currentTerm ? "本学期" : `${scopeTerm} `;
+  const joinedCount = Object.values(myJoin).filter((state) => state === "joined").length;
+  const pendingCount = Object.values(myJoin).filter((state) => state === "pending").length;
+  const openCount = clubs.filter((club) => club.state === "open").length;
 
   const showClub = (club, from = "home", view = "detail") => {
     // 不同入口的社团对象字段不一致（看板「我管理的」用 membersCount/cover/phone），统一补齐详情页所需字段
@@ -1099,6 +1077,7 @@ function App() {
                 mode={formMode}
                 showLeaderContactToStudents={declarationConfig.showLeaderContactToStudents}
                 venueMethods={declarationConfig.venueMethods}
+                existingNames={clubs.map((club) => club.name)}
                 onSave={saveDeclarationDraft}
                 onSubmit={submitDeclaration}
                 onShowGuide={() => setShowDeclarationGuide(true)}
@@ -1141,7 +1120,7 @@ function App() {
                 onSubmitRenewal={submitRenewalRequest}
               />
             )}
-            {page === "report" && <ReportPage />}
+            {page === "report" && <ReportPage onNavigate={navigate} />}
             {page === "detail" && (
               <PatchClubDetailPage
                 club={selectedClub}
@@ -2594,7 +2573,591 @@ const coverPresetOptions = [
   { key: "football", label: "体育竞技", category: "体育" },
 ];
 
-function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, venueMethods = { library: true, description: true }, onSave, onSubmit, onShowGuide }) {
+// 三个起点问题：先定社团细项，再回答为什么办、成立后想先做成什么。
+const AI_TEXT_LIMIT = 200;
+const aiPurposeOptions = ["找到同好一起做喜欢的事", "把兴趣练得更专业", "给同学一个展示的舞台", "想尝试一件没做过的事"];
+// 「你希望它是什么社团？」的热门方向分类：与学校配置解耦，仅作为起稿灵感。
+// category 用于把具体方向映射回表单里的四类官方类别。
+const aiClubCategories = [
+  { name: "球类运动", category: "体育", items: ["足球", "篮球", "排球", "羽毛球", "乒乓球", "网球", "棒球", "台球"] },
+  { name: "表演艺术", category: "艺术", items: ["话剧", "音乐剧", "街舞", "中国舞", "合唱", "相声", "主持", "舞台剧"] },
+  { name: "科技创客", category: "科技", items: ["机器人", "编程", "无人机", "航模", "电子制作", "3D 打印", "创客发明", "人工智能"] },
+  { name: "影像传媒", category: "艺术", items: ["微电影", "校园纪录片", "短视频", "摄影", "播客", "校园记者", "动画制作", "影视配音"] },
+  { name: "文学阅读", category: "人文", items: ["读书会", "诗歌", "小说创作", "辩论", "演讲", "剧本写作", "校刊编辑", "书评写作"] },
+  { name: "视觉艺术", category: "艺术", items: ["绘画", "书法", "动漫", "平面设计", "手工", "篆刻", "插画", "陶艺"] },
+  { name: "音乐器乐", category: "艺术", items: ["钢琴", "吉他", "民乐", "管弦乐", "阿卡贝拉", "音乐制作", "口琴", "打击乐"] },
+  { name: "志愿服务", category: "人文", items: ["校园向导", "社区服务", "环保行动", "动物保护", "公益募捐", "支教助学", "敬老服务", "图书整理"] },
+  { name: "科学探索", category: "科技", items: ["天文观测", "物理实验", "生物探究", "化学实验", "数学建模", "气象观察", "地理考察", "脑科学"] },
+  { name: "语言交流", category: "人文", items: ["英语角", "日语", "法语", "德语", "模拟联合国", "国际交流", "翻译", "世界文化"] },
+  { name: "传统文化", category: "人文", items: ["汉服", "国乐", "围棋", "象棋", "茶艺", "非遗手工", "诗词吟诵", "国学"] },
+  { name: "生活实践", category: "人文", items: ["烘焙", "烹饪", "咖啡", "园艺", "手账", "缝纫", "收纳整理", "校园种植"] },
+  { name: "田径健身", category: "体育", items: ["跑步", "田径", "跳绳", "健身", "飞盘", "定向越野", "骑行", "登山"] },
+  { name: "益智竞技", category: "人文", items: ["魔方", "桌游", "桥牌", "国际象棋", "电子竞技", "数独", "拼图", "军棋"] },
+];
+const AI_IDEA_BATCH_SIZE = 6;
+
+// 学校配置的类别数量不定：不展示类别名，按类别轮流合并成一个项目池，
+// 这样每批 6 个具体方向会来自不同类别，不会集中在一个领域。
+const aiDirectionPool = (() => {
+  const longest = Math.max(...aiClubCategories.map((group) => group.items.length));
+  const pool = [];
+  for (let index = 0; index < longest; index += 1) {
+    aiClubCategories.forEach((group) => {
+      if (group.items[index]) pool.push(group.items[index]);
+    });
+  }
+  return pool;
+})();
+const aiIdeaCategoryOf = (label) =>
+  aiClubCategories.find((group) => group.items.includes(label))?.category || "";
+
+// 选到具体社团细项时，按类别生成对应内容，避免出现「选了钢琴却写成足球」。
+const aiIdeaTemplates = {
+  体育: {
+    capacity: "30",
+    cover: "football",
+    summary: (label) => `面向喜欢${label}的同学，组织每周固定训练与校内交流赛，帮助零基础同学掌握基本技术，也为核心成员提供比赛机会。`,
+    recruitment: (label) => `零基础也可以加入；希望每周能稳定参加一次${label}活动，愿意遵守社团安全与场地规定。`,
+    venueNote: "每周 1 次，需要运动场地与基础器材存放空间，具体场地按学校排期申请。",
+    plan: (label) => `本学期计划开展 12 次 ${label}常规训练，组织 2 场年级交流赛，学期末进行一次技术与体能测评。`,
+  },
+  艺术: {
+    capacity: "24",
+    cover: "drama",
+    summary: (label) => `围绕${label}开展日常排练与创作，成员按兴趣分组打磨作品，学期末完成一次面向全校的展示。`,
+    recruitment: (label) => `欢迎对${label}感兴趣的同学；有无基础都可以，愿意稳定参加排练与创作即可。`,
+    venueNote: "每周 1 次，需要可排练或创作的室内空间，并具备基础器材存放条件。",
+    plan: (label) => `本学期开展 12 次 ${label}活动，完成 1—2 个可展示的作品，学期末举办一次社团展示或交流。`,
+  },
+  科技: {
+    capacity: "20",
+    cover: "robot",
+    summary: (label) => `围绕${label}开展动手实践与项目制作，成员以小组为单位完成可展示的成果。`,
+    recruitment: (label) => `对${label}感兴趣即可，有无基础都可以；希望每周能参加一次集中活动。`,
+    venueNote: "每周 1 次，需要可供电、有操作台面的创客教室，并具备器材存放条件。",
+    plan: (label) => `本学期开展 10 次 ${label}主题活动，从基础技能到小组项目逐步推进，学期末完成成果展示与互评。`,
+  },
+  人文: {
+    capacity: "25",
+    cover: "reading",
+    summary: (label) => `围绕${label}开展定期共读、讨论与表达练习，在交流中拓展视野，并尝试把讨论整理成可展示的成果。`,
+    recruitment: (label) => `愿意稳定参加${label}相关活动，乐于表达也愿意倾听；无需提前准备专业知识。`,
+    venueNote: "每周 1 次，需要安静、可围坐讨论的室内空间，最好具备投影或白板。",
+    plan: (label) => `本学期完成 6 次 ${label}主题活动与 3 次分享，学期末整理一份成果合集。`,
+  },
+};
+const aiOutcomeOptions = ["举办一次开放体验活动", "完成一个可以展示的作品", "提供每周交流学习的机会", "参加一次校内展示或比赛"];
+
+const aiPurposeIntro = {
+  "找到同好一起做喜欢的事": "我们想为有相同兴趣的同学提供一个一起玩、一起进步的圈子。",
+  "把兴趣练得更专业": "我们希望把兴趣变成可以持续练习、不断进步的能力。",
+  "给同学一个展示的舞台": "我们希望为同学提供一个被看见、能展示成果的舞台。",
+  "想尝试一件没做过的事": "我们想从零开始尝试一件新的事情，边做边学。",
+};
+
+const aiOutcomeIntro = {
+  "举办一次开放体验活动": "成立初期先举办一次开放体验活动，让更多同学了解并加入。",
+  "完成一个可以展示的作品": "成立初期以完成一个可展示的作品为目标，边做边招募成员。",
+  "提供每周交流学习的机会": "把每周活动固定下来，为成员提供稳定的交流学习机会。",
+  "参加一次校内展示或比赛": "成立初期以参加一次校内展示或比赛为目标，倒推准备内容。",
+};
+
+// 原型内置的生成结果：按输入关键词匹配运动 / 影像 / 科技，其余走人文。
+const aiScenarios = {
+  sports: {
+    category: "体育",
+    cover: "football",
+    categoryReason: "你提到固定训练和比赛，属于以运动技能与赛事为主的社团。",
+    names: ["绿茵足球社", "奔跑者足球联盟", "校园足球兴趣社"],
+    capacity: "30",
+    summary: "面向全校喜欢足球的同学，组织每周固定训练与年级友谊赛，帮助零基础同学掌握基本技术，也为核心成员提供比赛与战术练习的机会。",
+    recruitment: "零基础也可以加入；希望每周能稳定参加一次训练，愿意遵守社团安全与场地规定。",
+    venueNote: "每周 1 次，约 30 人，需要室外足球场地（可划分半场使用），并配备基础训练器材存放空间。",
+    plan: "本学期计划开展 12 次常规训练，组织 2 场年级友谊赛，学期末进行一次技术与体能测评，并在社团内分享训练记录。",
+  },
+  art: {
+    category: "艺术",
+    cover: "drama",
+    categoryReason: "你希望拍摄、剪辑并做展映，属于以影像创作为主的艺术类社团。",
+    names: ["光影纪录社", "拾光影像社", "校园纪实影像社"],
+    capacity: "20",
+    summary: "以校园真实故事为拍摄对象，组织纪实摄影与微纪录片创作，从选题、拍摄到剪辑完成完整作品，学期末举办一场面向全校的放映会。",
+    recruitment: "欢迎对纪实摄影、视频剪辑、故事采写感兴趣的同学；没有设备也可以参加，我们会按小组分配任务。",
+    venueNote: "每两周 1 次，约 20 人，需要可投影的室内空间用于看片与讨论，另需少量器材存放位置。",
+    plan: "本学期完成 2 部 5-8 分钟校园微纪录片，开展 4 次拍摄与剪辑工作坊，学期末在报告厅举办作品放映与交流。",
+  },
+  tech: {
+    category: "科技",
+    cover: "robot",
+    categoryReason: "你提到结构搭建与编程，属于以工程实践和科技创作为主的科技类社团。",
+    names: ["机器人创客社", "未来工程师社", "智造探索社"],
+    capacity: "18",
+    summary: "围绕结构搭建、编程控制与创意挑战开展活动，成员以小组为单位完成可展示的机器人作品，并在学期末进行成果演示。",
+    recruitment: "对机械结构、编程或创意设计感兴趣即可，有无基础都可以；希望每周能参加一次集中活动。",
+    venueNote: "每周 1 次，约 18 人，需要可供电、有桌面操作空间的创客教室，并具备器材存放条件。",
+    plan: "本学期开展 10 次主题活动，从结构搭建、传感器使用到简单编程逐步推进，学期末完成小组作品展示与互评。",
+  },
+  humanities: {
+    category: "人文",
+    cover: "reading",
+    categoryReason: "你的描述更偏向阅读、讨论与表达，建议归为人文类社团。",
+    names: ["拾光读书会", "知行讨论社", "山海人文社"],
+    capacity: "25",
+    summary: "以共读和主题讨论为主要形式，成员围绕选定书目或议题分享观点，在交流中拓展视野，并尝试把讨论整理成可展示的成果。",
+    recruitment: "愿意稳定参加共读与讨论，乐于表达也愿意倾听；无需提前准备专业知识。",
+    venueNote: "每周 1 次，约 25 人，需要安静、可围坐讨论的室内空间，最好具备投影或白板。",
+    plan: "本学期完成 6 次共读与 3 次主题讨论，学期末整理一份成员观点合集，并在社团内做一次分享。",
+  },
+};
+
+const matchAiScenario = (text) => {
+  const source = text || "";
+  if (/机器人|编程|创客|无人机|人工智能|电子|科技/.test(source)) return aiScenarios.tech;
+  if (/纪录片|摄影|拍摄|剪辑|电影|影像|绘画|美术|戏剧|音乐|合唱|艺术/.test(source)) return aiScenarios.art;
+  if (/足球|篮球|排球|羽毛球|乒乓|跑步|体育|运动|健身|训练|比赛/.test(source)) return aiScenarios.sports;
+  return null;
+};
+
+// 图片识别（原型模拟）：按文件名线索判断照片里的活动类型，识别不到时按文件大小轮换。
+const aiImageScenes = [
+  { key: "sports", label: "校园足球训练", category: "体育", idea: "周末在西操场进行足球训练，队员分组对抗，场边有教练指导。" },
+  { key: "art", label: "校园影像创作", category: "艺术", idea: "同学们在校园里拍摄纪录片，举着相机取景并采访路过的同学。" },
+  { key: "tech", label: "机器人搭建", category: "科技", idea: "在创客教室搭建机器人，桌面散落主控板、传感器和结构零件。" },
+  { key: "humanities", label: "读书分享会", category: "人文", idea: "在图书馆围坐分享读书心得，桌上摊开书本与手写笔记。" },
+];
+
+const matchAiImageScene = (file) => {
+  const name = (file?.name || "").toLowerCase();
+  if (/足球|篮球|运动|排球|sport|ball|game/.test(name)) return aiImageScenes[0];
+  if (/摄影|相机|照片|photo|camera|film|video|影像/.test(name)) return aiImageScenes[1];
+  if (/机器人|robot|科技|tech|编程|code/.test(name)) return aiImageScenes[2];
+  if (/书|读书|阅读|book|read|分享/.test(name)) return aiImageScenes[3];
+  return aiImageScenes[(file?.size || 0) % aiImageScenes.length];
+};
+
+const buildAiDraft = (idea, answers) => {
+  const ideaScenario = matchAiScenario(idea);
+  const chosenClub = answers.direction || "";
+  const chosenCategory = aiIdeaCategoryOf(chosenClub);
+  const template = chosenCategory ? aiIdeaTemplates[chosenCategory] : null;
+
+  // 已写想法时按想法识别；否则按选中的具体社团细项生成对应内容。
+  if (!ideaScenario && template) {
+    return {
+      name: `${chosenClub}社`,
+      names: [`${chosenClub}社`],
+      category: chosenCategory,
+      inferredCategory: chosenCategory,
+      categoryReason: `你选择了「${chosenClub}」，属于${chosenCategory}类社团。`,
+      capacity: template.capacity,
+      cover: template.cover,
+      summary: `${aiPurposeIntro[answers.purpose] || ""}${template.summary(chosenClub)}`,
+      recruitment: template.recruitment(chosenClub),
+      venueNote: template.venueNote,
+      plan: `${aiOutcomeIntro[answers.outcome] || ""}${template.plan(chosenClub)}`,
+    };
+  }
+
+  // 想法的匹配优先级高于方向选择；都没命中时才落到人文类。
+  const scenario =
+    ideaScenario ||
+    matchAiScenario(chosenClub) ||
+    aiScenarios.humanities;
+  return {
+    name: scenario.names[0],
+    names: scenario.names,
+    category: scenario.category,
+    inferredCategory: scenario.category,
+    categoryReason: scenario.categoryReason,
+    capacity: scenario.capacity,
+    cover: scenario.cover,
+    summary: `${aiPurposeIntro[answers.purpose] || ""}${scenario.summary}`,
+    recruitment: scenario.recruitment,
+    venueNote: scenario.venueNote,
+    plan: `${aiOutcomeIntro[answers.outcome] || ""}${scenario.plan}`,
+  };
+};
+
+const aiDraftFields = [
+  { key: "name", label: "社团名称" },
+  { key: "category", label: "社团类别" },
+  { key: "capacity", label: "计划人数上限" },
+  { key: "cover", label: "社团封面" },
+  { key: "summary", label: "社团简介" },
+  { key: "recruitment", label: "招新说明" },
+  { key: "venueNote", label: "场地说明" },
+  { key: "plan", label: "活动计划" },
+];
+
+function AiDeclarationDrawer({ open = true, seedIdea = null, onClose, onApply }) {
+  const [stage, setStage] = useState("idle");
+  const [idea, setIdea] = useState(() => seedIdea?.text || "");
+  const [answers, setAnswers] = useState({});
+  const [pending, setPending] = useState(null);
+  const [progress, setProgress] = useState(0);
+  const [typed, setTyped] = useState("");
+  const [ideaBatch, setIdeaBatch] = useState(0);
+  const [questionsExpanded, setQuestionsExpanded] = useState(false);
+  const [photo, setPhoto] = useState(null); // 上传的活动照片：{ url, name, scene }
+  const [recognizing, setRecognizing] = useState(false);
+  const photoInputRef = useRef(null);
+  const recognizeTimer = useRef(null);
+
+  const answersComplete = Boolean(answers.purpose && answers.direction && answers.outcome);
+  const canGenerate = idea.trim().length >= 12 || answersComplete;
+  const ideaHasContent = idea.trim().length >= 12;
+  const showQuestions = !ideaHasContent || questionsExpanded;
+  // 方案 A：不展示类别，直接给具体方向；每次 6 项，循环取用实现「换一批」。
+  const ideaItems = Array.from({ length: AI_IDEA_BATCH_SIZE }, (_, index) =>
+    aiDirectionPool[(ideaBatch * AI_IDEA_BATCH_SIZE + index) % aiDirectionPool.length]);
+
+  const chooseDirection = (label) => {
+    setAnswers((previous) => ({ ...previous, direction: label }));
+  };
+  const choosePurpose = (label) => {
+    setAnswers((previous) => ({ ...previous, purpose: label }));
+  };
+
+  const clearPhoto = () => {
+    if (recognizeTimer.current) window.clearTimeout(recognizeTimer.current);
+    setRecognizing(false);
+    setPhoto((previous) => {
+      if (previous?.url) URL.revokeObjectURL(previous.url);
+      return null;
+    });
+  };
+
+  // 上传照片后模拟识别：识别完成即按识别到的活动类型生成草稿并回填表单。
+  const pickPhoto = (file) => {
+    if (!file) return;
+    const scene = matchAiImageScene(file);
+    const url = URL.createObjectURL(file);
+    setPhoto((previous) => {
+      if (previous?.url) URL.revokeObjectURL(previous.url);
+      return { url, name: file.name, scene };
+    });
+    setRecognizing(true);
+    if (recognizeTimer.current) window.clearTimeout(recognizeTimer.current);
+    recognizeTimer.current = window.setTimeout(() => {
+      setRecognizing(false);
+      setPending(buildAiDraft(scene.idea, answers));
+      setProgress(0);
+      setTyped("");
+      setStage("generating");
+    }, 1400);
+  };
+
+  // 从入口的示例气泡进入时，直接填入想法并清空上一轮会话。
+  useEffect(() => {
+    if (!seedIdea?.text) return;
+    setIdea(seedIdea.text);
+    setAnswers({});
+    setPending(null);
+    setTyped("");
+    setProgress(0);
+    setStage("idle");
+    setIdeaBatch(0);
+    clearPhoto();
+  }, [seedIdea]);
+
+  // 抽屉卸载时清理识别计时器，避免识别结果落到已关闭的会话里。
+  useEffect(() => () => {
+    if (recognizeTimer.current) window.clearTimeout(recognizeTimer.current);
+  }, []);
+
+  // 生成完成后直接回填表单。
+  const applyRef = useRef(onApply);
+  useEffect(() => {
+    applyRef.current = onApply;
+  }, [onApply]);
+
+  const pushToForm = (value) => {
+    if (!value) return;
+    const payload = {};
+    aiDraftFields.forEach((field) => {
+      payload[field.key] = value[field.key];
+    });
+    applyRef.current(payload, { close: false });
+  };
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const handleKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose]);
+
+  useEffect(() => {
+    if (stage !== "generating") return undefined;
+    const timers = [
+      setTimeout(() => setProgress(1), 450),
+      setTimeout(() => setProgress(2), 900),
+      setTimeout(() => setProgress(3), 1350),
+      // 真实模型接入时的兜底：超时后进入失败态，可重试或改为手动填写。
+      setTimeout(() => setStage("error"), 20000),
+    ];
+    return () => timers.forEach((timer) => clearTimeout(timer));
+  }, [stage]);
+
+  useEffect(() => {
+    if (stage !== "generating" || progress < 3 || !pending) return undefined;
+    const full = pending.summary || "";
+    let index = 0;
+    let doneTimer = null;
+    setTyped("");
+    const typer = setInterval(() => {
+      index += 2;
+      setTyped(full.slice(0, index));
+      if (index >= full.length) {
+        clearInterval(typer);
+        doneTimer = setTimeout(() => {
+          pushToForm(pending);
+          onClose();
+        }, 420);
+      }
+    }, 24);
+    return () => {
+      clearInterval(typer);
+      if (doneTimer) clearTimeout(doneTimer);
+    };
+  }, [stage, progress, pending]);
+
+  const startGenerate = () => {
+    setPending(buildAiDraft(idea, answers));
+    setProgress(0);
+    setTyped("");
+    setStage("generating");
+  };
+
+  if (!open) return null;
+
+  return (
+    <div className="ai-drawer-backdrop" onClick={onClose}>
+      <aside className="ai-drawer" onClick={(event) => event.stopPropagation()} aria-label="AI 帮我起稿">
+        <header className="ai-drawer-head">
+          <div className="ai-drawer-title">
+            <span className="ai-drawer-spark"><Sparkle size={16} weight="fill" /></span>
+            <div>
+              <h2>AI 帮我起稿</h2>
+              <p>根据你的想法生成可编辑的申报草稿</p>
+            </div>
+          </div>
+          <button type="button" className="ai-drawer-close" onClick={onClose} aria-label="关闭">
+            <X size={18} />
+          </button>
+        </header>
+
+        <div className="ai-drawer-body">
+          {stage === "idle" && (
+            <div className="ai-idea">
+              <div className="ai-idea-head">
+                <label className="ai-drawer-label" htmlFor="ai-idea-input">用一句话描述你想创建的社团</label>
+                {photo ? (
+                  <div className={`ai-photo-chip ${recognizing ? "is-scanning" : ""}`}>
+                    <button
+                      type="button"
+                      className="ai-photo-chip-main"
+                      title="换一张照片"
+                      onClick={() => photoInputRef.current?.click()}
+                    >
+                      <img src={photo.url} alt="活动照片" />
+                      <span>{recognizing ? "识别中…" : photo.scene.label}</span>
+                    </button>
+                    <button type="button" className="ai-photo-chip-remove" onClick={clearPhoto} aria-label="移除照片">
+                      <X size={11} weight="bold" />
+                    </button>
+                  </div>
+                ) : (
+                  <button type="button" className="ai-photo-trigger" onClick={() => photoInputRef.current?.click()}>
+                    <Sparkle size={13} weight="fill" /> 照片识别
+                  </button>
+                )}
+              </div>
+              <div className="ai-idea-input">
+                <textarea
+                  id="ai-idea-input"
+                  value={idea}
+                  onChange={(event) => setIdea(event.target.value)}
+                  rows={4}
+                  placeholder="例如：想成立一个足球兴趣社团，每周训练一次，办年级友谊赛，零基础也欢迎，大概 30 人。"
+                />
+                <button type="button" className="ai-mic-button" title="语音输入" aria-label="语音输入">
+                  <Microphone size={15} weight="fill" />
+                </button>
+              </div>
+              <input
+                ref={photoInputRef}
+                type="file"
+                accept="image/*"
+                className="ai-photo-input"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  event.target.value = "";
+                  pickPhoto(file);
+                }}
+              />
+              <div className="ai-inline-questions">
+                {showQuestions ? (
+                  <>
+                    <div className="ai-inline-head">
+                      <span>不知道怎么写？先回答这三个问题</span>
+                      {ideaHasContent && (
+                        <button type="button" className="ai-inline-collapse" onClick={() => setQuestionsExpanded(false)}>
+                          收起
+                        </button>
+                      )}
+                    </div>
+                    <div className="ai-q-item">
+                      <div className="ai-q-head">
+                        <div className="ai-q-head-main">
+                          <span className={`ai-q-index ${answers.direction ? "is-done" : ""}`}>
+                            {answers.direction ? <CheckCircle size={17} weight="fill" /> : 1}
+                          </span>
+                          <span className="ai-question-title">你希望它是什么社团？</span>
+                        </div>
+                        <button type="button" className="ai-idea-refresh" onClick={() => setIdeaBatch((value) => value + 1)}>
+                          <ArrowClockwise size={13} /> 换一批
+                        </button>
+                      </div>
+                      <div className="ai-q-body">
+                        <div className="ai-question-options">
+                          {ideaItems.map((option) => (
+                            <button
+                              key={option}
+                              type="button"
+                              className={`ai-option ${answers.direction === option ? "active" : ""}`}
+                              onClick={() => chooseDirection(option)}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="ai-q-item">
+                      <div className="ai-q-head">
+                        <div className="ai-q-head-main">
+                          <span className={`ai-q-index ${answers.purpose ? "is-done" : ""}`}>
+                            {answers.purpose ? <CheckCircle size={17} weight="fill" /> : 2}
+                          </span>
+                          <span className="ai-question-title">为什么想创办这个社团？</span>
+                        </div>
+                      </div>
+                      <div className="ai-q-body">
+                        <div className="ai-question-options">
+                          {aiPurposeOptions.map((option) => (
+                            <button
+                              key={option}
+                              type="button"
+                              className={`ai-option ${answers.purpose === option ? "active" : ""}`}
+                              onClick={() => choosePurpose(option)}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="ai-q-item">
+                      <div className="ai-q-head">
+                        <div className="ai-q-head-main">
+                          <span className={`ai-q-index ${answers.outcome ? "is-done" : ""}`}>
+                            {answers.outcome ? <CheckCircle size={17} weight="fill" /> : 3}
+                          </span>
+                          <span className="ai-question-title">成立后最想做成的一件事？</span>
+                        </div>
+                      </div>
+                      <div className="ai-q-body">
+                        <div className="ai-question-options">
+                          {aiOutcomeOptions.map((option) => (
+                            <button
+                              key={option}
+                              type="button"
+                              className={`ai-option ${answers.outcome === option ? "active" : ""}`}
+                              onClick={() => setAnswers((previous) => ({ ...previous, outcome: option }))}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </div>
+                        <p className="ai-q-hint">选好后可点下方「生成草稿」</p>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <button type="button" className="ai-inline-toggle" onClick={() => setQuestionsExpanded(true)}>
+                    <CaretRight size={13} /> 不知道怎么填？回答问题快速开始
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {stage === "generating" && (
+            <div className="ai-generating">
+              <div className="ai-generating-head">
+                <Sparkle size={16} weight="fill" /> 正在理解你的想法…
+              </div>
+              <ul className="ai-steps">
+                {["理解你的想法", "匹配社团类别与风格", "生成可填写的内容"].map((label, index) => (
+                  <li key={label} className={`ai-step ${progress > index ? "is-done" : progress === index ? "is-active" : ""}`}>
+                    {progress > index ? <CheckCircle size={15} weight="fill" /> : <span className="ai-step-dot" />}
+                    {label}
+                  </li>
+                ))}
+              </ul>
+              {progress >= 3 && typed && (
+                <div className="ai-typing">
+                  {typed}
+                  <i className="ai-caret" />
+                </div>
+              )}
+              <button type="button" className="ai-demo-fail" onClick={() => setStage("error")}>
+                模拟生成失败（演示）
+              </button>
+            </div>
+          )}
+
+          {stage === "error" && (
+            <div className="ai-error-state">
+              <span className="ai-error-icon"><WarningCircle size={22} weight="fill" /></span>
+              <h3>刚刚开小差了</h3>
+              <p>再试一次吧。</p>
+            </div>
+          )}
+        </div>
+
+        <footer className="ai-drawer-foot">
+          {stage === "idle" && (
+            <div className="ai-foot-idle">
+              {!canGenerate && <p className="ai-foot-tip">说个大概就行，细节交给 AI 补全</p>}
+              <div className="ai-foot-actions">
+                <button type="button" className="secondary" onClick={onClose}>取消</button>
+                <button type="button" className="primary" disabled={!canGenerate} onClick={startGenerate}>
+                  <Sparkle size={15} weight="fill" /> 生成草稿
+                </button>
+              </div>
+            </div>
+          )}
+          {stage === "generating" && <span className="ai-foot-hint">正在生成，请稍候…</span>}
+          {stage === "error" && (
+            <>
+              <button type="button" className="secondary" onClick={onClose}>先自己填写</button>
+              <button type="button" className="primary" onClick={startGenerate}>重新生成</button>
+            </>
+          )}
+        </footer>
+      </aside>
+    </div>
+  );
+}
+
+function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, venueMethods = { library: true, description: true }, existingNames = [], onSave, onSubmit, onShowGuide }) {
   const [form, setForm] = useState({
     id: `draft-${Date.now()}`,
     name: "",
@@ -2604,7 +3167,7 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
     summary: "",
     recruitment: "",
     capacity: "",
-    contact: "138 0000 9218",
+    contact: "",
     venue: "",
     venueNote: "",
     poster: "",
@@ -2612,7 +3175,18 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
     updatedAt: formatCurrentDateTime(),
     ...(draft || {}),
   });
-  const update = (key, value) => setForm((previous) => ({ ...previous, [key]: value }));
+  const [aiOpen, setAiOpen] = useState(false);
+  const [aiUsed, setAiUsed] = useState(false);
+  const [aiApplied, setAiApplied] = useState(false);
+  const [aiSubmitOpen, setAiSubmitOpen] = useState(false);
+  const [aiSeed, setAiSeed] = useState(null);
+  // 已用过 AI 后再次进入时重置抽屉，直接回到首次进入的输入页。
+  const [aiRestartStamp, setAiRestartStamp] = useState(0);
+  const [formError, setFormError] = useState("");
+  const update = (key, value) => {
+    setFormError("");
+    setForm((previous) => ({ ...previous, [key]: value }));
+  };
   const save = () => onSave({ ...form, updatedAt: formatCurrentDateTime() });
 
   const handleCategoryChange = (val) => {
@@ -2631,10 +3205,52 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
     onSave({ ...form, cover: finalCover, customCover: finalCustom, updatedAt: formatCurrentDateTime() });
   };
 
-  const handleSubmit = () => {
+  const submitForm = () => {
     const finalCover = form.cover === "custom" && form.customCover ? "reading" : form.cover;
     const finalCustom = form.cover === "custom" ? form.customCover : null;
     onSubmit({ ...form, cover: finalCover, customCover: finalCustom, updatedAt: formatCurrentDateTime() });
+  };
+
+  const handleSubmit = () => {
+    const missing = [];
+    if (!String(form.name || "").trim()) missing.push({ key: "name", label: "社团名称" });
+    if (!form.category) missing.push({ key: "category", label: "社团类别" });
+    if (!String(form.capacity || "").trim() || Number(form.capacity) <= 0) missing.push({ key: "capacity", label: "计划人数上限" });
+    if (!String(form.summary || "").trim()) missing.push({ key: "summary", label: "社团简介" });
+    if (!String(form.plan || "").trim()) missing.push({ key: "plan", label: "活动计划" });
+    if (missing.length) {
+      setFormError(`请先填写：${missing.map((item) => item.label).join("、")}。`);
+      const target = document.querySelector(`[data-field="${missing[0].key}"]`);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        target.focus({ preventScroll: true });
+      }
+      return;
+    }
+    setFormError("");
+    // 使用过 AI 辅助时，提交前先给出一次汇总提示。
+    if (aiUsed) {
+      setAiSubmitOpen(true);
+      return;
+    }
+    submitForm();
+  };
+
+  const applyAiFields = (payload, options = {}) => {
+    setForm((previous) => {
+      const next = { ...previous, ...payload };
+      // 类别变更时同步默认封面，避免「类别是科技、封面是人文」的不一致；自定义封面不动。
+      if (payload.category && previous.cover !== "custom") {
+        if (payload.category === "科技") next.cover = "robot";
+        else if (payload.category === "艺术") next.cover = "drama";
+        else if (payload.category === "体育") next.cover = "football";
+        else if (payload.category === "人文") next.cover = "reading";
+      }
+      return next;
+    });
+    setAiUsed(true);
+    setAiApplied(true);
+    if (options.close !== false) setAiOpen(false);
   };
 
   return (
@@ -2653,6 +3269,15 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
       </section>
       <div className="request-form-layout">
         <main className="request-form-main">
+          {aiApplied && (
+            <div className="ai-applied-notice">
+              <CheckCircle size={16} weight="fill" />
+              <span>已把 AI 生成的内容填入表单，请逐项核对；招新海报仍需自行上传。</span>
+              <button type="button" className="ai-notice-close" onClick={() => setAiApplied(false)} aria-label="关闭提示">
+                <X size={14} />
+              </button>
+            </div>
+          )}
           {mode === "resubmit" && form.reason && (
             <div className="declaration-form-feedback-alert">
               <div className="alert-head">
@@ -2676,10 +3301,10 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
           <section className="form-section">
             <div className="form-section-head"><h2>基本信息</h2></div>
             <div className="form-grid">
-              <label><span className="field-label"><b>*</b> 社团名称</span><input value={form.name} onChange={(event) => update("name", event.target.value)} placeholder="例如：校园摄影社" /></label>
-              <label><span className="field-label"><b>*</b> 社团类别</span><select value={form.category} onChange={(event) => handleCategoryChange(event.target.value)}><option value="">请选择社团类别</option><option>体育</option><option>艺术</option><option>科技</option><option>人文</option></select></label>
+              <label><span className="field-label"><b>*</b> 社团名称</span><input data-field="name" value={form.name} onChange={(event) => update("name", event.target.value)} placeholder="例如：校园摄影社" /></label>
+              <label><span className="field-label"><b>*</b> 社团类别</span><select data-field="category" value={form.category} onChange={(event) => handleCategoryChange(event.target.value)}><option value="">请选择社团类别</option><option>体育</option><option>艺术</option><option>科技</option><option>人文</option></select></label>
               <label><span className="field-label"><b>*</b> 社长</span><input value="赵子易" readOnly className="readonly-input" /><small>当前账号学生，申报通过后成为社长</small></label>
-              <label><span className="field-label"><b>*</b> 计划人数上限</span><input type="number" min="1" value={form.capacity} onChange={(event) => update("capacity", event.target.value)} placeholder="请输入人数" /></label>
+              <label><span className="field-label"><b>*</b> 计划人数上限</span><input data-field="capacity" type="number" min="1" value={form.capacity} onChange={(event) => update("capacity", event.target.value)} placeholder="请输入人数" /></label>
 
               <div className="form-field-cover full-span">
                 <span className="field-label"><b>*</b> 社团封面</span>
@@ -2750,18 +3375,18 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
                   </label>
                 </div>
                 <div className="cover-selector-tip">
-                  支持 PNG，JPG，JPEG，单个文件不得超过2MB，最多上传1个文件。
+                  建议正方形图片，支持 PNG/JPG/JPEG，单文件 ≤2MB，最多 1 个。
                 </div>
               </div>
 
-              <label className="full-span"><span className="field-label"><b>*</b> 社团简介</span><textarea value={form.summary} onChange={(event) => update("summary", event.target.value)} placeholder="用几句话介绍你们想做什么、希望一起完成什么" aria-label="社团简介" /></label>
+              <label className="full-span"><span className="field-label"><b>*</b> 社团简介{mode === "create" && (<button type="button" className="ai-field-entry" onClick={(event) => { event.preventDefault(); setAiOpen(true); }}><Sparkle size={12} weight="fill" /> 不会写？让 AI 起稿</button>)}</span><textarea data-field="summary" maxLength={AI_TEXT_LIMIT} value={form.summary} onChange={(event) => update("summary", event.target.value)} placeholder="用几句话介绍你们想做什么、希望一起完成什么" aria-label="社团简介" /></label>
             </div>
           </section>
           <section className="form-section">
             <div className="form-section-head"><h2>招新与联系</h2></div>
             <div className="form-grid">
               <label><span className="field-label"><b>*</b> 联系电话</span><input value={form.contact || ""} onChange={(event) => update("contact", event.target.value)} placeholder="请输入联系电话" /><small>{showLeaderContactToStudents ? "将向本校学生公开，用于社团咨询。" : "仅供学校管理人员联系社长。"}</small></label>
-              <label className="full-span"><span className="field-label">招新说明</span><textarea value={form.recruitment} onChange={(event) => update("recruitment", event.target.value)} placeholder="例如：希望每周能稳定参加活动；对摄影感兴趣即可" aria-label="招新说明" /></label>
+              <label className="full-span"><span className="field-label">招新说明</span><textarea maxLength={AI_TEXT_LIMIT} value={form.recruitment} onChange={(event) => update("recruitment", event.target.value)} placeholder="例如：希望每周能稳定参加活动；对摄影感兴趣即可" aria-label="招新说明" /></label>
             </div>
           </section>
           <section className="form-section">
@@ -2777,7 +3402,7 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
               {(!venueMethods || venueMethods.description) && (
                 <label className="single-field">
                   <span className="field-label">场地说明</span>
-                  <textarea value={form.venueNote || ""} onChange={(event) => update("venueNote", event.target.value)} placeholder="例如：每周一次、约 20 人，需要可投影的室内空间" />
+                  <textarea maxLength={AI_TEXT_LIMIT} value={form.venueNote || ""} onChange={(event) => update("venueNote", event.target.value)} placeholder="例如：每周一次、约 20 人，需要可投影的室内空间" />
                 </label>
               )}
             </div>
@@ -2786,9 +3411,12 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
             <div className="form-section-head no-line"><h2>申报材料</h2></div>
             <div className="form-grid">
               <label><span className="field-label"><b>*</b> 招新海报</span><div className="upload-field"><span className="upload-mark">＋</span><span>{form.poster || "上传图片"}</span><small>支持 PNG，JPG，JPEG，单个文件不得超过5MB，最多上传1个文件。</small></div></label>
-              <label className="full-span"><span className="field-label"><b>*</b> 活动计划</span><textarea value={form.plan} onChange={(event) => update("plan", event.target.value)} placeholder="请说明本学期拟开展的主要活动" /></label>
+              <label className="full-span"><span className="field-label"><b>*</b> 活动计划</span><textarea data-field="plan" maxLength={AI_TEXT_LIMIT} value={form.plan} onChange={(event) => update("plan", event.target.value)} placeholder="请说明本学期拟开展的主要活动" /></label>
             </div>
           </section>
+          {formError && (
+            <div className="ai-form-error"><WarningCircle size={15} weight="fill" /> {formError}</div>
+          )}
           <div className="form-actions">
             <button className="secondary" onClick={handleSave}>
               {mode === "resubmit" || mode === "withdrawn" ? "暂存修改" : "保存草稿"}
@@ -2808,8 +3436,66 @@ function DeclarationForm({ draft, mode = "create", showLeaderContactToStudents, 
             </ol>
             <p className="process-note">如被退回，可在“社团申报”中查看原因并修改重新提交。</p>
           </section>
+          {mode === "create" && (
+            <section className="ai-entry-card">
+              <span className="ai-entry-glow glow-a" aria-hidden="true" />
+              <span className="ai-entry-glow glow-b" aria-hidden="true" />
+              <div className="ai-entry-card-top">
+                <span className="ai-entry-icon"><Sparkle size={20} weight="fill" /></span>
+                <span className="ai-entry-badge">AI 助手</span>
+              </div>
+              <h3>不知道从哪写起？</h3>
+              <p>把想法说给 AI，帮你起一份申报草稿。</p>
+              <button
+                type="button"
+                className="ai-entry-button"
+                onClick={() => {
+                  if (aiUsed) {
+                    setAiSeed(null);
+                    setAiRestartStamp((value) => value + 1);
+                  }
+                  setAiOpen(true);
+                }}
+              >
+                <Sparkle size={16} weight="fill" /> {aiUsed ? "继续调整草稿" : "AI 帮我起稿"}
+              </button>
+            </section>
+          )}
         </aside>
       </div>
+      {mode === "create" && (
+        <AiDeclarationDrawer
+          key={`${aiSeed ? aiSeed.stamp : "ai-drawer"}-${aiRestartStamp}`}
+          open={aiOpen}
+          seedIdea={aiSeed}
+          onClose={() => setAiOpen(false)}
+          onApply={applyAiFields}
+        />
+      )}
+      {aiSubmitOpen && (
+        <div className="ai-confirm-mask" onClick={() => setAiSubmitOpen(false)}>
+          <div className="ai-confirm" onClick={(event) => event.stopPropagation()}>
+            <div className="ai-confirm-head">
+              <span className="ai-drawer-spark"><Sparkle size={16} weight="fill" /></span>
+              <h3>提交前请确认</h3>
+            </div>
+            <p>本次申报使用了 AI 辅助生成，请确认社团名称、简介、场地说明和活动计划等内容真实准确，并与你的实际计划一致。</p>
+            <div className="ai-confirm-actions">
+              <button type="button" className="secondary" onClick={() => setAiSubmitOpen(false)}>返回检查</button>
+              <button
+                type="button"
+                className="primary"
+                onClick={() => {
+                  setAiSubmitOpen(false);
+                  submitForm();
+                }}
+              >
+                确认并提交
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -8670,12 +9356,6 @@ function reportCredits(hours = 0) {
   return Math.min(6, 3 + (value - 6));
 }
 
-// 封面 AI 播报员轮播文案
-const AI_BROADCAST_LINES = [
-  "要我把这学期讲给你听吗？",
-  "点我，30 秒读完这学期",
-];
-
 // 活动瞬间分享：成员围绕单场活动发布的图文记录，报告只统计分享、获赞、评论与精选。
 const reportMoments = {
   football: {
@@ -8737,51 +9417,8 @@ function reportEventMonthDay(event) {
   return { month: Number(match[1]), day: Number(match[2]) };
 }
 
-function ReportSection({ index, title, children }) {
-  return (
-    <section className="report-section">
-      <header className="report-section-head">
-        <span className="report-section-index">{index}</span>
-        <div>
-          <h2>{title}</h2>
-        </div>
-      </header>
-      <div className="report-section-body">{children}</div>
-    </section>
-  );
-}
-
-function ReportPage() {
-  const [aiOpen, setAiOpen] = useState(false);
-  const [aiStatus, setAiStatus] = useState("idle");
-  const [aiCopied, setAiCopied] = useState(false);
-  const [aiLineIndex, setAiLineIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setAiLineIndex((index) => (index + 1) % AI_BROADCAST_LINES.length);
-    }, 3600);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    if (aiStatus !== "loading") return undefined;
-    const timer = window.setTimeout(() => setAiStatus("done"), 1100);
-    return () => window.clearTimeout(timer);
-  }, [aiStatus]);
-
-  useEffect(() => {
-    if (!aiCopied) return undefined;
-    const timer = window.setTimeout(() => setAiCopied(false), 2600);
-    return () => window.clearTimeout(timer);
-  }, [aiCopied]);
-
-  const openAi = () => {
-    setAiCopied(false);
-    setAiStatus("loading");
-    setAiOpen(true);
-  };
-
+// 报告页数据：输入都是模块级常量，抽成纯函数，报告页与小果共用同一份口径。
+function buildReportData() {
   const joinedClubs = reportClubs.filter((club) => reportJoin[club.id] === "joined");
   const pendingClubs = reportClubs.filter((club) => reportJoin[club.id] === "pending");
 
@@ -8847,11 +9484,71 @@ function ReportPage() {
   const featuredMoments = myMoments.filter((moment) => moment.featured);
 
   const leaderClub = managedClubsList.find((club) => club.role === "leader");
-
-  // 总览指标：按首页 KPI 口径合并同类项 —— 社团（管理+参与）/ 出勤（场次+已出勤）/ 分享（分享+精选）/ 学时（含已认定学分）
   const leaderIds = new Set(managedClubsList.filter((club) => club.role === "leader").map((club) => club.id));
   const leaderOnlyCount = perClub.filter((item) => leaderIds.has(item.club.id)).length;
   const joinedOnlyCount = totals.clubs - leaderOnlyCount;
+
+  const creditsEarned = reportCredits(totals.hoursApproved);
+
+  // 社长视角：全社口径（与「我的」出勤、发言区分）
+  const leaderEvents = leaderClub ? (reportClubs.find((club) => club.id === leaderClub.id)?.events || []) : [];
+  const leaderRecords = leaderClub ? reportAttendance[leaderClub.id] || {} : {};
+  const leaderHeld = Object.keys(leaderRecords).length;
+  const leaderMomentEntries = leaderClub ? Object.values(reportMoments[leaderClub.id] || {}).flat() : [];
+  const leaderShares = leaderMomentEntries.length;
+  const leaderFeaturedShares = leaderMomentEntries.filter((moment) => moment.featured).length;
+  const leaderShareMembers = new Set(leaderMomentEntries.map((moment) => moment.author)).size;
+  const leaderMembers = leaderClub?.membersCount || 0;
+  const leaderCapacity = leaderClub?.capacity || 0;
+  // 全社口径为示意值：原型只有「我」的考勤记录，没有全员点名数据
+  const leaderAttendanceRate = 86;
+  // 社长运营学时按已开展活动每场 4 学时计（个人口径，不按全社人次折算）
+  const leaderHours = leaderHeld * 4;
+  // 社长运营社团同样计入个人学时：已认定部分按 40% 示意
+  const leaderApprovedHours = Math.round(leaderHours * 0.4);
+  const leaderCredits = reportCredits(leaderApprovedHours);
+  const totalHours = totals.hoursEligible + (leaderClub ? leaderHours : 0);
+  const totalApprovedHours = totals.hoursApproved + (leaderClub ? leaderApprovedHours : 0);
+  const totalCredits = reportCredits(totalApprovedHours);
+  const pendingHours = Math.max(totals.hoursEligible - totals.hoursSubmitted, 0);
+  const reviewingHours = Math.max(totals.hoursSubmitted - totals.hoursApproved, 0);
+
+  return {
+    joinedClubs, pendingClubs, perClub, totals, attended, rate, myMoments, featuredMoments,
+    leaderClub, leaderOnlyCount, joinedOnlyCount, creditsEarned,
+    leaderEvents, leaderRecords, leaderHeld, leaderMomentEntries, leaderShares,
+    leaderFeaturedShares, leaderShareMembers, leaderMembers, leaderCapacity, leaderAttendanceRate,
+    leaderHours, leaderApprovedHours, leaderCredits, totalHours, totalApprovedHours, totalCredits,
+    pendingHours, reviewingHours,
+  };
+}
+
+const REPORT_DATA = buildReportData();
+
+function ReportSection({ index, title, id, children }) {
+  return (
+    <section className="report-section" id={id ? `report-${id}` : undefined} data-report-section={id}>
+      <header className="report-section-head">
+        <span className="report-section-index">{index}</span>
+        <div>
+          <h2>{title}</h2>
+        </div>
+      </header>
+      <div className="report-section-body">{children}</div>
+    </section>
+  );
+}
+
+function ReportPage() {
+  const {
+    joinedClubs, perClub, totals, attended, rate, featuredMoments, leaderClub,
+    leaderOnlyCount, joinedOnlyCount, creditsEarned, leaderEvents, leaderHeld,
+    leaderShares, leaderFeaturedShares, leaderShareMembers, leaderMembers,
+    leaderCapacity, leaderAttendanceRate, leaderHours, leaderApprovedHours,
+    leaderCredits, totalHours, totalApprovedHours, totalCredits,
+  } = REPORT_DATA;
+
+  // 总览指标：按首页 KPI 口径合并同类项 —— 社团（管理+参与）/ 出勤（场次+已出勤）/ 分享（分享+精选）/ 学时（含已认定学分）
   const metrics = [
     {
       icon: <PuzzlePiece size={16} weight="bold" />,
@@ -8898,29 +9595,6 @@ function ReportPage() {
     totals.clubs >= 2 && { icon: <PuzzlePiece size={13} weight="fill" />, label: "多社团玩家" },
   ].filter(Boolean);
 
-  const creditsEarned = reportCredits(totals.hoursApproved);
-
-  // 社长视角：全社口径（与「我的」出勤、发言区分）
-  const leaderEvents = leaderClub ? (reportClubs.find((club) => club.id === leaderClub.id)?.events || []) : [];
-  const leaderRecords = leaderClub ? reportAttendance[leaderClub.id] || {} : {};
-  const leaderHeld = Object.keys(leaderRecords).length;
-  const leaderMomentEntries = leaderClub ? Object.values(reportMoments[leaderClub.id] || {}).flat() : [];
-  const leaderShares = leaderMomentEntries.length;
-  const leaderFeaturedShares = leaderMomentEntries.filter((moment) => moment.featured).length;
-  const leaderShareMembers = new Set(leaderMomentEntries.map((moment) => moment.author)).size;
-  const leaderMembers = leaderClub?.membersCount || 0;
-  const leaderCapacity = leaderClub?.capacity || 0;
-  // 全社口径为示意值：原型只有「我」的考勤记录，没有全员点名数据
-  const leaderAttendanceRate = 86;
-  // 社长运营学时按已开展活动每场 4 学时计（个人口径，不按全社人次折算）
-  const leaderHours = leaderHeld * 4;
-  // 社长运营社团同样计入个人学时：已认定部分按 40% 示意
-  const leaderApprovedHours = Math.round(leaderHours * 0.4);
-  const leaderCredits = reportCredits(leaderApprovedHours);
-  const totalHours = totals.hoursEligible + (leaderClub ? leaderHours : 0);
-  const totalApprovedHours = totals.hoursApproved + (leaderClub ? leaderApprovedHours : 0);
-  const totalCredits = reportCredits(totalApprovedHours);
-
   const leaderMetrics = leaderClub ? [
     { icon: <Student size={15} weight="bold" />, label: "社团成员", value: leaderMembers, unit: `/ ${leaderCapacity} 人`, note: `入社率 ${leaderCapacity ? Math.round((leaderMembers / leaderCapacity) * 100) : 0}%` },
     { icon: <CalendarDots size={15} weight="bold" />, label: "本学期活动", value: leaderEvents.length, unit: "场", note: `已开展 ${leaderHeld} · 待开展 ${Math.max(leaderEvents.length - leaderHeld, 0)}` },
@@ -8928,83 +9602,6 @@ function ReportPage() {
     { icon: <ChatCircleDots size={15} weight="bold" />, label: "成员分享", value: leaderShares, unit: "条", note: `参与成员 ${leaderShareMembers} 人` },
     { icon: <Star size={15} weight="bold" />, label: "我设精选", value: leaderFeaturedShares, unit: "条", note: "展示在社团活动瞬间" },
   ] : [];
-
-  const pendingHours = Math.max(totals.hoursEligible - totals.hoursSubmitted, 0);
-  const reviewingHours = Math.max(totals.hoursSubmitted - totals.hoursApproved, 0);
-
-  const clubRateLines = perClub
-    .filter((item) => item.tracked.length > 0)
-    .map((item) => ({
-      name: item.club.name,
-      tracked: item.tracked.length,
-      present: item.summary.present,
-      rate: Math.round((item.summary.present / item.tracked.length) * 100),
-    }))
-    .sort((a, b) => a.rate - b.rate);
-
-  const aiBlocks = [];
-
-  if (totals.shares > 0) {
-    aiBlocks.push({
-      tone: "good",
-      tag: "正向表现",
-      title: `你的分享被看见了：${totals.shares} 条收到 ${totals.likes} 个赞`,
-      body: `本学期你在活动瞬间发了 ${totals.shares} 条分享，收到 ${totals.likes} 个赞、${totals.comments} 条评论，其中 ${totals.featuredShares} 条被社长设为精选。继续用照片配一句真实感受，被精选的机会更多。`,
-    });
-  }
-
-  if (totals.tracked > 0) {
-    aiBlocks.push({
-      tone: "warn",
-      tag: "需关注",
-      title: `出勤 ${rate}%：${totals.tracked} 场点名活动到了 ${attended} 场`,
-      body: `${clubRateLines.map((item) => `「${item.name}」${item.tracked} 场点到 ${item.present} 场（${item.rate}%）`).join("，")}；缺勤 ${totals.absent} 场、请假 ${totals.leave} 场${totals.waiting ? `，另有 ${totals.waiting} 场还没点名` : ""}。${rate >= 90 ? "状态很稳，继续保持。" : "下次活动前一天设个提醒，出勤率还能提上来。"}`,
-    });
-  }
-
-  if (totals.hoursEligible > 0) {
-    const creditTitle = pendingHours > 0
-      ? `还有 ${pendingHours} 学时待提交`
-      : reviewingHours > 0
-        ? `${reviewingHours} 学时正在审核`
-        : `${totals.hoursEligible} 学时全部认定，${creditsEarned} 学分到手`;
-    const creditBody = pendingHours > 0
-      ? `本学期可认定 ${totals.hoursEligible} 学时，已认定 ${totals.hoursApproved} 学时。截止前把剩下的 ${pendingHours} 学时提交，学分就能稳稳拿到。`
-      : reviewingHours > 0
-        ? `本学期可认定 ${totals.hoursEligible} 学时，已提交 ${totals.hoursSubmitted} 学时，其中 ${reviewingHours} 学时还在审核，通过后学分会自动更新，不用重复提交。`
-        : `本学期可认定 ${totals.hoursEligible} 学时，已全部核定，个人部分不需要再操作。下学期保持出勤，学分就能稳稳续上。`;
-    aiBlocks.push({
-      tone: "credit",
-      tag: "学分到账",
-      title: creditTitle,
-      body: creditBody,
-    });
-  }
-
-  if (leaderClub) {
-    aiBlocks.push({
-      tone: "role",
-      tag: "社长担当",
-      title: `${leaderClub.name}：${leaderHeld} 场活动、${leaderMembers} 名成员`,
-      body: `作为社长，你本学期已开展 ${leaderHeld} 场活动，还有 ${Math.max(leaderEvents.length - leaderHeld, 0)} 场待开展；${leaderMembers} 名成员中 ${leaderShareMembers} 人发过分享，共 ${leaderShares} 条，你选出了 ${leaderFeaturedShares} 条精选。下学期第一场活动，等你回来。`,
-    });
-  }
-
-  const aiInsight = {
-    range: `${totals.clubs} 个社团 · ${totals.tracked} 场活动 · ${totals.shares} 条分享`,
-    blocks: aiBlocks,
-  };
-
-  const aiText = [
-    ...aiInsight.blocks.map((item) => `【${item.tag}】${item.title}\n${item.body}`),
-    "以上解读由 AI 结合本学期报告数据生成，仅供家长和同学参考。",
-  ].join("\n\n");
-
-  const copyAiInsight = () => {
-    setAiCopied(true);
-    const clipboard = navigator.clipboard;
-    if (clipboard) clipboard.writeText(aiText).catch(() => { });
-  };
 
   if (joinedClubs.length === 0) {
     return (
@@ -9047,13 +9644,6 @@ function ReportPage() {
           <p className="report-hero-index">报告包含：数据总览{leaderClub ? " · 我管理的" : ""} · 活动参与 · 活动分享 · 学分结果</p>
         </div>
         <div className="report-hero-side">
-          <button type="button" className="report-ai-broadcast" onClick={openAi} aria-label="打开 AI 解读，30 秒读懂这学期">
-            <span className="report-ai-halo" aria-hidden="true"><Sparkle size={15} weight="fill" /></span>
-            <span className="report-ai-bubble">
-              <strong className="report-ai-bubble-title">AI 解读</strong>
-              <span className="report-ai-bubble-line" key={aiLineIndex}>{AI_BROADCAST_LINES[aiLineIndex]}</span>
-            </span>
-          </button>
           <div className="report-credit-badge" role="img" aria-label={`已获得 ${creditsEarned} 学分，对应 ${totals.hoursApproved} 学时`}>
             <div className="report-badge-ring">
               <span className="report-badge-cap">已获得学分</span>
@@ -9064,7 +9654,7 @@ function ReportPage() {
         </div>
       </section>
 
-      <ReportSection index="01" title="数据总览">
+      <ReportSection index="01" title="数据总览" id="overview">
         <div className="report-metrics">
           {metrics.map((metric) => (
             <article className="report-metric" key={metric.label}>
@@ -9081,6 +9671,7 @@ function ReportPage() {
         <ReportSection
           index="02"
           title="我管理的"
+          id="leader"
         >
           <div className="report-cockpit">
             <div className="cockpit-metrics">
@@ -9097,7 +9688,7 @@ function ReportPage() {
         </ReportSection>
       )}
 
-      <ReportSection index={leaderClub ? "03" : "02"} title="活动参与">
+      <ReportSection index={leaderClub ? "03" : "02"} title="活动参与" id="attendance">
         <div className="report-club-rows">
           {perClub.map((item) => {
             const total = item.tracked.length;
@@ -9129,7 +9720,7 @@ function ReportPage() {
         <p className="report-footnote">出勤率＝正常出勤场次 / 已点名场次；请假与缺勤不计入出勤。</p>
       </ReportSection>
 
-      <ReportSection index={leaderClub ? "04" : "03"} title="活动分享">
+      <ReportSection index={leaderClub ? "04" : "03"} title="活动分享" id="shares">
         <div className="report-share-summary">
           <div className="report-share-stat">
             <span>我的分享</span>
@@ -9181,7 +9772,7 @@ function ReportPage() {
         <p className="report-footnote">仅展示被社长设为精选的活动分享；点赞与评论为社团成员的互动数据。</p>
       </ReportSection>
 
-      <ReportSection index={leaderClub ? "05" : "04"} title="学分结果">
+      <ReportSection index={leaderClub ? "05" : "04"} title="学分结果" id="credits">
         <div className="report-cert">
           <div className="report-cert-paper">
             <span className="report-cert-eyebrow">2026—2027 学年 · 上学期</span>
@@ -9224,82 +9815,6 @@ function ReportPage() {
           </p>
         </div>
       </section>
-
-      {aiOpen && (
-        <ReportAiDrawer
-          insight={aiInsight}
-          status={aiStatus}
-          copied={aiCopied}
-          onClose={() => setAiOpen(false)}
-          onGenerate={() => {
-            setAiCopied(false);
-            setAiStatus("loading");
-          }}
-          onCopy={copyAiInsight}
-        />
-      )}
-    </div>
-  );
-}
-
-function ReportAiDrawer({ insight, status, copied, onClose, onGenerate, onCopy }) {
-  return (
-    <div className="drawer-backdrop" role="presentation" onClick={onClose}>
-      <aside
-        className="side-drawer report-ai-drawer"
-        role="dialog"
-        aria-modal="true"
-        aria-label="报告 AI 解读"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <header className="report-ai-drawer-head">
-          <span className="report-ai-orb" aria-hidden="true"><Sparkle size={16} weight="fill" /></span>
-          <div className="report-ai-drawer-title">
-            <strong>AI 解读 · 我的学期报告</strong>
-            <span>{insight.range}</span>
-          </div>
-          <button type="button" className="report-ai-close" onClick={onClose} aria-label="关闭">
-            <X size={15} weight="bold" />
-          </button>
-        </header>
-
-        <div className="report-ai-drawer-body">
-          {status === "loading" && (
-            <div className="report-ai-loading">
-              <span className="report-ai-loading-icon"><Sparkle size={20} weight="fill" /></span>
-              <strong>基于本学期数据生成解读</strong>
-              <span className="report-ai-scope">数据范围：{insight.range} · 数据截至 2026-10-26</span>
-              <div className="report-ai-skeleton"><i /><i /><i /><i /><i /></div>
-            </div>
-          )}
-
-          {status === "done" && (
-            <div className="report-ai-content">
-              <div className="report-ai-blocks">
-                {insight.blocks.map((item) => (
-                  <article className="report-ai-block" key={item.title}>
-                    <span className={`report-ai-chip tone-${item.tone}`}>{item.tag}</span>
-                    <h4>{item.title}</h4>
-                    <p>{item.body}</p>
-                  </article>
-                ))}
-              </div>
-              <p className="report-ai-foot-note">以上解读由 AI 结合本学期报告数据生成，仅供家长和同学参考。</p>
-            </div>
-          )}
-        </div>
-
-        {status === "done" && (
-          <footer className="report-ai-drawer-foot">
-            <button type="button" className="report-ai-secondary" onClick={onGenerate}>
-              <ArrowClockwise size={14} />重新生成
-            </button>
-            <button type="button" className="report-ai-copy" onClick={onCopy}>
-              <CopySimple size={14} />{copied ? "已复制" : "复制全文"}
-            </button>
-          </footer>
-        )}
-      </aside>
     </div>
   );
 }
